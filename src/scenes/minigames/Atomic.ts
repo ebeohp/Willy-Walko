@@ -4,8 +4,8 @@ export default class Atomic extends Phaser.Scene
 {
     numEvos!: number;
     numCoins!: number;
-    earnedCoins!: number;
-    earnedEvos!: number;
+    earnedCoins=0;
+    earnedEvos=0;
     
 	constructor()
 	{
