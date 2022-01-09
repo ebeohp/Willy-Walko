@@ -2,8 +2,11 @@ import Phaser from 'phaser'
 
 export default class Trivia extends Phaser.Scene
 {
+
+    //. make sure mark as incorrect when timer hits zero. implement learning time
     private modeButtons?: Phaser.Physics.Arcade.Group;
     private mode!: string;
+    private learning!: boolean;
     private goEasy: any;
     private goMedium: any;
     private goHard: any;
@@ -23,6 +26,12 @@ export default class Trivia extends Phaser.Scene
     private easyBank!: string[][];
     private easyKey!: number[][];
     private evoText!: Phaser.GameObjects.BitmapText;
+    B: any;
+    C: any;
+    mediumBank!: string[][];
+    mediumKey!: number[][];
+    hardBank!: string[][];
+    hardKey!: number[][];
     
     
 
@@ -48,7 +57,7 @@ export default class Trivia extends Phaser.Scene
         [
             ["?","A","B","C"],
             ["??","A","B","C"],
-            ["??","A","B","C"]
+            ["???","A","B","C"]
         ];
         this.easyKey = 
         [
@@ -57,26 +66,26 @@ export default class Trivia extends Phaser.Scene
             [3]
         ]
 
-        var mediumBank = 
+        this.mediumBank = 
         [
             ["?","A","B","C"],
             ["??","A","B","C"],
-            ["??","A","B","C"]
+            ["???","A","B","C"]
         ];
-        var mediumKey = 
+        this.mediumKey = 
         [
             [1],
             [2],
             [3]
         ]
 
-        var hardBank = 
+        this.hardBank = 
         [
             ["?","A","B","C"],
             ["??","A","B","C"],
-            ["??","A","B","C"]
+            ["???","A","B","C"]
         ];
-        var hardKey = 
+        this.hardKey = 
         [
             [1],
             [2],
@@ -98,7 +107,9 @@ export default class Trivia extends Phaser.Scene
         if (this.timeLabel != null)
         {
             this.timeLabel.destroy(true);
+            this.countDown.destroy();
         }
+        
         this.timeLabel = this.add.bitmapText(300,7, "pixelFont", "Time: ",40);
         this.timeLabel.text = "Time: " + this.timeFormat(this.initialTime);
         this.countDown = this.time.addEvent
@@ -116,22 +127,33 @@ export default class Trivia extends Phaser.Scene
         partInSeconds = partInSeconds.toString().padStart(2,"0");
         return `${minutes}:${partInSeconds}`;
     }
-    onCount()
+    onCount() //Decrements by 1 every second. If hits 30, offer learning button.
     {
         this.initialTime -= 1;
         this.timeLabel.text = "Time: " + this.timeFormat(this.initialTime);
+        if(this.initialTime==30)
+        {
+            //offer learning time button. if selected, goes to learning time and timer is paused
+            var r1 = this.add.rectangle(400, 400, 32, 32, 0xff22ff);
+            r1.setInteractive();
+
+            r1.on('pointerout',  (pointer) => {
+                //this.goEasy.setFrame(0);
+            }, this);
+            r1.on('pointerup',  (pointer) => {
+                this.learningTime();
+            }, this);
+            
+        }
     }
 
-    update(time: number, delta: number): void 
-    {
-    }
-
+    
     
     newEasyQ()
     {
         //Resets UI, timer to 1 min, puts new question up 
         this.resetTimer();
-        var questionNum = 0 //Phaser.Math.Between(0, 2);
+        var questionNum = Phaser.Math.Between(0, 2);
         var question= this.add.bitmapText(300,100, "pixelFont", this.easyBank[questionNum][0],40);
         
         this.answerButtons = this.physics.add.group();
@@ -167,19 +189,200 @@ export default class Trivia extends Phaser.Scene
             }
 
         }, this);
+        this.B = this.answerButtons.create(200,250, "level_buttons");
+        this.B.setInteractive().setScale();
+        this.B.on('pointerup',  (pointer) => {
+            if(Number(this.easyKey[questionNum]) == 2)
+            {
+                console.log("correct");
+                this.calculateEvos();
+                this.time.addEvent
+                ({
+                    delay: 2000,
+                    callback: this.newEasyQ,
+                    callbackScope: this,
+                    loop: false,
+                    
+                });
+            }
+            else
+            {
+                console.log("wrong! RED"); 
+                this.time.addEvent
+                ({
+                    delay: 2000,
+                    callback: this.newEasyQ,
+                    callbackScope: this,
+                    loop: false
+                });
+            }
 
+        }, this);
+        this.C = this.answerButtons.create(200,300, "level_buttons");
+        this.C.setInteractive().setScale();
+        this.C.on('pointerup',  (pointer) => {
+            if(Number(this.easyKey[questionNum]) == 3)
+            {
+                console.log("correct");
+                this.calculateEvos();
+                this.time.addEvent
+                ({
+                    delay: 2000,
+                    callback: this.newEasyQ,
+                    callbackScope: this,
+                    loop: false,
+                    
+                });
+            }
+            else
+            {
+                console.log("wrong! RED"); 
+                this.time.addEvent
+                ({
+                    delay: 2000,
+                    callback: this.newEasyQ,
+                    callbackScope: this,
+                    loop: false
+                });
+            }
+
+        }, this);
         
     }
     newMediumQ()
     {
+        this.resetTimer();
+        var questionNum = Phaser.Math.Between(0, 2);
+        var question= this.add.bitmapText(300,100, "pixelFont", this.mediumBank[questionNum][0],40);
+        
+        this.answerButtons = this.physics.add.group();
+        this.A = this.answerButtons.create(200,200, "level_buttons");
+        this.A.setInteractive().setScale();
+        this.A.on('pointerout',  (pointer) => {
+          //this.A.setFrame(0);
+        }, this);
+        this.A.on('pointerup',  (pointer) => {
+            if(Number(this.mediumKey[questionNum]) == 1)
+            {
+                console.log("correct");
+                this.calculateEvos();
+                this.time.addEvent
+                ({
+                    delay: 2000,
+                    callback: this.newMediumQ,
+                    callbackScope: this,
+                    loop: false,
+                    
+                });
+            }
+            else
+            {
+                console.log("wrong! RED"); 
+                this.time.addEvent
+                ({
+                    delay: 2000,
+                    callback: this.newMediumQ,
+                    callbackScope: this,
+                    loop: false
+                });
+            }
+
+        }, this);
+        this.B = this.answerButtons.create(200,200, "level_buttons");
+        this.B.setInteractive().setScale();
+        this.B.on('pointerup',  (pointer) => {
+            if(Number(this.mediumKey[questionNum]) == 2)
+            {
+                console.log("correct");
+                this.calculateEvos();
+                this.time.addEvent
+                ({
+                    delay: 2000,
+                    callback: this.newMediumQ,
+                    callbackScope: this,
+                    loop: false,
+                    
+                });
+            }
+            else
+            {
+                console.log("wrong! RED"); 
+                this.time.addEvent
+                ({
+                    delay: 2000,
+                    callback: this.newMediumQ,
+                    callbackScope: this,
+                    loop: false
+                });
+            }
+
+        }, this);
+        this.C = this.answerButtons.create(200,200, "level_buttons");
+        this.C.setInteractive().setScale();
+        this.C.on('pointerup',  (pointer) => {
+            if(Number(this.mediumKey[questionNum]) == 3)
+            {
+                console.log("correct");
+                this.calculateEvos();
+                this.time.addEvent
+                ({
+                    delay: 2000,
+                    callback: this.newMediumQ,
+                    callbackScope: this,
+                    loop: false,
+                    
+                });
+            }
+            else
+            {
+                console.log("wrong! RED"); 
+                this.time.addEvent
+                ({
+                    delay: 2000,
+                    callback: this.newMediumQ,
+                    callbackScope: this,
+                    loop: false
+                });
+            }
+
+        }, this);
     }
     newHardQ()
     {
     }
 
-    calculateEvos() //If correct without learning
+    learningTime() 
     {
         this.countDown.paused = true;
+        this.learning = true;
+
+        //give reccomendations to resources
+        
+    }
+
+    calculateEvos() //If correct 
+    {
+        
+        
+        if(this.learning == true)
+        {
+            if(this.mode == "easy")
+            {
+                this.earnedEvos+=2;
+            }
+            else if (this.mode == "medium")
+            {
+                this.earnedEvos+=10;
+            }
+            else if (this.mode == "hard")
+            {
+                this.earnedEvos+=40;
+            }
+        }
+        
+        this.countDown.paused = true;
+
+        
         if(this.initialTime >= 50 && this.initialTime <= 60)
         {
             if(this.mode == "easy")
@@ -256,22 +459,7 @@ export default class Trivia extends Phaser.Scene
         }
 
     }
-    learningTime() //Better than getting 0 for incorrect
-    {
-        this.countDown.paused = true; 
-        if(this.mode == "easy")
-        {
-            this.earnedEvos+=2;
-        }
-        else if (this.mode == "medium")
-        {
-            this.earnedEvos+=10;
-        }
-        else if (this.mode == "hard")
-        {
-            this.earnedEvos+=40;
-        }
-    }
+    
     
     challengePopUp() //Popup, destroyed after selection
     {
