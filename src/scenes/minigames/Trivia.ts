@@ -3,7 +3,7 @@ import Phaser from 'phaser'
 export default class Trivia extends Phaser.Scene
 {
 
-    //. make sure mark as incorrect when timer hits zero. implement learning time
+    //make sure mark as incorrect when timer hits zero. also, destroy text and answer buttons
     private modeButtons?: Phaser.Physics.Arcade.Group;
     private mode!: string;
     private learning!: boolean;
@@ -32,6 +32,7 @@ export default class Trivia extends Phaser.Scene
     mediumKey!: number[][];
     hardBank!: string[][];
     hardKey!: number[][];
+    question!: Phaser.GameObjects.BitmapText;
     
     
 
@@ -108,6 +109,11 @@ export default class Trivia extends Phaser.Scene
         {
             this.timeLabel.destroy(true);
             this.countDown.destroy();
+            this.question.destroy();
+            this.A.destroy();
+            this.B.destroy();
+            this.C.destroy();
+            //Also destroy the texts for A B and C after you add them!
         }
         
         this.timeLabel = this.add.bitmapText(300,7, "pixelFont", "Time: ",40);
@@ -145,6 +151,17 @@ export default class Trivia extends Phaser.Scene
             }, this);
             
         }
+        if(this.initialTime == 0)
+        {
+            this.time.addEvent
+                ({
+                    delay: 2000,
+                    callback: this.endPopUp,
+                    callbackScope: this,
+                    loop: false,
+                    
+                });
+        }
     }
 
     
@@ -154,7 +171,7 @@ export default class Trivia extends Phaser.Scene
         //Resets UI, timer to 1 min, puts new question up 
         this.resetTimer();
         var questionNum = Phaser.Math.Between(0, 2);
-        var question= this.add.bitmapText(300,100, "pixelFont", this.easyBank[questionNum][0],40);
+        this.question= this.add.bitmapText(300,100, "pixelFont", this.easyBank[questionNum][0],40);
         
         this.answerButtons = this.physics.add.group();
         this.A = this.answerButtons.create(200,200, "level_buttons");
@@ -253,7 +270,7 @@ export default class Trivia extends Phaser.Scene
     {
         this.resetTimer();
         var questionNum = Phaser.Math.Between(0, 2);
-        var question= this.add.bitmapText(300,100, "pixelFont", this.mediumBank[questionNum][0],40);
+        this.question= this.add.bitmapText(300,100, "pixelFont", this.mediumBank[questionNum][0],40);
         
         this.answerButtons = this.physics.add.group();
         this.A = this.answerButtons.create(200,200, "level_buttons");
@@ -542,4 +559,5 @@ export default class Trivia extends Phaser.Scene
         localStorage.setItem('savedCoins', totalCoins.toString());
         this.scene.start('home');
     }
+    //scene transition back to home
 }

@@ -20,7 +20,10 @@ export default class Home extends Phaser.Scene
     private willy?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     private myCam!: Phaser.Cameras.Scene2D.Camera;
     //Scale of all images
-    private s = 2;
+    private s = 1;
+  private shipcarn?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  private philcarn?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  private bountycarn?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
     
 
@@ -39,36 +42,45 @@ export default class Home extends Phaser.Scene
         
 
         //Map setup
-        var g1 = this.add.grid(0, 0, 256, 192, 32, 32, 0x00b9f2).setAltFillStyle(0x016fce).setOutlineStyle();
+        var g1 = this.add.grid(150, 200, 480, 320, 32, 32, 0x00b9f2).setAltFillStyle(0x016fce).setOutlineStyle();
         g1.setScale(this.s);
 
+
+        this.shipcarn = this.physics.add.sprite(100,200, 'shipcarn', 0);
+        this.shipcarn.anims.play('shipcarn_anim');
+        this.philcarn = this.physics.add.sprite(200,200, 'shipcarn', 0);
+        this.philcarn.anims.play('philcarn_anim');
+        this.bountycarn = this.physics.add.sprite(0,200, 'bountycarn', 0);
+
         //Player setup
-        this.willy = this.physics.add.sprite(0,0,'willy',0);
+        this.willy = this.physics.add.sprite(50,300,'willy',0);
         this.willy.setScale(this.s);
         this.myCam = this.cameras.main.startFollow(this.willy, true);
+        this.willy.setCollideWorldBounds(true);
         //Ease in/out effects later
 
         //Local storage. May need to restart game instance to update evos after each minigame
         this.numEvos= Number( localStorage.getItem("savedEvos") == null ? 0 : localStorage.getItem("savedEvos"));
         this.numCoins=  Number(localStorage.getItem("savedCoins") == null ? 0 : localStorage.getItem("savedCoins"));
            
-        var evoCounter = this.add.bitmapText(10,80, "pixelFont", this.numEvos + " Evos", 40);
-        var coinCounter = this.add.bitmapText(10,100, "pixelFont",  this.numCoins + " Coins", 40);
+        var evoCounter = this.add.bitmapText(35,14, "pixelFont", "X " + this.numEvos, 20);
+        var evoimg = this.add.image(20,20,'evoimg');
+        var coinCounter = this.add.bitmapText(35,38, "pixelFont", "X " + this.numCoins + " ", 20);
+        var coinimg = this.add.image(20,45,'coinimg');
+        evoimg.setScrollFactor(0,0);
+        coinimg.setScrollFactor(0,0);    
         evoCounter.setScrollFactor(0,0);
         coinCounter.setScrollFactor(0,0);
         
         //Buttons to each minigame ------------------------------------------------------------------------
         this.buttons = this.physics.add.group();
 
-        this.goAtomic = this.buttons.create(50,50, "level_buttons");
-        this.goAtomic.setInteractive().setScale(this.s);;
-        this.goAtomic.on('pointerout',  (pointer) => {
+        //this.goAtomic = this.buttons.create(50,50, "level_buttons");
+        this.bountycarn.setInteractive().setScale(this.s);;
+        this.bountycarn.on('pointerout',  (pointer) => {
           //this.goAtomic.setFrame(0);
         }, this);
-        this.goAtomic.on('pointerover',  (pointer) => {
-          //this.goParkour.setFrame(1);
-        }, this);
-        this.goAtomic.on('pointerup',  (pointer) => {
+        this.bountycarn.on('pointerup',  (pointer) => {
             this.scene.start('atomic', {evos: this.numEvos, coins: this.numCoins});
         }, this);
 
@@ -77,22 +89,16 @@ export default class Home extends Phaser.Scene
         this.goClaw.on('pointerout',  (pointer) => {
           //this.goClaw.setFrame(0);
         }, this);
-        this.goClaw.on('pointerover',  (pointer) => {
-          //this.goClaw.setFrame(1);
-        }, this);
         this.goClaw.on('pointerup',  (pointer) => {
             this.scene.start('claw', {evos: this.numEvos, coins: this.numCoins});
         }, this);
         
-        this.goMicro = this.buttons.create(150,50, "level_buttons");
-        this.goMicro.setInteractive().setScale(this.s);;
-        this.goMicro.on('pointerout',  (pointer) => {
+        //this.goMicro = this.buttons.create(150,50, "level_buttons");
+        this.shipcarn.setInteractive().setScale(this.s);;
+        this.shipcarn.on('pointerout',  (pointer) => {
           //this.goMicro.setFrame(0);
         }, this);
-        this.goMicro.on('pointerover',  (pointer) => {
-          //this.goMicro.setFrame(1);
-        }, this);
-        this.goMicro.on('pointerup',  (pointer) => {
+        this.shipcarn.on('pointerup',  (pointer) => {
             this.scene.start('microship', {evos: this.numEvos, coins: this.numCoins});
         }, this);
 
@@ -101,22 +107,16 @@ export default class Home extends Phaser.Scene
         this.goParkour.on('pointerout',  (pointer) => {
           //this.goParkour.setFrame(0);
         }, this);
-        this.goParkour.on('pointerover',  (pointer) => {
-          //this.goParkour.setFrame(1);
-        }, this);
         this.goParkour.on('pointerup',  (pointer) => {
             this.scene.start('parkour', {evos: this.numEvos, coins: this.numCoins});
         }, this);
 
-        this.goPhil = this.buttons.create(250,50, "level_buttons");
-        this.goPhil.setInteractive().setScale(this.s);;
-        this.goPhil.on('pointerout',  (pointer) => {
+        //this.goPhil = this.buttons.create(250,50, "level_buttons");
+        this.philcarn.setInteractive().setScale(this.s);;
+        this.philcarn.on('pointerout',  (pointer) => {
           //this.goPhil.setFrame(0);
         }, this);
-        this.goPhil.on('pointerover',  (pointer) => {
-          //this.goPhil.setFrame(1);
-        }, this);
-        this.goPhil.on('pointerup',  (pointer) => {
+        this.philcarn.on('pointerup',  (pointer) => {
             this.scene.start('philHelios', {evos: this.numEvos, coins: this.numCoins});
         }, this);
         
@@ -124,9 +124,6 @@ export default class Home extends Phaser.Scene
         this.goTrivia.setInteractive().setScale(this.s);;
         this.goTrivia.on('pointerout',  (pointer) => {
           //this.goTrivia.setFrame(0);
-        }, this);
-        this.goTrivia.on('pointerover',  (pointer) => {
-          //this.goPhil.setFrame(1);
         }, this);
         this.goTrivia.on('pointerup',  (pointer) => {
             this.scene.start('trivia', {evos: this.numEvos, coins: this.numCoins});
@@ -176,6 +173,7 @@ export default class Home extends Phaser.Scene
             this.willy.anims.play('willy_idle',true);
             this.willy.setVelocity(0,0);
         }
+        //for animations of evolution sprites, have if else inside based on number evos
              
     }
 }

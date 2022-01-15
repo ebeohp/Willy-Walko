@@ -42,6 +42,20 @@ export default class Preloader extends Phaser.Scene
             frameHeight: 32,
             frameWidth: 32
         });
+        this.load.spritesheet('shipcarn', 'sprites/shipcarn.png', {
+            frameWidth: 96,
+            frameHeight: 64
+        });
+        this.load.spritesheet('bountycarn', 'sprites/bountycarn.png', {
+            frameWidth: 96,
+            frameHeight: 96
+        });
+        this.load.spritesheet('philcarn', 'sprites/philcarn.png', {
+            frameWidth: 160,
+            frameHeight: 96
+        });
+        this.load.image('evoimg', 'images/evoimg.png');
+        this.load.image('coinimg', 'images/coinimg.png');
         
     }
 
@@ -49,21 +63,59 @@ export default class Preloader extends Phaser.Scene
     {
         //Animations
         this.anims.create({
-            key: "willy_walk",
-            frames: this.anims.generateFrameNames('willy', {start:1, end:2}),
-            frameRate: 5,
-            repeat: -1
-        }); 
-        this.anims.create({
             key: "willy_idle",
             frames: this.anims.generateFrameNames('willy', {start:0, end:0}),
             frameRate: 0,
             repeat: 0
         }); 
+        this.anims.create({
+            key: "willy_walk",
+            frames: this.anims.generateFrameNames('willy', {start:1, end:4}),
+            frameRate: 10,
+            repeat: -1
+        }); 
+        this.anims.create({
+            key: "willy1_idle",
+            frames: this.anims.generateFrameNames('willy', {start:5, end:5}),
+            frameRate: 0,
+            repeat: 0
+        }); 
+        this.anims.create({
+            key: "willy1_walk",
+            frames: this.anims.generateFrameNames('willy', {start:6, end:9}),
+            frameRate: 10,
+            repeat: -1
+        }); 
+        this.anims.create({
+            key: "willy2_idle",
+            frames: this.anims.generateFrameNames('willy', {start:10, end:10}),
+            frameRate: 0,
+            repeat: 0
+        }); 
+        this.anims.create({
+            key: "willy2_walk",
+            frames: this.anims.generateFrameNames('willy', {start:11, end:14}),
+            frameRate: 10,
+            repeat: -1
+        }); 
+        
+        this.anims.create({
+            key: "shipcarn_anim",
+            frames: this.anims.generateFrameNames('shipcarn', {start:0, end:1}),
+            frameRate: 8,
+            repeat: -1
+        }); 
+        this.anims.create({
+            key: "philcarn_anim",
+            frames: this.anims.generateFrameNames('philcarn', {start:0, end:1}),
+            frameRate: 8,
+            repeat: -1
+        }); 
+        
 
         //Start Title scene
         //this.scene.start("title");
-        this.scene.start("trivia");
+        this.scene.start('home');
     }
 
     update(time: number, delta: number): void 
