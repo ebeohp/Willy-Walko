@@ -12,7 +12,14 @@ export default class PhilHelios extends Phaser.Scene
     private cloudGroup!: Phaser.Physics.Arcade.Group;
     private cloudVelX!: number;
     private cursors!: Phaser.Types.Input.Keyboard.CursorKeys | undefined;
-    
+    cloud?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    cloud2?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    cloudArray!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[];
+    cloud3?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+ 
+    cloud4?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    cloud1?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    plantJumping = false;
 
 
 
@@ -35,37 +42,59 @@ export default class PhilHelios extends Phaser.Scene
         var graphics = this.add.graphics();
         graphics.fillGradientStyle(0x79ced9, 0x79ced9,0x65a2ba, 0x3287a8,  1);
         graphics.fillRect(0, 0, 400, 300);
-        this.plant = this.physics.add.sprite(150,20,"willy"); //spawn on top of a cloud. so have one cloud at beginning fs
-        //this.plant.body.gravity.y = 1000;
-        //this.physics.world.gravity.y = 500;
-        var plantAcc = 5000;
-        var plantLeft = -200;
-        var plantRight = 200;
-        var r1 = this.add.rectangle(200, 150, 100, 20, 0x6666ff);
+        this.plant = this.physics.add.sprite(150,150,"phil"); //spawn on top of a cloud. so have one cloud at beginning fs
+        this.plant.body.gravity.y = 7000;
+        
+        this.cloud = this.physics.add.sprite(150,-25,"cloud");//starting cloud
+        this.cloud.setImmovable(true);
+        this.physics.add.overlap(this.plant, this.cloud);
+    
+        this.cloud1 = this.physics.add.sprite(150,50,"cloud");//starting cloud
+        this.cloud1.setImmovable(true);
+        this.physics.add.overlap(this.plant, this.cloud1);
 
-        this.physics.add.existing(r1);
-        
-        
-        this.physics.add.collider(this.plant, r1);
+        this.cloud2 = this.physics.add.sprite(150, 125,"cloud");
+        this.cloud2.setImmovable(true);
+        this.physics.add.overlap(this.plant, this.cloud2);
+
+        this.cloud3 = this.physics.add.sprite(150, 200,"cloud");
+        this.cloud3.setImmovable(true);
+        this.physics.add.overlap(this.plant, this.cloud3);
+
+        this.cloud4 = this.physics.add.sprite(150, 275,"cloud");
+        this.cloud4.setImmovable(true);
+        this.physics.add.overlap(this.plant, this.cloud4);
+
+        this.cloudArray = [this.cloud, this.cloud1, this.cloud2, this.cloud3, this.cloud4];
+
         /*
-        this.cloudGroup = this.physics.add.group(); // clouds, platforms
-        this.cloudVelX = -150;
-        let cloudX = 700;
-        for(let i = 0; i < 10; i++){
-            let cloud = this.cloudGroup.create(cloudX, 450, "cloud");
-            cloud.setOrigin(0.5, 1).setScale(.6);
-            cloud.setImmovable(true).setScale(.3);
-            cloudX += Phaser.Math.Between(450, 550);
-        }
+        -plant hits cloud, tweens up and down
+        -clouds moves down by 75 (should have four layers of clouds)
+            -if cloud y>400, respawn at top
+        -if player y>400, game over
+
+        Issue: how to get plant go thru cloud wo collision?
         */
+        
+        
     }
 
     update(time: number, delta: number): void {
+        if(this.plant.y>400)
+        {
+            console.log("game over");
+        }
+
+        this.plantMoverManager();
+    }
+     
+    plantMoverManager()
+    {
         if(!this.cursors || !this.plant)
         {
             return;
         }
-        const speed = 50;
+        const speed = 150;
         if(this.cursors.left?.isDown)
         {
             this.plant.setVelocity(-speed, 0);
@@ -78,20 +107,82 @@ export default class PhilHelios extends Phaser.Scene
         {
             this.plant.setVelocity(0,0);
         }
-
-        if(this.plant.body.touching.down)
+        if(this.plant.body.touching.down && this.plantJumping == false) //AND is at certain height
         {
+            this.plant.setFrame(1);
             this.time.addEvent({  
                 delay: 100, 
                 callback: this.jump, 
                 callbackScope: this, 
                 loop: false
             });
+            //move all clouds for loop
+            for(let i = 0; i<this.cloudArray.length; i++)
+            {
+               this.moveCloud(this.cloudArray[i]);
+            }
+            
         }
     }
+    
     jump(){
-        this.plant.setAcceleration(0,-100);
-        this.plant.setVelocityY(-600);
+        this.plant.setFrame(0);
+        console.log("jumping")
+        this.plantJumping = true;
+        this.plant.body.gravity.y = 0;
+        this.tweens.add({
+            targets: this.plant,
+            y: 75,
+            duration: 1000, //edit duration for speed
+            ease: 'Sine.easeInOut',
+            repeat: 0,
+            onComplete: () =>
+            {
+                this.fall()
+            }
+            
+        });
+        
+    }
+    fall()
+    {
+        this.tweens.add({
+            targets: this.plant,
+            y: 175,
+            duration: 1000, //edit duration for speed
+            ease: 'Sine.easeInOut',
+            repeat: 0,
+            onComplete: () =>
+            {
+                console.log(this.plant.y)
+                this.plant.body.gravity.y = 2000;
+                this.plantJumping = false;
+            }
+            
+        });
+    }
+    moveCloud(cloud){ 
+        this.tweens.add({
+            targets: cloud,
+            y: cloud.y+75,
+            duration: 1000, //edit duration for speed
+            ease: 'Sine.easeInOut',
+            repeat: 0,
+            onComplete: () =>
+            {
+                if(cloud.y>280){ 
+                    this.resetCloudPos(cloud);   
+                }
+            }
+        }); 
+        
+        
+    }
+    
+    resetCloudPos(cloud){ //This helps bring the ship back to the top of the game at a random X position.
+        cloud.y = -25;
+        var randomX = Phaser.Math.Between(25, 375);
+        cloud.x= randomX;
     }
    
     endPopUp() //Determine number of evos and coins won
