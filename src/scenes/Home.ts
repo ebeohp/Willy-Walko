@@ -21,9 +21,10 @@ export default class Home extends Phaser.Scene
     private myCam!: Phaser.Cameras.Scene2D.Camera;
     //Scale of all images
     private s = 1;
-  private shipcarn?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-  private philcarn?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-  private bountycarn?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    private shipcarn?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    private philcarn?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    private bountycarn?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    private triviacarn?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
     
 
@@ -40,7 +41,7 @@ export default class Home extends Phaser.Scene
     create()
     {   
         
-
+        //this.scene.start('philHelios')
         //Map setup
         var g1 = this.add.grid(150, 200, 480, 320, 32, 32, 0x00b9f2).setAltFillStyle(0x016fce).setOutlineStyle();
         g1.setScale(this.s);
@@ -48,9 +49,11 @@ export default class Home extends Phaser.Scene
 
         this.shipcarn = this.physics.add.sprite(100,200, 'shipcarn', 0);
         this.shipcarn.anims.play('shipcarn_anim');
-        this.philcarn = this.physics.add.sprite(200,200, 'shipcarn', 0);
+        this.philcarn = this.physics.add.sprite(200, 150, 'philcarn', 0);
         this.philcarn.anims.play('philcarn_anim');
-        this.bountycarn = this.physics.add.sprite(0,200, 'bountycarn', 0);
+        this.triviacarn = this.physics.add.sprite(300,250, 'triviacarn', 0);
+        this.triviacarn.anims.play('triviacarn_anim');
+        this.bountycarn = this.physics.add.sprite(0,150, 'bountycarn', 0);
 
         //Player setup
         this.willy = this.physics.add.sprite(50,300,'willy',0);
@@ -112,7 +115,7 @@ export default class Home extends Phaser.Scene
         }, this);
 
         //this.goPhil = this.buttons.create(250,50, "level_buttons");
-        this.philcarn.setInteractive().setScale(this.s);;
+        this.philcarn.setInteractive().setScale(this.s);
         this.philcarn.on('pointerout',  (pointer) => {
           //this.goPhil.setFrame(0);
         }, this);
@@ -120,12 +123,12 @@ export default class Home extends Phaser.Scene
             this.scene.start('philHelios', {evos: this.numEvos, coins: this.numCoins});
         }, this);
         
-        this.goTrivia = this.buttons.create(300,50, "level_buttons");
-        this.goTrivia.setInteractive().setScale(this.s);;
-        this.goTrivia.on('pointerout',  (pointer) => {
+        //this.goTrivia = this.buttons.create(300,50, "level_buttons");
+        this.triviacarn.setInteractive().setScale(this.s);
+        this.triviacarn.on('pointerout',  (pointer) => {
           //this.goTrivia.setFrame(0);
         }, this);
-        this.goTrivia.on('pointerup',  (pointer) => {
+        this.triviacarn.on('pointerup',  (pointer) => {
             this.scene.start('trivia', {evos: this.numEvos, coins: this.numCoins});
         }, this);
 
@@ -149,14 +152,14 @@ export default class Home extends Phaser.Scene
             this.willy.anims.play('willy_walk',true);
             this.willy.setVelocity(-speed, 0);
             this.willy.scaleX = this.s
-            this.willy.body.offset.x = 32
+            this.willy.body.offset.x = 0
         }
         else if(this.cursors.right?.isDown)
         {
             this.willy.anims.play('willy_walk',true);
             this.willy.setVelocity(speed, 0);
             this.willy.scaleX = -this.s
-            this.willy.body.offset.x = 0
+            this.willy.body.offset.x = 32
         }
         else if (this.cursors.up?.isDown)
         {

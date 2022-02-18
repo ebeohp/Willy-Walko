@@ -37,7 +37,10 @@ export default class Preloader extends Phaser.Scene
             loadingText.destroy();
         });
 
-        //Assets
+        //Home Assets
+        
+        this.load.image('evoimg', 'images/evoimg.png');
+        this.load.image('coinimg', 'images/coinimg.png');
         this.load.spritesheet('willy','sprites/willy.png',{
             frameHeight: 32,
             frameWidth: 32
@@ -54,14 +57,41 @@ export default class Preloader extends Phaser.Scene
             frameWidth: 160,
             frameHeight: 96
         });
-        this.load.image('evoimg', 'images/evoimg.png');
-        this.load.image('coinimg', 'images/coinimg.png');
-        
+        this.load.spritesheet('triviacarn', 'sprites/triviacarn.png', {
+            frameWidth: 96,
+            frameHeight: 128
+        });
+
+        //Phil Helios Assets
+        this.load.image('cloud', 'images/cloud.png');
+        this.load.spritesheet('phil', 'sprites/phil.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
+        this.load.spritesheet('plantpowers', 'sprites/plantpowers.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
+        this.load.spritesheet('sun', 'sprites/sun.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
+        this.load.spritesheet('water', 'sprites/water.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
+
+        //Bohr's Bounty Assets
+        this.load.image('dart', 'images/dart.png');
+        this.load.spritesheet('bohrtargets', 'sprites/bohrtargets.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
     }
 
     create()
     {
-        //Animations
+        //Home Anims
         this.anims.create({
             key: "willy_idle",
             frames: this.anims.generateFrameNames('willy', {start:0, end:0}),
@@ -111,7 +141,26 @@ export default class Preloader extends Phaser.Scene
             frameRate: 8,
             repeat: -1
         }); 
-        
+        this.anims.create({
+            key: "triviacarn_anim",
+            frames: this.anims.generateFrameNames('triviacarn', {start:0, end:2}),
+            frameRate: 8,
+            repeat: -1
+        }); 
+
+        //Phil Helios Anims
+        this.anims.create({
+            key: "sun_anim",
+            frames: this.anims.generateFrameNames('sun', {start:0, end:2}),
+            frameRate: 8,
+            repeat: -1
+        }); 
+        this.anims.create({
+            key: "water_anim",
+            frames: this.anims.generateFrameNames('sun', {start:0, end:2}),
+            frameRate: 8,
+            repeat: -1
+        }); 
 
         //Start Title scene
         //this.scene.start("title");
