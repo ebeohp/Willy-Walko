@@ -21,10 +21,12 @@ export default class PhilHelios extends Phaser.Scene
     private cloud1?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     private plantJumping = false;
     private rain!: Phaser.Physics.Arcade.Group;
-    private waterLevel!: number; //percentage
-    graphics: Phaser.GameObjects.Graphics; //placeholders
-    waterBar: Phaser.GameObjects.Graphics;
-    sunCandy: Phaser.Physics.Arcade.Group;
+    private waterAmt = 0;
+    graphics!: Phaser.GameObjects.Graphics; //placeholders
+    waterBar!: Phaser.GameObjects.Graphics;
+    sunCandy!: Phaser.Physics.Arcade.Group;
+    private gameSpeed = 1000;
+    rainGroup!: Phaser.Physics.Arcade.Group;
 
 
 
@@ -72,33 +74,47 @@ export default class PhilHelios extends Phaser.Scene
 
         this.cloudArray = [this.cloud, this.cloud1, this.cloud2, this.cloud3, this.cloud4];
 
-    
-
-        this.time.addEvent({  
-            delay: 8000, 
-            callback: this.rainWater, 
-            callbackScope: this, 
-            loop: true
-        });
         this.graphics = this.add.graphics();
 
         graphics.fillStyle(0x88eb7f, 1);
         graphics.fillRoundedRect(370, 80, 20, 200, 5);
         graphics.fillStyle(0x2391eb, 1);
         this.waterBar = graphics.fillRoundedRect(375, 90, 10, 180, 3);
-        this.waterLevel = 10;
+        
+        this.waterAmt = 10;
+        
         /*this.time.addEvent({  
-            delay: 1000, 
+            delay: 2000, 
             callback: this.depleteWater, 
             callbackScope: this, 
             loop: true
         });*/
-    
+
+
+        this.rainGroup = this.physics.add.group();
+        this.time.addEvent({
+            delay: 5000,
+            callback: this.rainWater,
+            callbackScope: this,
+            loop: true
+        });
+        this.physics.add.collider(this.plant, this.rainGroup, this.collectWater)
+       /* this.time.addEvent({
+            delay: 5000,
+            callback: this.speedUpGame,
+            callbackScope: this,
+            loop: true
+        }); */
         
     }
 
+    speedUpGame() //slightly buggy. instead of increasing, try interval night and day
+    {
+        this.gameSpeed -= 10;
+    }
     update(time: number, delta: number): void {
-        if(this.plant.y>400)
+        
+        if(this.plant.y>300)
         {
             console.log("game over");
         }
@@ -150,7 +166,7 @@ export default class PhilHelios extends Phaser.Scene
         this.tweens.add({
             targets: this.plant,
             y: 75,
-            duration: 1000, //edit duration for speed
+            duration: this.gameSpeed, //edit duration for speed
             ease: 'Sine.easeInOut',
             repeat: 0,
             onComplete: () =>
@@ -166,12 +182,12 @@ export default class PhilHelios extends Phaser.Scene
         this.tweens.add({
             targets: this.plant,
             y: 175,
-            duration: 1000, //edit duration for speed
+            duration: this.gameSpeed, //edit duration for speed
             ease: 'Sine.easeInOut',
             repeat: 0,
             onComplete: () =>
             {
-                this.plant.body.gravity.y = 2000;
+                this.plant.body.gravity.y = 7000;
                 this.plantJumping = false;
             }
             
@@ -181,14 +197,13 @@ export default class PhilHelios extends Phaser.Scene
         this.tweens.add({
             targets: cloud,
             y: cloud.y+75,
-            duration: 1000, //edit duration for speed
+            duration: this.gameSpeed, //edit duration for speed
             ease: 'Sine.easeInOut',
             repeat: 0,
             
         }); 
         if(cloud.y>300){ 
             this.resetCloudPos(cloud);   
-            console.log("sun!")
         }
         
     }
@@ -197,7 +212,7 @@ export default class PhilHelios extends Phaser.Scene
         cloud.y = -25; //-25
         var randomX = Phaser.Math.Between(25, 375);
         cloud.x= randomX;
-        //add more complexity in terms of 1-3 clouds per level, also more spaced out
+        //add more complexity in terms of 1-3 clouds per Amt, also more spaced out
         
         var sun = this.physics.add.sprite(cloud.x, cloud.y-32, "sun");
         sun.body.gravity.y = 300;
@@ -207,30 +222,13 @@ export default class PhilHelios extends Phaser.Scene
             
     }
 
-    rainWater(){
-        
-        this.rain = this.physics.add.group({
-            key: "water", 
-            repeat: 5, 
-            setXY: { x: 20, y: 0, stepX: 60}
-        });
-
-        for(let i = 0; i<this.cloudArray.length; i++)
+    rainWater(){ // new raindrops
+        var rainX = [30,80,130,180,230,280];
+        for(let i = 0; i<rainX.length; i++)
         {
-            this.physics.add.collider(this.rain, this.cloudArray[i]);
+            var rain = this.rainGroup.create(rainX[i], 0, "water");
+            rain.body.gravity.y = 600
         }
-
-        
-        this.rain.children.iterate((child) => {
-            child.body.gravity.y = Phaser.Math.FloatBetween(300, 600);
-            if(child.y>300){
-                child.destroy();
-            }
-        });
-
-        
-        this.physics.add.overlap(this.plant, this.rain, this.collectWater);
-        
     
     }
     collectSun(plant, item)
@@ -241,24 +239,19 @@ export default class PhilHelios extends Phaser.Scene
     }
     collectWater(plant, item)
     {   
-        //  Add + update the water levels
-        console.log(this.waterLevel)
-        if(this.waterLevel<10)
-        {
-            this.waterLevel+= 1;
-        }
+        //  Add + update the water Amts
         item.destroy(); //add animation later
-        
+        this.waterAmt+= 1;
+        console.log(this.waterAmt)
         
     }
     depleteWater() //add graphics later
     {
-        console.log(this.waterLevel)
-        if(this.waterLevel==0)
+        if(this.waterAmt==0)
         {   
             console.log("game over, no more water!")
         }
-        this.waterLevel-=1;
+        this.waterAmt-=1;
     }
 
    

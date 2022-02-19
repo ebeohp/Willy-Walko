@@ -3,7 +3,6 @@ import Phaser from 'phaser'
 import Preloader from './scenes/Preloader'
 import Title from './scenes/Title'
 import Home from './scenes/Home'
-import Claw from './scenes/minigames/Claw'
 import Trivia from './scenes/minigames/Trivia'
 import Atomic from './scenes/minigames/Atomic'
 import MicroShip from './scenes/minigames/MicroShip'
@@ -21,7 +20,7 @@ const config: Phaser.Types.Core.GameConfig = {
 			debug: true
 		}
 	},
-	scene: [Preloader, Title, Home, Claw, Trivia, Atomic, MicroShip, Parkour, PhilHelios],
+	scene: [Preloader, Title, Home, Trivia, Atomic, MicroShip, Parkour, PhilHelios],
 	scale: 
 	{
 		zoom: 2 //Scales up all images 2 times
