@@ -84,6 +84,7 @@ export default class Preloader extends Phaser.Scene
         //Bohr's Bounty Assets
         this.load.image('dart', 'images/dart.png');
         this.load.image('trigger', 'images/trigger.png');
+        this.load.image('atomicflaps', 'images/atomicflaps.png');
         this.load.spritesheet('bohrtargets', 'sprites/bohrtargets.png', {
             frameWidth: 32,
             frameHeight: 32

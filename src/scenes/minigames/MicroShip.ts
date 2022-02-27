@@ -1,5 +1,10 @@
 import Phaser from 'phaser'
 
+//defniitely want to try out some camera shakes and nice effects
+
+
+
+
 export default class MicroShip extends Phaser.Scene
 {
     numEvos!: number;
@@ -17,7 +22,7 @@ export default class MicroShip extends Phaser.Scene
         this.numCoins = data.coins;
     }
 
-	preload()
+	preload() 
     {
         
     }
