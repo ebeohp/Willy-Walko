@@ -37,6 +37,11 @@ export default class Preloader extends Phaser.Scene
             loadingText.destroy();
         });
 
+        //title assets
+        this.load.spritesheet('title','sprites/title.png',{
+            frameHeight: 96,
+            frameWidth: 128
+        });
         //Home Assets
         
         this.load.image('evoimg', 'images/evoimg.png');
@@ -93,6 +98,34 @@ export default class Preloader extends Phaser.Scene
             frameWidth: 316,
             frameHeight: 316
         });
+
+        //Microship assets
+        this.load.image('ship', 'images/ship.png');
+        this.load.spritesheet('golgi', 'sprites/golgi.png', {
+            frameWidth: 128,
+            frameHeight: 96
+        });
+        this.load.spritesheet('er', 'sprites/er.png', {
+            frameWidth: 160,
+            frameHeight: 64
+        });
+        this.load.spritesheet('mito', 'sprites/mito.png', {
+            frameWidth: 64,
+            frameHeight: 64
+        });
+        this.load.spritesheet('vacuole', 'sprites/vacuole.png', {
+            frameWidth: 64,
+            frameHeight: 64
+        });
+        this.load.spritesheet('lyso', 'sprites/lyso.png', {
+            frameWidth: 64,
+            frameHeight: 64
+        });
+        this.load.spritesheet('ribo', 'sprites/ribo.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
+
     }
 
     create()
@@ -168,9 +201,12 @@ export default class Preloader extends Phaser.Scene
             repeat: 0
         }); 
 
+        //microship assets
+
+
         //Start Title scene
         //this.scene.start("title");
-        this.scene.start('home');
+        this.scene.start('title');
     }
 
     update(time: number, delta: number): void 

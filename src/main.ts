@@ -11,8 +11,8 @@ import PhilHelios from './scenes/minigames/PhilHelios'
 
 const config: Phaser.Types.Core.GameConfig = {
 	type: Phaser.AUTO,
-	width: 400,
-	height: 300,
+	width: 400, //400
+	height: 300, //300
 	physics: {
 		default: 'arcade',
 		arcade: {

@@ -41,9 +41,9 @@ export default class Home extends Phaser.Scene
     create()
     {   
         
-        this.scene.start('atomic')
+        //this.scene.start('title');
         //Map setup
-        var g1 = this.add.grid(150, 200, 480, 320, 32, 32, 0x00b9f2).setAltFillStyle(0x016fce).setOutlineStyle();
+        var g1 = this.add.grid(150, 200, 480, 320, 32, 25, 0x00b9f2).setAltFillStyle(0x016fce).setOutlineStyle();
         g1.setScale(this.s);
 
 

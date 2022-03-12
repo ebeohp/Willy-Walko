@@ -100,7 +100,7 @@ export default class Atomic extends Phaser.Scene
         sepgraphics3.setDepth(2.8)
         
         var decor = this.add.image(160,0,"atomicflaps")
-        decor.setDepth(4).setScale(2)
+        decor.setDepth(4).setScale(2.2)
         //outlines of booth
         var lineRectangle = this.add.graphics({x: 11, y: 1}); //for inside box
         lineRectangle.lineStyle(2, 0x000000, 1.0);
@@ -129,7 +129,7 @@ export default class Atomic extends Phaser.Scene
         sepgraphics2.strokeLineShape(line3);
         
 
-        this.dart = this.physics.add.sprite(200,250,"dart")
+        this.dart = this.physics.add.sprite(200,260,"dart")
         this.dart.setScale(1.5).setDepth(3);
         this.dart.body.setSize(5,5)
         this.dart.setCollideWorldBounds(true); 
@@ -220,7 +220,7 @@ export default class Atomic extends Phaser.Scene
     update(time: number, delta: number): void 
     {
         this.dartMovementManager();
-        if(this.dart.y <20)
+        if(this.dart.y <15)
         {
             this.dartRespawn(this.dart.x);
         }
@@ -320,7 +320,7 @@ export default class Atomic extends Phaser.Scene
     {
         this.dartFly = false;
         this.dart.x=x;
-        this.dart.y = 250;
+        this.dart.y = 260;
     }
     bohrChoices(row) //higher chance of current element
     {   

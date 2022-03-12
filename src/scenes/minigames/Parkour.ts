@@ -6,12 +6,13 @@ export default class Parkour extends Phaser.Scene
     numCoins!: number;
     earnedCoins=0;
     earnedEvos=0;
+    
 	constructor()
 	{
 		super('parkour')
-	}
+	} 
 
-	init(data) //Gets initial num evos and coins from home
+    init(data) //Gets initial num evos and coins from home
     {
         this.numEvos = data.evos;
         this.numCoins = data.coins;
@@ -19,18 +20,22 @@ export default class Parkour extends Phaser.Scene
 
 	preload()
     {
-        
+       // this.cursors = this.input.keyboard.createCursorKeys();
     }
 
-    create()
+    create() //block out bg with graphics. do as little art as possible
     {
-        this.endPopUp();
-        
+            
     }
 
     update(time: number, delta: number): void 
     {
-        //If time is up, call endPopUp
+       this.playerMovementManager() 
+       
+    }
+    playerMovementManager()
+    {
+       
     }
     endPopUp() //After winning, determine number of evos and coins won
     {
@@ -51,3 +56,4 @@ export default class Parkour extends Phaser.Scene
         this.scene.start('home');
     }
 }
+
