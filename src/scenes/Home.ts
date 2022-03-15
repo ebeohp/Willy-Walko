@@ -41,11 +41,9 @@ export default class Home extends Phaser.Scene
     create()
     {   
         
-        //this.scene.start('title');
+        //this.scene.start('trivia');
         //Map setup
         var g1 = this.add.grid(150, 200, 480, 320, 32, 25, 0x00b9f2).setAltFillStyle(0x016fce).setOutlineStyle();
-        g1.setScale(this.s);
-
 
         this.shipcarn = this.physics.add.sprite(100,200, 'shipcarn', 0);
         this.shipcarn.anims.play('shipcarn_anim');
@@ -87,15 +85,7 @@ export default class Home extends Phaser.Scene
             this.scene.start('atomic', {evos: this.numEvos, coins: this.numCoins});
         }, this);
 
-        this.goClaw = this.buttons.create(100,50, "level_buttons");
-        this.goClaw.setInteractive().setScale(this.s);;
-        this.goClaw.on('pointerout',  (pointer) => {
-          //this.goClaw.setFrame(0);
-        }, this);
-        this.goClaw.on('pointerup',  (pointer) => {
-            this.scene.start('claw', {evos: this.numEvos, coins: this.numCoins});
-        }, this);
-        
+       
         //this.goMicro = this.buttons.create(150,50, "level_buttons");
         this.shipcarn.setInteractive().setScale(this.s);;
         this.shipcarn.on('pointerout',  (pointer) => {

@@ -165,7 +165,7 @@ export default class PhilHelios extends Phaser.Scene
         this.plant.body.gravity.y = 0;
         this.tweens.add({
             targets: this.plant,
-            y: 75,
+            y: 75, //just space clouds out more
             duration: this.gameSpeed, //edit duration for speed
             ease: 'Sine.easeInOut',
             repeat: 0,

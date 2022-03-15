@@ -37,6 +37,7 @@ export default class Atomic extends Phaser.Scene
     spacebar!: Phaser.Input.Keyboard.Key;
     triggerGroup!: Phaser.Physics.Arcade.Group;
     bohrGroup!: any;
+    notif!: any;
 
     
 	constructor()
@@ -206,14 +207,28 @@ export default class Atomic extends Phaser.Scene
             loop: true
         });
         this.triggerGroup = this.physics.add.group();
-        this.physics.add.collider(this.dart, this.triggerGroup, this.hitCorrectBohr)
-       
+        //this.physics.add.collider(this.dart, this.triggerGroup, this.hitCorrectBohr)
+        this.physics.add.collider(
+            this.dart,
+            this.triggerGroup,
+            function(dart, trigger) {
+             
+                console.log("correct!")
+                trigger.destroy();
+                this.earnedEvos+=10;
+        
+                this.plusEvoSfx(trigger.x, trigger.y);
+            },
+            null,
+            this
+          )
 
         /*
             each time timer ends, destroy current element and timer and replace.
             how to know current element?
             -global variable containing number for current element
         */
+ 
             
     }
 
@@ -267,31 +282,23 @@ export default class Atomic extends Phaser.Scene
         console.log("hit")
         bohrModel.destroy();
     }
-    hitCorrectBohr(dart, trigger) // hit correct bohr, coutns for points
-    {
-        console.log("correct!")
-        trigger.destroy();
-        this.earnedEvos+=10;
-        
-        //Apparently cant call another function from within a collider function
-    }
-    plusEvoSfx()
+    plusEvoSfx(x,y)
     {
         var cheer = ["Let's Go!", "Correct", "Hooray!", "Gotcha!"]
         var pickaCheer = Phaser.Math.Between(0,3);
-        var notif = this.add.bitmapText(120,100, "pixelFont", cheer[pickaCheer],10);
+        var notif = this.add.bitmapText(x,y, "pixelFont", cheer[pickaCheer],20);
         notif.setAlpha(0);
         this.tweens.add
         ({
             targets: notif,
             alpha: { from: 0, to: 1 },
-            y: 80,
+            y: y-10,
             ease: 'Linear',
-            duration: 1000,
+            duration: 200,
             onComplete: () => {
                 this.time.addEvent
                 ({
-                    delay: 3000,
+                    delay: 500,
                     callback: this.removeSfx,
                     args: [notif],
                     callbackScope: this

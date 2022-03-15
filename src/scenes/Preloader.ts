@@ -126,6 +126,33 @@ export default class Preloader extends Phaser.Scene
             frameHeight: 32
         });
 
+        //trivia assets
+        this.load.image('easyLvl', 'images/easybutton.png');
+        this.load.image('midLvl', 'images/midbutton.png');
+        this.load.image('hardLvl', 'images/hardbutton.png');
+        this.load.image('ball', 'images/ball.png');
+        this.load.image('goggles', 'images/goggles.png');
+        this.load.spritesheet('talkingMango', 'sprites/talkingmango.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
+        this.load.spritesheet('answerButton', 'sprites/answerbutton.png', {
+            frameWidth: 96,
+            frameHeight: 32
+        });
+        this.load.spritesheet('bigBottle', 'sprites/bigbottles.png', {
+            frameWidth: 96,
+            frameHeight: 124
+        });
+        this.load.spritesheet('mangoEmote', 'sprites/mangoemotes.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
+        this.load.spritesheet('dancingMango', 'sprites/dancingMango.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
+        
     }
 
     create()
@@ -201,12 +228,23 @@ export default class Preloader extends Phaser.Scene
             repeat: 0
         }); 
 
-        //microship assets
-
+        //trivia 
+        this.anims.create({
+            key: "talkingMango_anim",
+            frames: this.anims.generateFrameNames('talkingMango', {start:0, end:5}),
+            frameRate: 10,
+            repeat: -1
+        }); 
+        this.anims.create({
+            key: "dancingMango_anim",
+            frames: this.anims.generateFrameNames('dancingMango', {start:0, end:7}),
+            frameRate: 8,
+            repeat: -1
+        }); 
 
         //Start Title scene
         //this.scene.start("title");
-        this.scene.start('title');
+        this.scene.start('home');
     }
 
     update(time: number, delta: number): void 
