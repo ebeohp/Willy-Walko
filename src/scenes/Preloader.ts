@@ -156,6 +156,8 @@ export default class Preloader extends Phaser.Scene
         //transition scene assets
         
         this.load.image('playButton', 'images/playButton.png')
+        
+        this.load.image('checkButton', 'images/checkButton.png')
         this.load.spritesheet('uiButtons', 'sprites/uibuttons.png', {
             frameWidth: 32,
             frameHeight: 32

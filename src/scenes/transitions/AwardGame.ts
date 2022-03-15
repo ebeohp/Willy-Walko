@@ -63,7 +63,7 @@ export default class AwardGame extends Phaser.Scene
 
         this.updateStorageEvos();
 
-        var gotit = this.add.sprite(200,180,'playButton', 0)
+        var gotit = this.add.sprite(200,180,'checkButton', 0)
         gotit.setInteractive()
         gotit.on('pointerup',  (pointer) => {
             this.scene.start('home');

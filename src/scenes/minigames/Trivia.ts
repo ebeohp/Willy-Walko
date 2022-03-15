@@ -37,12 +37,13 @@ export default class Trivia extends Phaser.Scene
     answerB!: Phaser.GameObjects.Text;
     answerA!: Phaser.GameObjects.Text;
     
-    numCorrectE=0; //used only for bottle anims
+    numCorrectE?:number; //used only for bottle anims
     bottle!: Phaser.GameObjects.Sprite;
     mangoemote!: Phaser.GameObjects.Sprite;
     mangoEmote!: Phaser.GameObjects.Sprite;
     dancingMango: any;
     goggles!: Phaser.GameObjects.Sprite;
+    balls: Phaser.Physics.Arcade.Group;
 
 
 	constructor()
@@ -58,7 +59,8 @@ export default class Trivia extends Phaser.Scene
 
     create()
     {
-        var xButton = this.add.sprite(380,20, "uiButtons", 2)
+    
+        var xButton = this.add.sprite(20,20, "uiButtons", 2)
         xButton.setDepth(100);
         xButton.setInteractive();
         xButton.on('pointerup',  (pointer) => {
@@ -70,10 +72,10 @@ export default class Trivia extends Phaser.Scene
         graphics.fillRect(0, 0, 400, 300);
 
        
-        
-        var balls = this.physics.add.group({
+        this.numCorrectE = 0;
+        this.balls = this.physics.add.group({
             key: 'ball',
-            quantity: 24,
+            quantity: 50,
             bounceX: 1,
             bounceY: 1,
             collideWorldBounds: true,
@@ -81,11 +83,11 @@ export default class Trivia extends Phaser.Scene
             velocityY: 80
         });
 
-        Phaser.Actions.RandomRectangle(balls.getChildren(), this.physics.world.bounds);
-        balls.children.iterate(function (ball) {
+        Phaser.Actions.RandomRectangle(this.balls.getChildren(), this.physics.world.bounds);
+        this.balls.children.iterate(function (ball) {
             ball.setScale(0.5);
         });
-        this.physics.add.collider(balls);
+        this.physics.add.collider(this.balls);
 
 
 
@@ -127,6 +129,7 @@ export default class Trivia extends Phaser.Scene
         ];
         this.mediumKey = 
         [
+            [1],
             [1],
             [1],
             [1]
@@ -188,9 +191,9 @@ export default class Trivia extends Phaser.Scene
             yoyo: true
             
         });
-        this.goEasy.setInteractive().setScale();
+        this.goEasy.setInteractive();
         this.goEasy.on('pointerup',  (pointer) => {
-            this.newEasyQ();
+            this.newEasyQ(0);
 
             for(let i = 0; i<deleteArray.length; i++)
             {
@@ -213,9 +216,9 @@ export default class Trivia extends Phaser.Scene
             yoyo: true
             
         });
-        this.goMedium.setInteractive().setScale();
+        this.goMedium.setInteractive();
         this.goMedium.on('pointerup',  (pointer) => {
-            this.newMediumQ();
+            this.newMediumQ(0);
             for(let i = 0; i<deleteArray.length; i++)
             {
                 deleteArray[i].destroy(true);
@@ -224,6 +227,8 @@ export default class Trivia extends Phaser.Scene
             this.goMedium.destroy(true);
             this.goHard.destroy(true);
             this.mode = "medium";
+            this.balls.setVelocityY(200);
+            this.balls.setVelocityX(200);
             return;
         }, this);
 
@@ -237,9 +242,9 @@ export default class Trivia extends Phaser.Scene
             yoyo: true
             
         });
-        this.goHard.setInteractive().setScale();
+        this.goHard.setInteractive();
         this.goHard.on('pointerup',  (pointer) => {
-            this.newHardQ();
+            this.newHardQ(0);
             for(let i = 0; i<deleteArray.length; i++)
             {
                 deleteArray[i].destroy(true);
@@ -248,6 +253,9 @@ export default class Trivia extends Phaser.Scene
             this.goMedium.destroy(true);
             this.goHard.destroy(true);
             this.mode = "hard";
+            
+            this.balls.setVelocityY(500);
+            this.balls.setVelocityX(500);
             return;
         }, this);
     }
@@ -256,7 +264,7 @@ export default class Trivia extends Phaser.Scene
 
     resetTimer()
     {
-        this.initialTime = 60;
+        this.initialTime = 40; //60
         if (this.timeLabel != null)
         {
             this.timeLabel.destroy(true);
@@ -294,49 +302,47 @@ export default class Trivia extends Phaser.Scene
     }
     onCount() //Decrements by 1 every second. If hits 30, offer learning button.
     {
-        this.initialTime -= 1;
-        this.timeLabel.text = "Time: " + this.timeFormat(this.initialTime);
         if(this.initialTime==30)
         {
-            //offer learning time button. if selected, goes to learning time and timer is paused
-            var r1 = this.add.rectangle(400, 400, 32, 32, 0xff22ff);
-            r1.setInteractive();
-
-            r1.on('pointerout',  (pointer) => {
-                //this.goEasy.setFrame(0);
-            }, this);
-            r1.on('pointerup',  (pointer) => {
-                this.learningTime();
-            }, this);
-            
+            this.tweens.add({
+                targets: this.goggles,
+                alpha: 0.2, //just space clouds out more
+                duration: 1000, //edit duration for speed
+                ease: 'Elastic',
+                repeat: -1,
+                yoyo: true
+                
+            });
+            this.timeLabel.text = ""
+            this.add.bitmapText(260,90, "pixelFont","Learning Time!")
         }
-        if(this.initialTime == 0)
+        else
         {
-            this.time.addEvent
-                ({
-                    delay: 2000,
-                    callback: this.endPopUp,
-                    callbackScope: this,
-                    loop: false,
-                    
-                });
+            this.initialTime -= 1;
+            this.timeLabel.text = "Time: " + this.timeFormat(this.initialTime);
         }
+        
+
     }
 
     
+    update()
+    {
     
-    newEasyQ()
+    }
+    newEasyQ(numCorrectE)
     {
         //Resets UI, timer to 1 min, puts new question up 
         this.resetTimer();
-        
-        this.bottle = this.add.sprite(100,150,'bigBottle',this.numCorrectE)
+        console.log(this.numCorrectE)
+        this.bottle = this.add.sprite(100,160,'bigBottle', numCorrectE)
         this.bottle.setScale(2)
         this.mangoEmote = this.add.sprite(100,400,'mangoEmote',Phaser.Math.Between(0,2))
         this.mangoEmote.setScale(6)
         this.goggles = this.add.sprite(300,100,"goggles",0)
-        this.dancingMango = this.add.sprite(100, 250, "dancingMango", 0)
+        this.dancingMango = this.add.sprite(200, 100, "dancingMango", 0)
         this.dancingMango.anims.play("dancingMango_anim");
+        this.dancingMango.setScale(2);
 
 
         var questionNum = Phaser.Math.Between(0, 7);
@@ -349,8 +355,12 @@ export default class Trivia extends Phaser.Scene
         this.A.on('pointerup',  (pointer) => {
             if(Number(this.easyKey[questionNum]) == 1)
             {   
-                this.numCorrectE+=1
-                if(this.numCorrectE==4) //celebrate!
+                if(numCorrectE<4)
+                {
+                    numCorrectE+=1; 
+                    this.bottle.setFrame(numCorrectE)
+                }
+                if(numCorrectE==4) //celebrate!
                 {
                     this.tweens.add({
                         targets: this.mangoEmote,
@@ -361,19 +371,26 @@ export default class Trivia extends Phaser.Scene
                         yoyo: true,
                         onComplete: () =>
                         {
-                            this.numCorrectE = 0
+                            numCorrectE =0 
+                            this.bottle.setFrame(numCorrectE)
                         }
                         
                     });
+                    numCorrectE = 0;
                 }
+                
                 console.log("correct");
                 this.A.setFrame(1);
-                this.bottle.setFrame(this.numCorrectE)
+                this.input.disable(this.A);
+                this.input.disable(this.B);
+                this.input.disable(this.C);
                 this.calculateEvos();
+                
                 this.time.addEvent
                 ({
                     delay: 3000,
                     callback: this.newEasyQ,
+                    args: [numCorrectE],
                     callbackScope: this,
                     loop: false,
                     
@@ -382,11 +399,15 @@ export default class Trivia extends Phaser.Scene
             else
             {
                 console.log("wrong! RED"); 
-                this.A.setFrame(2)
+                this.A.setFrame(2);
+                this.input.disable(this.A);
+                this.input.disable(this.B);
+                this.input.disable(this.C);
                 this.time.addEvent
                 ({
                     delay: 3000,
                     callback: this.newEasyQ,
+                    args: [numCorrectE],
                     callbackScope: this,
                     loop: false
                 });
@@ -399,13 +420,40 @@ export default class Trivia extends Phaser.Scene
         this.B.on('pointerup',  (pointer) => {
             if(Number(this.easyKey[questionNum]) == 2)
             {
+                if(numCorrectE<4)
+                {
+                    numCorrectE+=1; 
+                    this.bottle.setFrame(numCorrectE)
+                }
+                if(numCorrectE==4) //celebrate!
+                {
+                    this.tweens.add({
+                        targets: this.mangoEmote,
+                        y: 220,
+                        duration: 1000,
+                        ease: 'Sine.easeOut',
+                        repeat: 0,
+                        yoyo: true,
+                        onComplete: () =>
+                        {
+                            numCorrectE =0 
+                            this.bottle.setFrame(numCorrectE)
+                        }
+                        
+                    });
+                    numCorrectE = 0;
+                }
                 console.log("correct");
                 this.B.setFrame(1);
+                this.input.disable(this.A);
+                this.input.disable(this.B);
+                this.input.disable(this.C);
                 this.calculateEvos();
                 this.time.addEvent
                 ({
                     delay: 2000,
                     callback: this.newEasyQ,
+                    args: [numCorrectE],
                     callbackScope: this,
                     loop: false,
                     
@@ -414,11 +462,15 @@ export default class Trivia extends Phaser.Scene
             else
             {
                 console.log("wrong! RED"); 
-                this.B.setFrame(2)
+                this.B.setFrame(2);
+                this.input.disable(this.A);
+                this.input.disable(this.B);
+                this.input.disable(this.C);
                 this.time.addEvent
                 ({
                     delay: 2000,
                     callback: this.newEasyQ,
+                    args: [numCorrectE],
                     callbackScope: this,
                     loop: false
                 });
@@ -431,13 +483,40 @@ export default class Trivia extends Phaser.Scene
         this.C.on('pointerup',  (pointer) => {
             if(Number(this.easyKey[questionNum]) == 3)
             {
+                if(numCorrectE<4)
+                {
+                    numCorrectE+=1; 
+                    this.bottle.setFrame(numCorrectE)
+                }
+                if(numCorrectE==4) //celebrate!
+                {
+                    this.tweens.add({
+                        targets: this.mangoEmote,
+                        y: 220,
+                        duration: 1000,
+                        ease: 'Sine.easeOut',
+                        repeat: 0,
+                        yoyo: true,
+                        onComplete: () =>
+                        {
+                            numCorrectE =0 
+                            this.bottle.setFrame(numCorrectE)
+                        }
+                        
+                    });
+                    numCorrectE = 0;
+                }
                 console.log("correct");
                 this.C.setFrame(1);
+                this.input.disable(this.A);
+                this.input.disable(this.B);
+                this.input.disable(this.C);
                 this.calculateEvos();
                 this.time.addEvent
                 ({
                     delay: 2000,
                     callback: this.newEasyQ,
+                    args: [numCorrectE],
                     callbackScope: this,
                     loop: false,
                     
@@ -446,11 +525,15 @@ export default class Trivia extends Phaser.Scene
             else
             {
                 console.log("wrong! RED"); 
-                this.C.setFrame(2)
+                this.C.setFrame(2);
+                this.input.disable(this.A);
+                this.input.disable(this.B);
+                this.input.disable(this.C);
                 this.time.addEvent
                 ({
                     delay: 2000,
                     callback: this.newEasyQ,
+                    args: [numCorrectE],
                     callbackScope: this,
                     loop: false
                 });
@@ -459,11 +542,460 @@ export default class Trivia extends Phaser.Scene
         }, this);
         
     }
-    newMediumQ()
+    newMediumQ(numCorrectE)
     {
+        this.resetTimer();
+        console.log(numCorrectE)
+        this.bottle = this.add.sprite(100,160,'bigBottle',numCorrectE)
+        this.bottle.setScale(2)
+        this.mangoEmote = this.add.sprite(100,400,'mangoEmote',Phaser.Math.Between(0,2))
+        this.mangoEmote.setScale(6)
+        this.goggles = this.add.sprite(300,100,"goggles",0)
+        this.dancingMango = this.add.sprite(200, 100, "dancingMango", 0)
+        this.dancingMango.anims.play("dancingMango_anim");
+        this.dancingMango.setScale(2);
+
+
+        var questionNum = Phaser.Math.Between(0, 3);
+        this.question= this.add.text(230,30, this.mediumBank[questionNum][0], { font: '12px Arial', color: '#ffffff', align: 'center', wordWrap: { width: 150 } });
+        this.answerButtons = this.physics.add.group();
+
+        this.A = this.answerButtons.create(300,150, "answerButton",0);
+        this.answerA = this.add.text(250,140, this.mediumBank[questionNum][1], { font: 'Arial', color: '#ffffff', align: 'center', wordWrap: { width: 150 } });
+        this.A.setInteractive().setScale(1.5);
+        this.A.on('pointerup',  (pointer) => {
+            if(Number(this.mediumKey[questionNum]) == 1)
+            {   
+                if(numCorrectE==0)
+                {
+                    numCorrectE= 9;
+                    this.bottle.setFrame(numCorrectE)
+                }else if(numCorrectE<12)
+                {
+                    numCorrectE+=1; 
+                    this.bottle.setFrame(numCorrectE)
+                }
+                if(numCorrectE==12) //celebrate!
+                {
+                    
+                    this.tweens.add({
+                        targets: this.mangoEmote,
+                        y: 220,
+                        duration: 1000,
+                        ease: 'Sine.easeOut',
+                        repeat: 0,
+                        yoyo: true,
+                        onComplete: () =>
+                        {
+                            numCorrectE =0 
+                            this.bottle.setFrame(numCorrectE)
+                        }
+                        
+                    });
+                    numCorrectE = 0;
+                    
+                }
+                console.log("correct");
+                this.A.setFrame(1);
+                this.input.disable(this.A);
+                this.input.disable(this.B);
+                this.input.disable(this.C);
+                this.bottle.setFrame(numCorrectE)
+                this.calculateEvos();
+                this.time.addEvent
+                ({
+                    delay: 3000,
+                    callback: this.newMediumQ,
+                    args: [numCorrectE],
+                    callbackScope: this,
+                    loop: false,
+                    
+                });
+            }
+            else
+            {
+                console.log("wrong! RED"); 
+                this.A.setFrame(2);
+                this.input.disable(this.A);
+                this.input.disable(this.B);
+                this.input.disable(this.C);
+                this.time.addEvent
+                ({
+                    delay: 3000,
+                    callback: this.newMediumQ,
+                    args: [numCorrectE],
+                    callbackScope: this,
+                    loop: false
+                });
+            }
+
+        }, this);
+        this.B = this.answerButtons.create(300,200, "answerButton",0);
+        this.answerB = this.add.text(250,190, this.mediumBank[questionNum][2], { font: 'Arial', color: '#ffffff', align: 'center', wordWrap: { width: 200 } });
+        this.B.setInteractive().setScale(1.5);
+        this.B.on('pointerup',  (pointer) => {
+            if(Number(this.mediumKey[questionNum]) == 2)
+            {if(numCorrectE==0)
+                {
+                    numCorrectE= 9;
+                    this.bottle.setFrame(numCorrectE)
+                }else if(numCorrectE<12)
+                {
+                    numCorrectE+=1; 
+                    this.bottle.setFrame(numCorrectE)
+                }
+                if(numCorrectE==12) //celebrate!
+                {
+                    
+                    this.tweens.add({
+                        targets: this.mangoEmote,
+                        y: 220,
+                        duration: 1000,
+                        ease: 'Sine.easeOut',
+                        repeat: 0,
+                        yoyo: true,
+                        onComplete: () =>
+                        {
+                            numCorrectE =0 
+                            this.bottle.setFrame(numCorrectE)
+                        }
+                        
+                    });
+                    numCorrectE = 0;
+                    
+                }
+                console.log("correct");
+                this.B.setFrame(1);
+                this.input.disable(this.A);
+                this.input.disable(this.B);
+                this.input.disable(this.C);
+                this.calculateEvos();
+                this.time.addEvent
+                ({
+                    delay: 2000,
+                    callback: this.newMediumQ,
+                    args: [numCorrectE],
+                    callbackScope: this,
+                    loop: false
+                    
+                });
+            }
+            else
+            {
+                console.log("wrong! RED"); 
+                this.B.setFrame(2);
+                this.input.disable(this.A);
+                this.input.disable(this.B);
+                this.input.disable(this.C);
+                this.time.addEvent
+                ({
+                    delay: 2000,
+                    callback: this.newMediumQ,
+                    args: [numCorrectE],
+                    callbackScope: this,
+                    loop: false
+                });
+            }
+
+        }, this);
+        this.C = this.answerButtons.create(300,250, "answerButton",0);
+        this.answerC = this.add.text(250,240, this.mediumBank[questionNum][3], { font: 'Arial', color: '#ffffff', align: 'center', wordWrap: { width: 200 } });
+        this.C.setInteractive().setScale(1.5);
+        this.C.on('pointerup',  (pointer) => {
+            if(Number(this.mediumKey[questionNum]) == 3)
+            {
+                if(numCorrectE==0)
+                {
+                    numCorrectE= 9;
+                    this.bottle.setFrame(numCorrectE)
+                }else if(numCorrectE<12)
+                {
+                    numCorrectE+=1; 
+                    this.bottle.setFrame(numCorrectE)
+                }
+                if(numCorrectE==12) //celebrate!
+                {
+                    
+                    this.tweens.add({
+                        targets: this.mangoEmote,
+                        y: 220,
+                        duration: 1000,
+                        ease: 'Sine.easeOut',
+                        repeat: 0,
+                        yoyo: true,
+                        onComplete: () =>
+                        {
+                            numCorrectE =0 
+                            this.bottle.setFrame(numCorrectE)
+                        }
+                        
+                    });
+                    numCorrectE = 0;
+                    
+                }
+                console.log("correct");
+                this.C.setFrame(1);
+                this.input.disable(this.A);
+                this.input.disable(this.B);
+                this.input.disable(this.C);
+                this.calculateEvos();
+                this.time.addEvent
+                ({
+                    delay: 2000,
+                    callback: this.newMediumQ,
+                    args: [numCorrectE],
+                    callbackScope: this,
+                    loop: false
+                    
+                });
+            }
+            else
+            {
+                console.log("wrong! RED"); 
+                this.C.setFrame(2);
+                this.input.disable(this.A);
+                this.input.disable(this.B);
+                this.input.disable(this.C);
+                this.time.addEvent
+                ({
+                    delay: 2000,
+                    callback: this.newMediumQ,
+                    args: [numCorrectE],
+                    callbackScope: this,
+                    loop: false
+                });
+            }
+
+        }, this);
     }
-    newHardQ()
+    newHardQ(numCorrectE)
     {
+        
+        this.resetTimer();
+        
+        this.bottle = this.add.sprite(100,160,'bigBottle',numCorrectE)
+        this.bottle.setScale(2)
+        this.mangoEmote = this.add.sprite(100,400,'mangoEmote',Phaser.Math.Between(0,2))
+        this.mangoEmote.setScale(6)
+        this.goggles = this.add.sprite(300,100,"goggles",0)
+        this.dancingMango = this.add.sprite(200, 100, "dancingMango", 0)
+        this.dancingMango.anims.play("dancingMango_anim");
+        this.dancingMango.setScale(2);
+        
+
+
+        var questionNum = Phaser.Math.Between(0, 3);
+        this.question= this.add.text(230,30, this.hardBank[questionNum][0], { font: '12px Arial', color: '#ffffff', align: 'center', wordWrap: { width: 150 } });
+        this.answerButtons = this.physics.add.group();
+
+        this.A = this.answerButtons.create(300,150, "answerButton",0);
+        this.answerA = this.add.text(250,140, this.hardBank[questionNum][1], { font: 'Arial', color: '#ffffff', align: 'center', wordWrap: { width: 150 } });
+        this.A.setInteractive().setScale(1.5);
+        this.A.on('pointerup',  (pointer) => {
+            if(Number(this.hardKey[questionNum]) == 1)
+            {   
+                if(numCorrectE==0)
+                {
+                    numCorrectE= 5;
+                    this.bottle.setFrame(numCorrectE)
+                }else if(numCorrectE<8)
+                {
+                    numCorrectE+=1; 
+                    this.bottle.setFrame(numCorrectE)
+                }
+                if(numCorrectE==8) //celebrate!
+                {
+                    
+                    this.tweens.add({
+                        targets: this.mangoEmote,
+                        y: 220,
+                        duration: 1000,
+                        ease: 'Sine.easeOut',
+                        repeat: 0,
+                        yoyo: true,
+                        onComplete: () =>
+                        {
+                            numCorrectE =0 
+                            this.bottle.setFrame(numCorrectE)
+                        }
+                        
+                    });
+                    numCorrectE = 0;
+                    
+                }
+                console.log("correct");
+                this.A.setFrame(1);
+                this.input.disable(this.A);
+                this.input.disable(this.B);
+                this.input.disable(this.C);
+                this.bottle.setFrame(numCorrectE)
+                this.calculateEvos();
+                this.time.addEvent
+                ({
+                    delay: 3000,
+                    callback: this.newHardQ,
+                    args: [numCorrectE],
+                    callbackScope: this,
+                    loop: false
+                    
+                });
+            }
+            else
+            {
+                console.log("wrong! RED"); 
+                this.A.setFrame(2);
+                this.input.disable(this.A);
+                this.input.disable(this.B);
+                this.input.disable(this.C);
+                this.time.addEvent
+                ({
+                    delay: 3000,
+                    callback: this.newHardQ,
+                    args: [numCorrectE],
+                    callbackScope: this,
+                    loop: false
+                });
+            }
+
+        }, this);
+        this.B = this.answerButtons.create(300,200, "answerButton",0);
+        this.answerB = this.add.text(250,190, this.hardBank[questionNum][2], { font: 'Arial', color: '#ffffff', align: 'center', wordWrap: { width: 200 } });
+        this.B.setInteractive().setScale(1.5);
+        this.B.on('pointerup',  (pointer) => {
+            if(Number(this.hardKey[questionNum]) == 2)
+            {
+                if(numCorrectE==0)
+                {
+                    numCorrectE= 5;
+                    this.bottle.setFrame(numCorrectE)
+                }else if(numCorrectE<8)
+                {
+                    numCorrectE+=1; 
+                    this.bottle.setFrame(numCorrectE)
+                }
+                if(numCorrectE==8) //celebrate!
+                {
+                    
+                    this.tweens.add({
+                        targets: this.mangoEmote,
+                        y: 220,
+                        duration: 1000,
+                        ease: 'Sine.easeOut',
+                        repeat: 0,
+                        yoyo: true,
+                        onComplete: () =>
+                        {
+                            numCorrectE =0 
+                            this.bottle.setFrame(numCorrectE)
+                        }
+                        
+                    });
+                    numCorrectE = 0;
+                    
+                }
+                console.log("correct");
+                this.B.setFrame(1);
+                this.input.disable(this.A);
+                this.input.disable(this.B);
+                this.input.disable(this.C);
+                this.calculateEvos();
+                this.time.addEvent
+                ({
+                    delay: 2000,
+                    callback: this.newHardQ,
+                    args: [numCorrectE],
+                    callbackScope: this,
+                    loop: false
+                    
+                });
+            }
+            else
+            {
+                console.log("wrong! RED"); 
+                this.B.setFrame(2);
+                this.input.disable(this.A);
+                this.input.disable(this.B);
+                this.input.disable(this.C);
+                this.time.addEvent
+                ({
+                    delay: 2000,
+                    callback: this.newHardQ,
+                    args: [numCorrectE],
+                    callbackScope: this,
+                    loop: false
+                });
+            }
+
+        }, this);
+        this.C = this.answerButtons.create(300,250, "answerButton",0);
+        this.answerC = this.add.text(250,240, this.hardBank[questionNum][3], { font: 'Arial', color: '#ffffff', align: 'center', wordWrap: { width: 200 } });
+        this.C.setInteractive().setScale(1.5);
+        this.C.on('pointerup',  (pointer) => {
+            if(Number(this.hardKey[questionNum]) == 3)
+            {
+                if(numCorrectE==0)
+                {
+                    numCorrectE= 5;
+                    this.bottle.setFrame(numCorrectE)
+                }else if(numCorrectE<8)
+                {
+                    numCorrectE+=1; 
+                    this.bottle.setFrame(numCorrectE)
+                }
+                if(numCorrectE==8) //celebrate!
+                {
+                    
+                    this.tweens.add({
+                        targets: this.mangoEmote,
+                        y: 220,
+                        duration: 1000,
+                        ease: 'Sine.easeOut',
+                        repeat: 0,
+                        yoyo: true,
+                        onComplete: () =>
+                        {
+                            numCorrectE =0 
+                            this.bottle.setFrame(numCorrectE)
+                        }
+                        
+                    });
+                    numCorrectE = 0;
+                    
+                }
+                console.log("correct");
+                this.C.setFrame(1);
+                this.input.disable(this.A);
+                this.input.disable(this.B);
+                this.input.disable(this.C);
+                this.calculateEvos();
+                this.time.addEvent
+                ({
+                    delay: 2000,
+                    callback: this.newHardQ,
+                    args: [numCorrectE],
+                    callbackScope: this,
+                    loop: false
+                    
+                });
+            }
+            else
+            {
+                console.log("wrong! RED"); 
+                this.C.setFrame(2);
+                this.input.disable(this.A);
+                this.input.disable(this.B);
+                this.input.disable(this.C);
+                this.time.addEvent
+                ({
+                    delay: 2000,
+                    callback: this.newHardQ,
+                    args: [numCorrectE],
+                    callbackScope: this,
+                    loop: false
+                });
+            }
+
+        }, this);
     }
 
     learningTime() 
@@ -478,7 +1010,19 @@ export default class Trivia extends Phaser.Scene
     calculateEvos() //If correct 
     {
         
-        
+        this.tweens.add({
+            targets: this.evoText,
+            y: 220,
+            duration: 500,
+            ease: 'Sine.easeOut',
+            repeat: 0,
+            yoyo: true,
+            onComplete: () =>
+            {
+                this.numCorrectE = 0
+            }
+            
+        });
         if(this.learning == true)
         {
             if(this.mode == "easy")
