@@ -33,16 +33,16 @@ export default class Trivia extends Phaser.Scene
     hardBank!: string[][];
     hardKey!: number[][];
     question!: Phaser.GameObjects.Text;
-    answerC: Phaser.GameObjects.Text;
-    answerB: Phaser.GameObjects.Text;
-    answerA: Phaser.GameObjects.Text;
+    answerC!: Phaser.GameObjects.Text;
+    answerB!: Phaser.GameObjects.Text;
+    answerA!: Phaser.GameObjects.Text;
     
     numCorrectE=0; //used only for bottle anims
-    bottle: Phaser.GameObjects.Sprite;
-    mangoemote: Phaser.GameObjects.Sprite;
-    mangoEmote: Phaser.GameObjects.Sprite;
+    bottle!: Phaser.GameObjects.Sprite;
+    mangoemote!: Phaser.GameObjects.Sprite;
+    mangoEmote!: Phaser.GameObjects.Sprite;
     dancingMango: any;
-    goggles: Phaser.GameObjects.Sprite;
+    goggles!: Phaser.GameObjects.Sprite;
 
 
 	constructor()
@@ -58,6 +58,13 @@ export default class Trivia extends Phaser.Scene
 
     create()
     {
+        var xButton = this.add.sprite(380,20, "uiButtons", 2)
+        xButton.setDepth(100);
+        xButton.setInteractive();
+        xButton.on('pointerup',  (pointer) => {
+            this.scene.launch('quittingGame', {currentGameKey: 'trivia', earnedEvos: this.earnedEvos, numEvos: this.numEvos, gameTitle: "Chem Trivia"});
+            this.scene.pause();
+        }, this);
         var graphics = this.add.graphics();
         var outside = graphics.fillGradientStyle(0x2a0078, 0x2a0078,0x871fa1, 0x871fa1,  1);
         graphics.fillRect(0, 0, 400, 300);
@@ -570,22 +577,4 @@ export default class Trivia extends Phaser.Scene
     
     
     
-    endPopUp() //Determine number of evos and coins won
-    {
-
-        this.add.bitmapText(150,80, "pixelFont", "Evos Restored: " + this.earnedEvos, 40);
-        this.add.bitmapText(150,100, "pixelFont", "Coins Restored: " + this.earnedCoins, 40);
-
-        this.updateEvosCoins();
-    }
-    updateEvosCoins() //Add won evos and coins given from home. Localstoraged
-    {
-        var totalEvos = this.numEvos+this.earnedEvos;
-        var totalCoins = this.numCoins+this.earnedCoins;
-
-        localStorage.setItem('savedEvos', totalEvos.toString()); 
-        localStorage.setItem('savedCoins', totalCoins.toString());
-        this.scene.start('home');
-    }
-    //scene transition back to home
 }

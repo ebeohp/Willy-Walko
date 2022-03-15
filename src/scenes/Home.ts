@@ -13,7 +13,6 @@ export default class Home extends Phaser.Scene
     private goTrivia?: any;
 
     numEvos?: string | number | null;
-    numCoins?: string | number | null;
   
     
     private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
@@ -40,8 +39,6 @@ export default class Home extends Phaser.Scene
 
     create()
     {   
-        
-        //this.scene.start('trivia');
         //Map setup
         var g1 = this.add.grid(150, 200, 480, 320, 32, 25, 0x00b9f2).setAltFillStyle(0x016fce).setOutlineStyle();
 
@@ -53,78 +50,66 @@ export default class Home extends Phaser.Scene
         this.triviacarn.anims.play('triviacarn_anim');
         this.bountycarn = this.physics.add.sprite(0,150, 'bountycarn', 0);
 
+        var attractionsArray = [this.shipcarn, this.philcarn, this.triviacarn, this.bountycarn]
+
         //Player setup
         this.willy = this.physics.add.sprite(50,300,'willy',0);
         this.willy.setScale(this.s);
         this.myCam = this.cameras.main.startFollow(this.willy, true);
-        this.willy.setCollideWorldBounds(true);
-        //Ease in/out effects later
+        //this.willy.setCollideWorldBounds(true);
+
+        for(let i = 0; i<attractionsArray.length; i++)
+        {
+            attractionsArray[i].setImmovable();
+            this.physics.add.collider(this.willy, attractionsArray[i]);
+        }
 
         //Local storage. May need to restart game instance to update evos after each minigame
         this.numEvos= Number( localStorage.getItem("savedEvos") == null ? 0 : localStorage.getItem("savedEvos"));
-        this.numCoins=  Number(localStorage.getItem("savedCoins") == null ? 0 : localStorage.getItem("savedCoins"));
-           
-        var evoCounter = this.add.bitmapText(35,14, "pixelFont", "X " + this.numEvos, 20);
-        var evoimg = this.add.image(20,20,'evoimg');
-        var coinCounter = this.add.bitmapText(35,38, "pixelFont", "X " + this.numCoins + " ", 20);
-        var coinimg = this.add.image(20,45,'coinimg');
+        
+        var name= this.add.bitmapText(15,14, "pixelFont", "Willy", 20);
+        name.setScrollFactor(0,0)
+        var evoCounter = this.add.bitmapText(35,34, "pixelFont", "X " + this.numEvos, 20);
+        var evoimg = this.add.image(20,40,'evoimg');
         evoimg.setScrollFactor(0,0);
-        coinimg.setScrollFactor(0,0);    
         evoCounter.setScrollFactor(0,0);
-        coinCounter.setScrollFactor(0,0);
         
         //Buttons to each minigame ------------------------------------------------------------------------
-        this.buttons = this.physics.add.group();
 
-        //this.goAtomic = this.buttons.create(50,50, "level_buttons");
-        this.bountycarn.setInteractive().setScale(this.s);;
-        this.bountycarn.on('pointerout',  (pointer) => {
-          //this.goAtomic.setFrame(0);
-        }, this);
+        this.bountycarn.setInteractive();
+        this.bountycarn.body.setSize(70,65).offset.y = -2;
         this.bountycarn.on('pointerup',  (pointer) => {
-            this.scene.start('atomic', {evos: this.numEvos, coins: this.numCoins});
+            this.scene.pause();
+            this.scene.launch('startingGame',{gameTitle: "Bohr's Bounty", evos: this.numEvos, gameKey: 'atomic'});
         }, this);
-
        
-        //this.goMicro = this.buttons.create(150,50, "level_buttons");
-        this.shipcarn.setInteractive().setScale(this.s);;
-        this.shipcarn.on('pointerout',  (pointer) => {
-          //this.goMicro.setFrame(0);
-        }, this);
+        this.shipcarn.setInteractive().setScale(this.s);
+        this.shipcarn.body.setSize(75,45)
         this.shipcarn.on('pointerup',  (pointer) => {
-            this.scene.start('microship', {evos: this.numEvos, coins: this.numCoins});
+            this.scene.pause();
+            this.scene.launch('startingGame',{gameTitle: "Micro-Ship", evos: this.numEvos, gameKey: 'microship'});
         }, this);
 
-        this.goParkour = this.buttons.create(200,50, "level_buttons");
-        this.goParkour.setInteractive().setScale(this.s);;
-        this.goParkour.on('pointerout',  (pointer) => {
-          //this.goParkour.setFrame(0);
-        }, this);
-        this.goParkour.on('pointerup',  (pointer) => {
-            this.scene.start('parkour', {evos: this.numEvos, coins: this.numCoins});
-        }, this);
-
-        //this.goPhil = this.buttons.create(250,50, "level_buttons");
-        this.philcarn.setInteractive().setScale(this.s);
-        this.philcarn.on('pointerout',  (pointer) => {
-          //this.goPhil.setFrame(0);
-        }, this);
+        this.philcarn.setInteractive();
+        this.philcarn.body.setSize(100,60).offset.y = -1;
         this.philcarn.on('pointerup',  (pointer) => {
-            this.scene.start('philHelios', {evos: this.numEvos, coins: this.numCoins});
+            this.scene.pause();
+            this.scene.launch('startingGame',{gameTitle: "Legend of Phil Helios", evos: this.numEvos, gameKey: 'philHelios'});
         }, this);
         
-        //this.goTrivia = this.buttons.create(300,50, "level_buttons");
-        this.triviacarn.setInteractive().setScale(this.s);
-        this.triviacarn.on('pointerout',  (pointer) => {
-          //this.goTrivia.setFrame(0);
-        }, this);
+        this.triviacarn.setInteractive();
+        this.triviacarn.body.setSize(60,110).offset.y = -1
         this.triviacarn.on('pointerup',  (pointer) => {
-            this.scene.start('trivia', {evos: this.numEvos, coins: this.numCoins});
+            this.scene.pause();
+            this.scene.launch('startingGame',{gameTitle: "Chem Trivia", evos: this.numEvos, gameKey: 'trivia'});
         }, this);
-
         
-    
-        
+        /*this.goParkour = this.buttons.create(200,50, "level_buttons");
+        this.goParkour.setInteractive().setScale(this.s);;
+        this.goParkour.on('pointerup',  (pointer) => {
+            this.scene.start('parkour', {evos: this.numEvos});
+        }, this);
+        */
     
     }
     

@@ -3,8 +3,6 @@ import Phaser from 'phaser'
 export default class Atomic extends Phaser.Scene
 {
     numEvos!: number;
-    numCoins!: number;
-    earnedCoins=0;
     earnedEvos=0;
 
     private initialTime!: number;
@@ -48,7 +46,6 @@ export default class Atomic extends Phaser.Scene
     init(data) //Gets initial num evos and coins from home
     {
         this.numEvos = data.evos;
-        this.numCoins = data.coins;
     }
 
 	preload()
@@ -56,8 +53,16 @@ export default class Atomic extends Phaser.Scene
         this.cursors = this.input.keyboard.createCursorKeys();
     }
 
-    create() //block out bg with graphics. do as little art as possible
-    {
+    create() 
+    { 
+        var xButton = this.add.sprite(380,20, "uiButtons", 2)
+        xButton.setDepth(100);
+        xButton.setInteractive();
+        xButton.on('pointerup',  (pointer) => {
+            this.scene.launch('quittingGame', {currentGameKey: 'atomic', earnedEvos: this.earnedEvos, numEvos: this.numEvos, gameTitle: "Bohr's Bounty"});
+            this.scene.pause();
+        }, this);
+
         var graphics = this.add.graphics();
         var outside = graphics.fillGradientStyle(0x8d4c1b, 0x8d4c1b,0x8d4c1b, 0x8d4c1b,  1);
         graphics.fillRect(0, 0, 400, 300);
@@ -65,8 +70,7 @@ export default class Atomic extends Phaser.Scene
         var sepgraphics = this.add.graphics();
         var rightside = sepgraphics.fillGradientStyle(0x8d4c1b, 0x8d4c1b,0x8d4c1b, 0x8d4c1b,  1);
         sepgraphics.fillRect(300, 0, 400, 300);
-        var timebox =sepgraphics.fillGradientStyle(0x431d1a, 0x431d1a,0x431d1a, 0x431d1a,  1);
-        sepgraphics.fillRect(310, 30, 80, 40);
+        
         var paper = sepgraphics.fillStyle(0xffffff,  1);
         sepgraphics.fillRect(310, 100, 80, 120);
             var wantedSign =  this.add.text(313,110, 'WANTED', { font: 'bold 17px Oswald', color: '#000000', align: 'center', wordWrap: { width: 200 } });
@@ -107,10 +111,6 @@ export default class Atomic extends Phaser.Scene
         lineRectangle.lineStyle(2, 0x000000, 1.0);
         lineRectangle.strokeRect(0, 0, 288, 238);
         lineRectangle.setDepth(1.5)
-        var lineRectangle2 = this.add.graphics({x: 310, y: 30}); // for timebox
-        lineRectangle2.lineStyle(1, 0x000000, 1.0);
-        lineRectangle2.strokeRect(0, 0, 80, 40);
-        lineRectangle2.setDepth(2.75)
         var lineRectangle3 = this.add.graphics({x: 318, y: 138}); // for box around elements
         lineRectangle3.lineStyle(2, 0x000000, 1.0);
         lineRectangle3.strokeRect(0, 0, 64, 64);
@@ -229,7 +229,7 @@ export default class Atomic extends Phaser.Scene
             -global variable containing number for current element
         */
  
-            
+        
     }
 
     update(time: number, delta: number): void 
@@ -284,9 +284,7 @@ export default class Atomic extends Phaser.Scene
     }
     plusEvoSfx(x,y)
     {
-        var cheer = ["Let's Go!", "Correct", "Hooray!", "Gotcha!"]
-        var pickaCheer = Phaser.Math.Between(0,3);
-        var notif = this.add.bitmapText(x,y, "pixelFont", cheer[pickaCheer],20);
+        var notif = this.add.bitmapText(x,y, "pixelFont", "+10",20);
         notif.setAlpha(0);
         this.tweens.add
         ({
@@ -298,7 +296,7 @@ export default class Atomic extends Phaser.Scene
             onComplete: () => {
                 this.time.addEvent
                 ({
-                    delay: 500,
+                    delay: 10,
                     callback: this.removeSfx,
                     args: [notif],
                     callbackScope: this
@@ -372,7 +370,7 @@ export default class Atomic extends Phaser.Scene
         }
         this.currentElement = Phaser.Math.Between(0, 17); // element
         this.elementArray[this.currentElement].setDepth(10);//unhide
-        this.timeLabel = this.add.bitmapText(320,50, "pixelFont", "Time: ",15);
+        this.timeLabel = this.add.bitmapText(320,80, "pixelFont", "Time: ",15);
         this.timeLabel.text = "Time: " + this.timeFormat(this.initialTime);
         this.timeLabel.setDepth(3)
         this.countDown = this.time.addEvent
@@ -398,22 +396,5 @@ export default class Atomic extends Phaser.Scene
     
     }
 
-    endPopUp() //After winning, determine number of evos and coins won
-    {
-        this.earnedEvos = 1;
-        this.earnedCoins = 1;
-        this.add.bitmapText(150,80, "pixelFont", "Evos Restored: " + this.earnedEvos, 40);
-        this.add.bitmapText(150,100, "pixelFont", "Coins Restored: " + this.earnedCoins, 40);
-
-        this.updateEvosCoins();
-    }
-    updateEvosCoins() //Add won evos and coins given from home. Localstoraged
-    {
-        var totalEvos = this.numEvos+this.earnedEvos;
-        var totalCoins = this.numCoins+this.earnedCoins;
-
-        localStorage.setItem('savedEvos', totalEvos.toString()); 
-        localStorage.setItem('savedCoins', totalCoins.toString());
-        this.scene.start('home');
-    }
+    
 }

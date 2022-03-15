@@ -152,6 +152,18 @@ export default class Preloader extends Phaser.Scene
             frameWidth: 32,
             frameHeight: 32
         });
+
+        //transition scene assets
+        
+        this.load.image('playButton', 'images/playButton.png')
+        this.load.spritesheet('uiButtons', 'sprites/uibuttons.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
+        this.load.spritesheet('flaps', 'sprites/decoflaps.png', {
+            frameWidth: 128,
+            frameHeight: 32
+        });
         
     }
 

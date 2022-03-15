@@ -5,8 +5,6 @@ export default class PhilHelios extends Phaser.Scene
 //Recycling world but vertical
  
     numEvos!: number;
-    numCoins!: number;
-    private earnedCoins=0;
     private earnedEvos=0;
     private plant!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     private cloudGroup!: Phaser.Physics.Arcade.Group;
@@ -38,7 +36,6 @@ export default class PhilHelios extends Phaser.Scene
 	init(data) //Gets initial num evos and coins from home
     {
         this.numEvos = data.evos;
-        this.numCoins = data.coins;
     }
     preload()
     {
@@ -46,6 +43,15 @@ export default class PhilHelios extends Phaser.Scene
     }
     create()
     {
+        var xButton = this.add.sprite(380,20, "uiButtons", 2)
+        xButton.setDepth(100);
+        xButton.setInteractive();
+        xButton.on('pointerup',  (pointer) => {
+            this.scene.launch('quittingGame', {currentGameKey: 'philHelios', earnedEvos: this.earnedEvos, numEvos: this.numEvos, gameTitle: "Legend of Phil Helios"});
+            this.scene.pause();
+        }, this);
+
+
         var graphics = this.add.graphics();
         graphics.fillGradientStyle(0x79ced9, 0x79ced9,0x65a2ba, 0x3287a8,  1);
         graphics.fillRect(0, 0, 400, 300);
@@ -234,8 +240,9 @@ export default class PhilHelios extends Phaser.Scene
     collectSun(plant, item)
     {
         item.destroy();
-        console.log("+10 evos!")
-        this.earnedEvos +=10; // figure out num later
+        this.earnedEvos +=10; 
+        
+        console.log(this.earnedEvos)
     }
     collectWater(plant, item)
     {   
@@ -255,22 +262,5 @@ export default class PhilHelios extends Phaser.Scene
     }
 
    
-    endPopUp() //Determine number of evos and coins won
-    {
-
-        this.add.bitmapText(150,80, "pixelFont", "Evos Restored: " + this.earnedEvos, 40);
-        this.add.bitmapText(150,100, "pixelFont", "Coins Restored: " + this.earnedCoins, 40);
-
-        this.updateEvosCoins();
-    }
-    updateEvosCoins() //Add won evos and coins given from home. Localstoraged
-    {
-        var totalEvos = this.numEvos+this.earnedEvos;
-        var totalCoins = this.numCoins+this.earnedCoins;
-
-        localStorage.setItem('savedEvos', totalEvos.toString()); 
-        localStorage.setItem('savedCoins', totalCoins.toString());
-        this.scene.start('home');
-    }
     //scene transition back to home
 }

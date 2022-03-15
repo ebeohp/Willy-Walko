@@ -3,8 +3,6 @@ import Phaser from 'phaser'
 export default class MicroShip extends Phaser.Scene
 {
     numEvos!: number;
-    numCoins!: number;
-    earnedCoins=0;
     earnedEvos=0;
     ship!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     myCam!: Phaser.Cameras.Scene2D.Camera;
@@ -24,7 +22,6 @@ export default class MicroShip extends Phaser.Scene
     init(data) //Gets initial num evos and coins from home
     {
         this.numEvos = data.evos;
-        this.numCoins = data.coins;
     }
 
 	preload()
@@ -34,7 +31,13 @@ export default class MicroShip extends Phaser.Scene
 
     create() //block out bg with graphics. do as little art as possible
     {
-       
+        var xButton = this.add.sprite(380,20, "uiButtons", 2)
+        xButton.setDepth(100).setScrollFactor(0,0);
+        xButton.setInteractive();
+        xButton.on('pointerup',  (pointer) => {
+            this.scene.launch('quittingGame', {currentGameKey: 'microship', earnedEvos: this.earnedEvos, numEvos: this.numEvos, gameTitle: "Micro-Ship"});
+            this.scene.pause();
+        }, this);
         //just have a rectangle in bg that changes colors based on waves.
         var r1 = this.add.circle(0, 0, 450, 0xe1e2ed,0.5);
         r1.setStrokeStyle(4, 0xefc53f);
@@ -83,23 +86,5 @@ export default class MicroShip extends Phaser.Scene
     {
         
        
-    }
-    endPopUp() //After winning, determine number of evos and coins won
-    {
-        this.earnedEvos = 1;
-        this.earnedCoins = 1;
-        this.add.bitmapText(150,80, "pixelFont", "Evos Restored: " + this.earnedEvos, 40);
-        this.add.bitmapText(150,100, "pixelFont", "Coins Restored: " + this.earnedCoins, 40);
-
-        this.updateEvosCoins();
-    }
-    updateEvosCoins() //Add won evos and coins given from home. Localstoraged
-    {
-        var totalEvos = this.numEvos+this.earnedEvos;
-        var totalCoins = this.numCoins+this.earnedCoins;
-
-        localStorage.setItem('savedEvos', totalEvos.toString()); 
-        localStorage.setItem('savedCoins', totalCoins.toString());
-        this.scene.start('home');
     }
 }
