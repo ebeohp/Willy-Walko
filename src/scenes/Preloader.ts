@@ -238,7 +238,7 @@ export default class Preloader extends Phaser.Scene
         this.anims.create({
             key: "water_anim",
             frames: this.anims.generateFrameNames('water', {start:0, end:2}),
-            frameRate: 8,
+            frameRate: 12,
             repeat: 0
         }); 
 
@@ -258,7 +258,7 @@ export default class Preloader extends Phaser.Scene
 
         //Start Title scene
         //this.scene.start("title");
-        this.scene.start('home');
+        this.scene.start('philHelios');
     }
 
     update(time: number, delta: number): void 
