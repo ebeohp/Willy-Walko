@@ -8,6 +8,7 @@ import Atomic from './scenes/minigames/Atomic'
 import MicroShip from './scenes/minigames/MicroShip'
 import Parkour from './scenes/minigames/Parkour'
 import PhilHelios from './scenes/minigames/PhilHelios'
+import PhilHeliosB from './scenes/minigames/PhilHeliosB'
 import StartingGame from './scenes/transitions/StartingGame'
 import QuittingGame from './scenes/transitions/QuittingGame'
 import AwardGame from './scenes/transitions/AwardGame'
@@ -23,7 +24,7 @@ const config: Phaser.Types.Core.GameConfig = {
 			debug: true
 		}
 	},
-	scene: [Preloader, Title, Home, StartingGame, Trivia, Atomic, MicroShip, Parkour, PhilHelios, QuittingGame, AwardGame],
+	scene: [Preloader, Title, Home, StartingGame, Trivia, Atomic, MicroShip, Parkour, PhilHelios, PhilHeliosB, QuittingGame, AwardGame],
 	scale: 
 	{
 		zoom: 2 //Scales up all images 2 times

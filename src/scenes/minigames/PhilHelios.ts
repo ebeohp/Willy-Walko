@@ -14,18 +14,22 @@ export default class PhilHelios extends Phaser.Scene
     private cloud2?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     private cloudArray!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[];
     private cloud3?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
- 
-    private cloud4?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     private cloud1?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     private plantJumping = false;
     private rain!: Phaser.Physics.Arcade.Group;
     private waterAmt = 0;
     graphics!: Phaser.GameObjects.Graphics; //placeholders
-    waterBar!: Phaser.GameObjects.Graphics;
     sunCandy!: Phaser.Physics.Arcade.Group;
     private gameSpeed = 1000;
     rainGroup!: Phaser.Physics.Arcade.Group;
-    waterBarHeight: number;
+    hasAquaporin = false;
+    hasChlorophyll = false;
+    suckedSun = 0;
+    waterBar: Phaser.GameObjects.Sprite;
+    waterFrame = 0;
+    activeAquaIcon: Phaser.GameObjects.Sprite;
+    activeChloroIcon: Phaser.GameObjects.Sprite;
+    activeStarchIcon: Phaser.GameObjects.Sprite;
 
 
 
@@ -51,14 +55,16 @@ export default class PhilHelios extends Phaser.Scene
             this.scene.launch('quittingGame', {currentGameKey: 'philHelios', earnedEvos: this.earnedEvos, numEvos: this.numEvos, gameTitle: "Legend of Phil Helios"});
             this.scene.pause();
         }, this);
-
+        
 
         var graphics = this.add.graphics();
         graphics.fillGradientStyle(0x79ced9, 0x79ced9,0x65a2ba, 0x3287a8,  1);
         graphics.fillRect(0, 0, 400, 300);
         this.plant = this.physics.add.sprite(150,185,"phil"); //spawn on top of a cloud. so have one cloud at beginning fs
         this.plant.body.gravity.y = 7000;
-        this.plant.setDepth(10)
+        this.plant.setDepth(10);
+        this.physics.world.setBounds( 0, 0, 325, 500);
+        this.plant.setCollideWorldBounds(true)
         
         this.cloud = this.physics.add.sprite(150,-50,"cloud");//starting cloud
         this.cloud.setImmovable(true);
@@ -80,17 +86,18 @@ export default class PhilHelios extends Phaser.Scene
         this.cloudArray = [this.cloud, this.cloud1, this.cloud2, this.cloud3];
 
         this.graphics = this.add.graphics();
-
-        graphics.fillStyle(0x88eb7f, 1);
-        graphics.fillRoundedRect(370, 80, 20, 200, 5);
-        graphics.fillStyle(0x2391eb, 1);
-        this.waterBar = graphics.fillRoundedRect(375, 90, 10, 180, 3);
-        //height -18, and then y+18
-        this.waterBarHeight = 180;
+        this.waterBar = this.add.sprite(375,180, "waterbar",0)        
         this.waterAmt = 10;
+        //active powerups
+        this.activeAquaIcon = this.add.sprite(340,145, "plantpowers", 3);
+        this.activeAquaIcon.setAlpha(0.5)
+        this.activeChloroIcon = this.add.sprite(339,182, "plantpowers", 0);
+        this.activeChloroIcon.setAlpha(0.5)
+        this.activeStarchIcon = this.add.sprite(340,218, "plantpowers", 2);
+        this.activeStarchIcon.setAlpha(0.5)
         
         this.time.addEvent({  
-            delay: 1500, 
+            delay: 2000, 
             callback: this.depleteWater, 
             callbackScope: this, 
             loop: true
@@ -112,30 +119,67 @@ export default class PhilHelios extends Phaser.Scene
                 animPlayer.destroy();
             })
             this.waterAmt+= 1;
+            if(this.waterAmt<=10)
+            {
+                this.waterBar.setFrame(this.waterFrame-=1)
+
+            }
             console.log(this.waterAmt)
         });
-        /*
+        
         this.time.addEvent({
             delay: 5000,
             callback: this.speedUpGame,
             callbackScope: this,
             loop: true
-        }); */
-        
+        });
+
+        //powerups
+        this.time.addEvent({
+            delay: 10000,
+            callback: this.newAquaPower,
+            callbackScope: this,
+            loop: true
+        });
+
+        /*
+        this.time.addEvent({
+            delay: 15000, // maybe 15 seconds
+            callback: this.newStarchPower,
+            callbackScope: this,
+            loop: true
+        });
+        */
+
     }
 
     speedUpGame() //slightly buggy. instead of increasing, try interval night and day
     {
-        this.gameSpeed -= 10;
+        if(this.gameSpeed != 500)
+        {        
+            this.gameSpeed -= 10;
+        }
     }
     update(time: number, delta: number): void {
-        
+        if(this.hasAquaporin == true)
+        {
+            this.activeAquaIcon.setAlpha(1).setScale(1.5);
+        }else{
+            this.activeAquaIcon.setAlpha(0.5).setScale(1)
+        }
+        if(this.hasChlorophyll == true)
+        {
+            this.activeChloroIcon.setAlpha(1).setScale(1.5);
+        }else{
+            this.activeChloroIcon.setAlpha(0.5).setScale(1)
+        }
         if(this.plant.y>300)
         {
             console.log("game over");
-            this.add.bitmapText(10,10, "pixelFont", "GAME OVER");
+            var gameOver = this.add.bitmapText(10,10, "pixelFont", "GAME OVER",40);
+            
             this.plant.disableBody(true,true);
-            this.scene.pause();
+            //this.scene.pause();
         }
 
         this.plantMoverManager();
@@ -235,16 +279,59 @@ export default class PhilHelios extends Phaser.Scene
         cloud.x= spawnX[randomX];
         //add more complexity in terms of 1-3 clouds per Amt, also more spaced out
         
-        var sun = this.physics.add.sprite(cloud.x, cloud.y-32, "sun");
-        sun.body.gravity.y = 300;
-        sun.play("sun_anim");
-        this.physics.add.collider(sun, cloud);
-        this.physics.add.collider(this.plant, sun, ()=>{
-            sun.destroy();
-            this.earnedEvos +=10; 
+        var chances = Phaser.Math.Between(1,100);
+        //chances of cloud having chrolophyll is 25%
+        if(chances>90)
+        {
+            var chlorophyll = this.physics.add.sprite(cloud.x, cloud.y-32,"plantpowers", 0);
+            chlorophyll.body.gravity.y = 300;   
+            this.physics.add.collider(chlorophyll, cloud);
+            this.physics.add.collider(this.plant, chlorophyll,(plant, power) => {
+                this.hasChlorophyll = true;
+                chlorophyll.destroy();
+            });
+        }
+        if(chances<=90)  //chances of cloud having sun is 70%
+        {
+            var sun = this.physics.add.sprite(cloud.x, cloud.y-32, "sun");
+            sun.body.gravity.y = 300;
+            sun.play("sun_anim");
+            var cloudCollider = this.physics.add.collider(sun, cloud);
+                
+            this.physics.add.collider(this.plant, sun, ()=>{
+                sun.destroy();
+                this.earnedEvos +=10; 
+            })
+            if(this.hasChlorophyll == true)
+            {
+                    if(this.suckedSun<10)
+                    {
+                        this.time.addEvent({
+                            delay: 1000, // let the sun show up on the cloud first...
+                            callback: ()=>{     
+                                cloudCollider.destroy();                          
+                                this.physics.moveToObject(sun, this.plant, 300)
+                            },
+                            loop: false
+                        })
+                        this.suckedSun +=1;
+                    }
+                    else if(this.suckedSun ==10)
+                    {
+                        this.hasChlorophyll = false;
+                        this.suckedSun = 0;
+                    }
+                
+            }
+            else
+            {
+                
+            }
+        }
         
-            console.log(this.earnedEvos)
-        })
+        
+        //chances of cloud having boost is 10%
+
             
     }
 
@@ -252,9 +339,31 @@ export default class PhilHelios extends Phaser.Scene
         var rainX = [30,80,130,180,230,280];
         for(let i = 0; i<rainX.length; i++)
         {
+            
             var rain = this.rainGroup.create(rainX[i], 0, "water");
-            rain.body.gravity.y = Phaser.Math.Between(100,400)
+            if(this.hasAquaporin == true)
+            {
+                this.tweens.add({
+                    targets: rain,
+                    x: this.plant.x,
+                    y: this.plant.y,
+                    duration: 800, //edit duration for speed
+                    ease: 'Linear',
+                    repeat: 0,
+                    onComplete: () =>
+                    {
+                        this.hasAquaporin = false;
+                    }
+                    
+                });
+                
+            }
+            else
+            {    
+                rain.body.gravity.y = Phaser.Math.Between(100,400)
+            }
         }
+        
     
     }
     depleteWater() //add graphics later
@@ -262,12 +371,81 @@ export default class PhilHelios extends Phaser.Scene
         if(this.waterAmt==0)
         {   
             console.log("game over, no more water!")
-            this.add.bitmapText(10,10,"pixelFont", "GAME OVER",30,5)
+            this.add.bitmapText(10,10,"pixelFont", "GAME OVER",40,5)
             this.scene.pause();
         }
         this.waterAmt-=1;
+        if(this.waterFrame+1 !=11)
+        {
+            this.waterBar.setFrame(this.waterFrame+=1)
+        }
     
     }
 
    //powerUps
+
+    newAquaPower()
+    {
+        var aquaporin = this.physics.add.sprite(Phaser.Math.Between(10,250), Phaser.Math.Between(50,150),"plantpowers", 3)
+        aquaporin.setVelocityY(50).setAlpha(0);
+        this.tweens.add({
+            targets: aquaporin,
+            alpha: 1,
+            duration: 500, //edit duration for speed
+            ease: 'Linear',
+            repeat:0
+            
+        });
+        this.physics.add.collider(this.plant,aquaporin, (plant, power) => {
+            this.hasAquaporin = true;
+            aquaporin.destroy();
+        });
+    }
+    newStarchPower() //
+    {
+        var starch = this.physics.add.sprite(50,0,"plantpowers", 2)
+        starch.setVelocityY(400).setVelocityX(400).setAlpha(0).setBounce(1);
+        starch.setCollideWorldBounds(true)
+        this.tweens.add({ // bounces around for a limited amount of time
+            targets: starch,
+            alpha: 1,
+            duration: 1000, //edit duration for speed
+            ease: 'Linear',
+            repeat: 0,
+            onComplete: ()=>
+            {
+                this.tweens.add({
+                    targets: starch,
+                    alpha: 0,
+                    duration: 4000, //edit duration for speed
+                    ease: 'Linear',
+                    repeat: 0,
+                    onComplete: () =>
+                    {
+                        starch.destroy();
+                    }
+                    
+                });
+            }
+            
+            
+        });
+        this.physics.add.collider(this.plant, starch, (plant, power) => { 
+            starch.destroy();
+            //fade out of scene
+            this.time.addEvent({
+                delay: 1000, // let the sun show up on the cloud first...
+                callback: ()=>{     
+                    this.scene.pause();
+                    this.scene.launch('philHeliosB', {});
+                },
+                loop: false
+            })
+
+        });
+        //launch another scene and pause this one
+        //other scene counts evos and resumes this one with evos?
+    }
+    
+
 }

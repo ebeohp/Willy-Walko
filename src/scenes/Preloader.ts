@@ -85,6 +85,10 @@ export default class Preloader extends Phaser.Scene
             frameWidth: 32,
             frameHeight: 32
         });
+        this.load.spritesheet('waterbar', 'sprites/waterbar.png', {
+            frameWidth: 32,
+            frameHeight: 160
+        });
 
         //Bohr's Bounty Assets
         this.load.image('dart', 'images/dart.png');
@@ -258,7 +262,7 @@ export default class Preloader extends Phaser.Scene
 
         //Start Title scene
         //this.scene.start("title");
-        this.scene.start('philHelios');
+        this.scene.start('title');
     }
 
     update(time: number, delta: number): void 
