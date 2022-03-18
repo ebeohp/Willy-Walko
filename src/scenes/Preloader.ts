@@ -105,6 +105,14 @@ export default class Preloader extends Phaser.Scene
 
         //Microship assets
         this.load.image('ship', 'images/ship.png');
+        this.load.image('redButton', 'images/redButton.png');
+        
+        this.load.image('enemy', 'images/enemy.png');
+        this.load.image('bullet', 'images/bullet.png');
+        this.load.spritesheet('lives', 'sprites/lives.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
         this.load.spritesheet('golgi', 'sprites/golgi.png', {
             frameWidth: 128,
             frameHeight: 96
@@ -128,6 +136,10 @@ export default class Preloader extends Phaser.Scene
         this.load.spritesheet('ribo', 'sprites/ribo.png', {
             frameWidth: 32,
             frameHeight: 32
+        });
+        this.load.spritesheet('shipUI', 'sprites/shipUI.png', {
+            frameWidth: 128,
+            frameHeight: 96
         });
 
         //trivia assets
@@ -262,7 +274,7 @@ export default class Preloader extends Phaser.Scene
 
         //Start Title scene
         //this.scene.start("title");
-        this.scene.start('title');
+        this.scene.start('microship');
     }
 
     update(time: number, delta: number): void 

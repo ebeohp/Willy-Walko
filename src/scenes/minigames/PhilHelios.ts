@@ -25,12 +25,11 @@ export default class PhilHelios extends Phaser.Scene
     hasAquaporin = false;
     hasChlorophyll = false;
     suckedSun = 0;
-    waterBar: Phaser.GameObjects.Sprite;
+    waterBar!: Phaser.GameObjects.Sprite;
     waterFrame = 0;
-    activeAquaIcon: Phaser.GameObjects.Sprite;
-    activeChloroIcon: Phaser.GameObjects.Sprite;
-    activeStarchIcon: Phaser.GameObjects.Sprite;
-
+    activeAquaIcon!: Phaser.GameObjects.Sprite;
+    activeChloroIcon!: Phaser.GameObjects.Sprite;
+    activeStarchIcon!: Phaser.GameObjects.Sprite;
 
 
 	constructor()
@@ -38,9 +37,10 @@ export default class PhilHelios extends Phaser.Scene
 		super('philHelios')
 	}
 
-	init(data) //Gets initial num evos and coins from home
+	init(data) //Gets initial num evos from home
     {
         this.numEvos = data.evos;
+        
     }
     preload()
     {
@@ -52,7 +52,8 @@ export default class PhilHelios extends Phaser.Scene
         xButton.setDepth(100);
         xButton.setInteractive();
         xButton.on('pointerup',  (pointer) => {
-            this.scene.launch('quittingGame', {currentGameKey: 'philHelios', earnedEvos: this.earnedEvos, numEvos: this.numEvos, gameTitle: "Legend of Phil Helios"});
+            var totalEvos = this.earnedEvos+this.scene.get('philHeliosB').getStarchEvos();
+            this.scene.launch('quittingGame', {currentGameKey: 'philHelios', earnedEvos: totalEvos, numEvos: this.numEvos, gameTitle: "Legend of Phil Helios"});
             this.scene.pause();
         }, this);
         
@@ -142,14 +143,14 @@ export default class PhilHelios extends Phaser.Scene
             loop: true
         });
 
-        /*
+        
         this.time.addEvent({
             delay: 15000, // maybe 15 seconds
             callback: this.newStarchPower,
             callbackScope: this,
             loop: true
         });
-        */
+        
 
     }
 
@@ -177,14 +178,26 @@ export default class PhilHelios extends Phaser.Scene
         {
             console.log("game over");
             var gameOver = this.add.bitmapText(10,10, "pixelFont", "GAME OVER",40);
-            
-            this.plant.disableBody(true,true);
-            //this.scene.pause();
+            this.gameOver();
         }
 
         this.plantMoverManager();
     }
-     
+    gameOver()
+    {
+        var totalEvos = this.earnedEvos+this.scene.get('philHeliosB').getStarchEvos();
+        var camera = this.cameras.main;
+        camera.fadeOut(1000)
+        this.time.addEvent({  
+            delay: 2000, 
+            callback: ()=>{
+                this.scene.start("awardGame", {gameTitle: "Legend of Phil Helios", earnedEvos: totalEvos, numEvos: this.numEvos});
+            }, 
+            callbackScope: this, 
+            loop: false
+        });
+        this.plant.disableBody(true,true);
+    }
     plantMoverManager()
     {
         if(!this.cursors || !this.plant)
@@ -353,10 +366,8 @@ export default class PhilHelios extends Phaser.Scene
                     onComplete: () =>
                     {
                         this.hasAquaporin = false;
-                    }
-                    
+                    } 
                 });
-                
             }
             else
             {    
@@ -372,12 +383,15 @@ export default class PhilHelios extends Phaser.Scene
         {   
             console.log("game over, no more water!")
             this.add.bitmapText(10,10,"pixelFont", "GAME OVER",40,5)
-            this.scene.pause();
+            this.gameOver();
         }
-        this.waterAmt-=1;
-        if(this.waterFrame+1 !=11)
+        this.waterAmt-=1; // so what if its at 14?
+        if(this.waterAmt>=10)
         {
-            this.waterBar.setFrame(this.waterFrame+=1)
+            this.waterBar.setFrame(0);
+        }else if(this.waterFrame+1 !=11)
+        {
+            this.waterBar.setFrame(this.waterFrame+=1);
         }
     
     }
@@ -403,13 +417,13 @@ export default class PhilHelios extends Phaser.Scene
     }
     newStarchPower() //
     {
-        var starch = this.physics.add.sprite(50,0,"plantpowers", 2)
-        starch.setVelocityY(400).setVelocityX(400).setAlpha(0).setBounce(1);
-        starch.setCollideWorldBounds(true)
+        var starch = this.physics.add.sprite(50,0,"plantpowers", 2);
+        starch.setVelocityY(200).setVelocityX(200).setAlpha(0).setBounce(1);
+        starch.setCollideWorldBounds(true);
         this.tweens.add({ // bounces around for a limited amount of time
             targets: starch,
             alpha: 1,
-            duration: 1000, //edit duration for speed
+            duration: 1000, 
             ease: 'Linear',
             repeat: 0,
             onComplete: ()=>
@@ -417,7 +431,8 @@ export default class PhilHelios extends Phaser.Scene
                 this.tweens.add({
                     targets: starch,
                     alpha: 0,
-                    duration: 4000, //edit duration for speed
+                    delay: 4000,
+                    duration: 1000,
                     ease: 'Linear',
                     repeat: 0,
                     onComplete: () =>
@@ -437,7 +452,7 @@ export default class PhilHelios extends Phaser.Scene
                 delay: 1000, // let the sun show up on the cloud first...
                 callback: ()=>{     
                     this.scene.pause();
-                    this.scene.launch('philHeliosB', {});
+                    this.scene.launch('philHeliosB');
                 },
                 loop: false
             })

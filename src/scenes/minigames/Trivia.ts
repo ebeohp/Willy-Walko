@@ -117,18 +117,30 @@ export default class Trivia extends Phaser.Scene
             [1],
             [1],
             [1],
+            [1],
+            [1],
+            [1],
             [1]
         ]
 
         this.mediumBank = 
         [
-            ["What is the symbol of the strongest acid, containing H?","HCl","Helium Acid","HF"],
+            ["The component that does the dissolving is…","Solvent", "Solute", "Water"],
             ["How are compounds that contain Carbon, Hydrogen, and Oxygen classified?","Organic Compounds","Natural Compounds","Prison Compounds"],
             ["In a closed system...?","Only energy can move about","Nothing can leave or enter","Only matter can move about"],
-            ["To neutralize an acid, you add…?", "Water to Acid", "Acid to Water", "Acid to the trashcan"]
+            ["To neutralize an acid, you add…?", "Water to Acid", "Acid to Water", "Acid to the trashcan"],
+            ["What is the formula of Dihydrogen Dioxide?", "H2O","H2O2","H3O5"],
+            ["Gas goes to liquid is?", "Condensation", "Sublimation", "Depreciation"],
+            ["__CO2 + __H2O → ___C6H12O6 + __O2", "6,6,1,6", "6,6,0,6", "6,1,6,6"],
+            ["What is Avogadro's number?", "6.022x10^23", "Avocado123", "Number of moles in a unit"]
+        
         ];
         this.mediumKey = 
         [
+            [1],
+            [1],
+            [1],
+            [1],
             [1],
             [1],
             [1],
@@ -137,15 +149,25 @@ export default class Trivia extends Phaser.Scene
 
         this.hardBank = 
         [
-            ["?","A","B","C"],
-            ["??","A","B","C"],
-            ["???","A","B","C"]
+            ["What is the symbol of the strongest acid, containing H?","HCl","Helium Acid","HF"],
+            ["In a triple bond, how many pi and sigma bonds are there?","Two Pi, One Sigma","Three Pi, Three Sigma","One Pi, Two Sigma"],
+            ["What causes boiling?","Fire and water interactions","Vapor pressure = atmospheric pressure","Build up of atmospheric pressure"],
+            ["How many sig figs are in 0.0024?","2","5","8"],
+            ["How many sig figs are in 320,000?", "2","320,000","6"],
+            ["If 2 Reds = 1 Blue, 4 Reds is…", "2 Blue", "4 Blue", "8 Blue"],
+            ["What doesn’t increase proper collisions?", "Bigger particle", "Enough KE", "Correct orientation"],
+            ["The pH of an acid is 6. What is the pOH?", "8", "-6", "10"]
         ];
         this.hardKey = 
         [
             [1],
-            [2],
-            [3]
+            [1],
+            [1],
+            [1],
+            [1],
+            [1],
+            [1],
+            [1]
         ]
         //Select bank 
         this.challengePopUp();        
