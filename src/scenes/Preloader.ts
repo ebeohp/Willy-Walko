@@ -106,9 +106,9 @@ export default class Preloader extends Phaser.Scene
         //Microship assets
         this.load.image('ship', 'images/ship.png');
         this.load.image('redButton', 'images/redButton.png');
-        
         this.load.image('enemy', 'images/enemy.png');
         this.load.image('bullet', 'images/bullet.png');
+        this.load.image('redexitui', 'images/shipuiexit.png');
         this.load.spritesheet('lives', 'sprites/lives.png', {
             frameWidth: 32,
             frameHeight: 32
