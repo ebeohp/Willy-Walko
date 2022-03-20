@@ -23,17 +23,17 @@ export default class MicroShip extends Phaser.Scene
     heart2: any;
     heart3: any;
     germGroup?: Phaser.Physics.Arcade.Group;
-    projectiles: GameObject | Group | GameObject[] | Group[];
+    projectiles: thisObject | Group | thisObject[] | Group[];
     spacebar!: Phaser.Input.Keyboard.Key;
     popUpOn = false;
     organelleHealth: any;
-    mitoBar: Phaser.GameObjects.Sprite;
-    erBar: Phaser.GameObjects.Sprite;
-    golgiBar: Phaser.GameObjects.Sprite;
-    vacuoleBar: Phaser.GameObjects.Sprite;
-    lysoBar: Phaser.GameObjects.Sprite;
-    riboBar: Phaser.GameObjects.Sprite;
-    healthBars: Phaser.GameObjects.Sprite[];
+    mitoBar: Phaser.thisObjects.Sprite;
+    erBar: Phaser.thisObjects.Sprite;
+    golgiBar: Phaser.thisObjects.Sprite;
+    vacuoleBar: Phaser.thisObjects.Sprite;
+    lysoBar: Phaser.thisObjects.Sprite;
+    riboBar: Phaser.thisObjects.Sprite;
+    healthBars: Phaser.thisObjects.Sprite[];
     ui: any;
     exit: any;
     the: any;
@@ -41,6 +41,7 @@ export default class MicroShip extends Phaser.Scene
     containerA: any;
     containerC: any;
     containerB: any;
+    germ: any;
 
     
     
@@ -67,7 +68,7 @@ export default class MicroShip extends Phaser.Scene
         xButton.setDepth(100).setScrollFactor(0,0);
         xButton.setInteractive();
         xButton.on('pointerup',  (pointer) => {
-            this.scene.launch('quittingGame', {currentGameKey: 'microship', earnedEvos: this.earnedEvos, numEvos: this.numEvos, gameTitle: "Micro-Ship"});
+            this.scene.launch('quittingthis', {currentthisKey: 'microship', earnedEvos: this.earnedEvos, numEvos: this.numEvos, thisTitle: "Micro-Ship"});
             this.scene.pause();
         }, this);
         this.add.rectangle(-200,-150,1000,600,0x000000)
@@ -77,7 +78,7 @@ export default class MicroShip extends Phaser.Scene
         r2.setStrokeStyle(4, 0xff0400);
 
         this.ship = this.physics.add.sprite(0,-250,'ship',0); //0,-220
-        this.ship.setDepth(10)
+        this.ship.setDepth(10).setPushable().setBounce(0.5);
         //Graphics for lives system and groups hearts 
         this.heartGroup = this.physics.add.group();
         this.heart1 = this.heartGroup.create(30, 30, "lives",3);
@@ -110,28 +111,38 @@ export default class MicroShip extends Phaser.Scene
             
                 var beam = this.projectiles.create(this.ship.x, this.ship.y, "bullet");
                 var angle = Phaser.Math.Angle.Between(this.ship.x, this.ship.y, pointer.x + this.cameras.main.scrollX, pointer.y + this.cameras.main.scrollY)            
-            
-                this.physics.velocityFromRotation(angle, 600, beam.body.velocity);
+                this.physics.velocityFromRotation(angle, 300, beam.body.velocity);
+
+                this.tweens.add({
+                    targets: beam,
+                    alpha: 0,
+                    duration: 400, //edit duration for speed
+                    ease: 'Sine.easeIn',
+                    onComplete: () =>
+                    {
+                        beam.destroy();
+                    } 
+                });
             }
             
         }, this);
 
         //bit boring, add some tweening/floaty effect
         this.mito = this.physics.add.sprite(250,-250,'mito',0).setImmovable();      
-        this.mitoBar = this.add.sprite(250,-260, "lives",0)
+        this.mitoBar = this.add.sprite(250,-290, "lives",0)
         this.er = this.physics.add.sprite(230,0,'er',0).setImmovable(); 
-        this.erBar = this.add.sprite(230,-10, "lives",0)
+        this.erBar = this.add.sprite(230,-90, "lives",0)
         this.er.angle = 90
         this.er.body.setSize(64,140)
         this.golgi = this.physics.add.sprite(-180,-300,'golgi',0).setImmovable();
-        this.golgiBar = this.add.sprite(-180,-310, "lives",0)
+        this.golgiBar = this.add.sprite(-180,-350, "lives",0)
         this.golgi.angle = -20;
         this.vacuole = this.physics.add.sprite(-300, 200,'vacuole',0).setImmovable();
-        this.vacuoleBar = this.add.sprite(-300,-210, "lives",0)
+        this.vacuoleBar = this.add.sprite(-300, 160, "lives",0)
         this.lyso = this.physics.add.sprite(380,-50,'lyso',0).setImmovable();
-        this.lysoBar = this.add.sprite(380,-60, "lives",0)
+        this.lysoBar = this.add.sprite(380,-80, "lives",0)
         this.ribo = this.physics.add.sprite(50, 280,'ribo',0).setImmovable();
-        this.riboBar = this.add.sprite(50,270, "lives",0)
+        this.riboBar = this.add.sprite(50,250, "lives",0)
 
         this.organelleArray = [this.mito, this.er, this.golgi, this.vacuole, this.lyso, this.ribo];
         this.organelleHealth = [3,3,3,3,3,3]
@@ -275,56 +286,108 @@ export default class MicroShip extends Phaser.Scene
 
 
         this.germGroup = this.physics.add.group();
-        this.germ = this.germGroup.create(0,0,"enemy").setPushable().setBounce(0.5); 
+        this.germ = this.germGroup.create(0,0,"enemy").setPushable().setBounce(0.5).setPushable(); 
     
         this.germ.setBounce(1);
         this.physics.add.collider(this.projectiles, this.germGroup, (bullet, germ)=>{
             console.log("ded germ") //issue fix later
-            
+            germ.disableBody(true,true);
         })
-        this.physics.add.collider(this.ship, this.germGroup, (ship, germ)=>{
-           //germ bounces back
-           this.hurtShip(ship,germ)
-           germ.disableBody(true,false)
-           this.time.addEvent({  
-            delay: 2000, 
-            callback: ()=>{
-                germ.enableBody();
-            }, 
-            callbackScope: this, 
-            loop: true
-            });
-        });
-        this.physics.add.collider(this.golgi, this.germGroup,(organelle, germ)=>{
-            //set this organelle's health bar
-
-            var ogPosX = germ.x;
-            var ogPosY = germ.y;
-            germ.disableBody(true,false)
-
-            this.tweens.add({
-                targets: germ,
-                x: organelle.x;
-                y: organelle.y;
-                duration: 1000, 
-                ease: 'Linear',
-                repeat: 0,
-                yoyo:true,
-                onComplete: () =>
-                {
-                    germ.enableBody();
-                }
-                
-            });
-            this.organelleDamage(0);
-            console.log(this.organelleArray[0] + " is hit")
-        });
+        this.physics.add.collider(this.ship, this.germGroup, (ship,germ) => {this.hurtShip(ship,germ)}));
+        this.physics.add.collider(this.germGroup);
         
+        for(let i = 0; i<this.organelleArray.length; i++)
+        {
+            this.physics.add.collider(this.organelleArray[i], this.germGroup,(organelle, germ)=>{
+                //set this organelle's health bar
+    
+                this.hurtOrganelle(organelle,germ);
+                this.organelleDamage(i);
+                console.log(this.organelleArray[0] + " is hit")
+            });
+        }
+        
+        
+
+    }
+    hurtOrganelle(organelle, germ)
+    {
+        var moveY = 0;
+        var moveX = 0;
+        if(germ.body.touching.down)
+        {
+            moveY = -50
+        }
+        else if(germ.body.touching.up)
+        {
+            moveY = 50;
+        }
+        else if(germ.body.touching.right)
+        {
+            moveX = -50;
+        }
+        else if(germ.body.touching.left)
+        {
+            moveX = 50;
+        }
+
+        this.tweens.add({
+            targets: germ,
+            y: germ.y+moveY, 
+            x: germ.x+moveX,
+            yoyo:true,
+            repeat: 2,
+            duration: 500, //edit duration for speed
+            ease: 'Sine.easeOut'
+        });
 
     }
     hurtShip(ship, germ)
     {
-       
+        ship.disableBody(true,false);
+        this.tweens.add({
+            targets: ship,
+            alpha: 0,
+            duration: 200, //edit duration for speed
+            ease: 'Sine.easeIn',
+            yoyo:true,
+            repeat:3,
+            onComplete: () =>
+            {
+                ship.alpha = 1;
+                ship.enableBody();
+            } 
+        });
+        var moveY = 0;
+        var moveX = 0;
+        if(ship.body.touching.down)
+        {
+            moveY = -200
+        }
+        else if(ship.body.touching.up)
+        {
+            moveY = 200;
+        }
+        else if(ship.body.touching.right)
+        {
+            moveX = -200;
+        }
+        else if(ship.body.touching.left)
+        {
+            moveX = 200;
+        }
+
+
+
+        this.tweens.add({
+            targets: ship,
+            y: ship.y+moveY, 
+            x: ship.x+moveX,
+            duration: 1000, //edit duration for speed
+            ease: 'Sine.easeOut'
+        });
+
+        //lives system
         this.numHearts -= 1;
         var once = 0;
         
@@ -345,7 +408,7 @@ export default class MicroShip extends Phaser.Scene
             this.time.addEvent
             ({
                 delay: 2000,
-                callback: this.gameOver,
+                callback: this.thisOver,
                 callbackScope: this,
                 loop: false
             });
@@ -389,8 +452,24 @@ export default class MicroShip extends Phaser.Scene
     
     update(time: number, delta: number): void 
     {
-        
-        this.enemyFollows(); //later, loop call this using a timer event
+        this.germAI();
+        this.shipMovement();
+    }
+    germAI()
+    {
+        if (Phaser.Math.Distance.BetweenPoints(this.germ, this.ship) < 400) {
+
+            // rotate enemy to face towards player
+            this.germ.rotation = Phaser.Math.Angle.Between(this.ship.x, this.ship.y, this.germ.x, this.germ.y)            
+            // move enemy towards player at 150px per second
+            var vector2 = this.physics.velocityFromRotation(this.germ.rotation, 50, this.germ.velocity);
+            this.germ.setVelocityX(-vector2.x)
+            this.germ.setVelocityY(-vector2.y)
+            // could add other code - make enemy fire weapon, etc.
+        }
+    }
+    shipMovement()
+    {
         var keys = this.input.keyboard.addKeys("W,A,S,D");
         this.ship.setVelocity(0);
 
@@ -411,7 +490,6 @@ export default class MicroShip extends Phaser.Scene
         {
             this.ship.setVelocityY(300);
         }
-      
     }
     
     popUp(correctAnswer, incor1, incor2, orgNum)
@@ -484,16 +562,16 @@ export default class MicroShip extends Phaser.Scene
         this.containerC.setScrollFactor(0,0).setDepth(15).setInteractive();
         this.input.setDraggable(this.containerC)
 
-        this.input.on('drag', (pointer, gameObject, dragX, dragY)=> {
+        this.input.on('drag', (pointer, thisObject, dragX, dragY)=> {
 
-            gameObject.x = Phaser.Math.Snap.To(dragX, 10);
-            gameObject.y = Phaser.Math.Snap.To(dragY, 10);
-            console.log(gameObject.x + " " + gameObject.y)
-            if(gameObject.x == 230 && gameObject.y == 100)
+            thisObject.x = Phaser.Math.Snap.To(dragX, 10);
+            thisObject.y = Phaser.Math.Snap.To(dragY, 10);
+            console.log(thisObject.x + " " + thisObject.y)
+            if(thisObject.x == 230 && thisObject.y == 100)
             {
                 console.log("answerd")
                 //check if is correct answer
-                if(gameObject.getAt(1).text == correctAnswer)
+                if(thisObject.getAt(1).text == correctAnswer)
                 {
                     this.time.addEvent({  
                         delay: 800, 
@@ -537,23 +615,15 @@ export default class MicroShip extends Phaser.Scene
         });
 
     }
-    destroyer(array)
-    {
-        this.popUpOn = false;
-        for(let i = 0; i < array.length; i++)
-        {
-            array[i].destroy();
-        }
-    }
 
-    gameOver()
+    thisOver()
     {
         var camera = this.cameras.main;
         camera.fadeOut(1000)
         this.time.addEvent({  
             delay: 2000, 
             callback: ()=>{
-                this.scene.start("awardGame", {gameTitle: "MicroShip", earnedEvos: this.earnedEvos, numEvos: this.numEvos});
+                this.scene.start("awardthis", {thisTitle: "MicroShip", earnedEvos: this.earnedEvos, numEvos: this.numEvos});
             }, 
             callbackScope: this, 
             loop: false
