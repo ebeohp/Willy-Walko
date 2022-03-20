@@ -84,7 +84,7 @@ export default class Trivia extends Phaser.Scene
         });
 
         Phaser.Actions.RandomRectangle(this.balls.getChildren(), this.physics.world.bounds);
-        this.balls.children.iterate(function (ball) {
+        this.balls.children.iterate((ball) => {
             ball.setScale(0.5);
         });
         this.physics.add.collider(this.balls);

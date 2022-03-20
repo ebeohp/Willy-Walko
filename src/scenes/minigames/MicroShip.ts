@@ -22,18 +22,18 @@ export default class MicroShip extends Phaser.Scene
     heart1: any;
     heart2: any;
     heart3: any;
-    germGroup?: Phaser.Physics.Arcade.Group;
+    germGroup!: Phaser.Physics.Arcade.Group;
     projectiles: thisObject | Group | thisObject[] | Group[];
     spacebar!: Phaser.Input.Keyboard.Key;
     popUpOn = false;
     organelleHealth: any;
-    mitoBar: Phaser.thisObjects.Sprite;
-    erBar: Phaser.thisObjects.Sprite;
-    golgiBar: Phaser.thisObjects.Sprite;
-    vacuoleBar: Phaser.thisObjects.Sprite;
-    lysoBar: Phaser.thisObjects.Sprite;
-    riboBar: Phaser.thisObjects.Sprite;
-    healthBars: Phaser.thisObjects.Sprite[];
+    mitoBar!: Phaser.GameObjects.Sprite;
+    erBar!: Phaser.GameObjects.Sprite;
+    golgiBar!: Phaser.GameObjects.Sprite;
+    vacuoleBar!: Phaser.GameObjects.Sprite;
+    lysoBar!: Phaser.GameObjects.Sprite;
+    riboBar!: Phaser.GameObjects.Sprite;
+    healthBars!: Phaser.GameObjects.Sprite[];
     ui: any;
     exit: any;
     the: any;
@@ -41,8 +41,7 @@ export default class MicroShip extends Phaser.Scene
     containerA: any;
     containerC: any;
     containerB: any;
-    germ: any;
-
+    hordeSize = 3; //inital
     
     
 	constructor()
@@ -65,12 +64,15 @@ export default class MicroShip extends Phaser.Scene
     create() //block out bg with graphics. do as little art as possible
     {
         var xButton = this.add.sprite(380,20, "uiButtons", 2)
-        xButton.setDepth(100).setScrollFactor(0,0);
+        xButton.setDepth(100);
         xButton.setInteractive();
+        xButton.setScrollFactor(0,0);
         xButton.on('pointerup',  (pointer) => {
-            this.scene.launch('quittingthis', {currentthisKey: 'microship', earnedEvos: this.earnedEvos, numEvos: this.numEvos, thisTitle: "Micro-Ship"});
+            var totalEvos = this.earnedEvos;
+            this.scene.launch('quittingGame', {currentGameKey: 'microship', earnedEvos: totalEvos, numEvos: this.numEvos, gameTitle: "Microship"});
             this.scene.pause();
         }, this);
+
         this.add.rectangle(-200,-150,1000,600,0x000000)
         var r1 = this.add.circle(0, 0, 450, 0xe1e2ed,0.5);
         r1.setStrokeStyle(4, 0xff0400);
@@ -286,12 +288,10 @@ export default class MicroShip extends Phaser.Scene
 
 
         this.germGroup = this.physics.add.group();
-        this.germ = this.germGroup.create(0,0,"enemy").setPushable().setBounce(0.5).setPushable(); 
-    
-        this.germ.setBounce(1);
         this.physics.add.collider(this.projectiles, this.germGroup, (bullet, germ)=>{
             console.log("ded germ") //issue fix later
             germ.disableBody(true,true);
+            this.earnedEvos+=1;
         })
         this.physics.add.collider(this.ship, this.germGroup, (ship,germ) => {this.hurtShip(ship,germ)}));
         this.physics.add.collider(this.germGroup);
@@ -306,10 +306,80 @@ export default class MicroShip extends Phaser.Scene
                 console.log(this.organelleArray[0] + " is hit")
             });
         }
-        
+
+        this.spawnGermHorde(this.hordeSize)
+        this.time.addEvent
+        ({
+            delay: 10000,
+            callback: this.spawnGermHorde,
+            callbackScope: this,
+            args: [this.hordeSize],
+            loop: true
+            
+        });
         
 
     }
+    spawnGermHorde(size) //make lots of them... rounds add parameter for horde size
+    {
+        console.log('more')
+        var warningColor = this.add.rectangle(-200,-150,1500,1500, 0xff0d00);
+        warningColor.setAlpha(0).setDepth(20)
+        this.tweens.add({
+
+            targets: warningColor,
+            alpha: 0.5,
+            yoyo: true,
+            repeat: 2,
+            duration: 500, 
+            ease: 'Sine.easeInOut'
+    
+        });
+        var hordeSize = size; // increment this as time goes on
+        console.log(hordeSize)
+        this.hordeSize+=2;
+        var spawnZone = Phaser.Math.Between(1,4);//["top","bottom", "left", "right"] 
+        
+        if(spawnZone ==1)
+        {
+            for(let i = 0; i<hordeSize; i++) //number of enemies spawning
+            {
+                var randomX = Phaser.Math.Between(-300,300);
+                var randomY = Phaser.Math.Between(-600,-500);
+                var aGerm = this.germGroup.create(randomX,randomY,"enemy").setPushable().setBounce(0.5);
+            }
+        }
+        if(spawnZone ==2)
+        {
+            for(let i = 0; i<hordeSize; i++) //number of enemies spawning
+            {
+                var randomX = Phaser.Math.Between(-300,300);
+                var randomY = Phaser.Math.Between(400,500);
+                var aGerm = this.germGroup.create(randomX,randomY,"enemy").setPushable().setBounce(0.5);
+            }
+        }
+        if(spawnZone ==3)
+        {
+            for(let i = 0; i<hordeSize; i++) //number of enemies spawning
+            {
+                var randomX = Phaser.Math.Between(-600,-400);
+                var randomY = Phaser.Math.Between(-200,200);
+                var aGerm = this.germGroup.create(randomX,randomY,"enemy").setPushable().setBounce(0.5);
+            }
+        }
+        if(spawnZone ==4)
+        {
+            for(let i = 0; i<hordeSize; i++) //number of enemies spawning
+            {
+                var randomX = Phaser.Math.Between(600,400);
+                var randomY = Phaser.Math.Between(-200,200);
+                var aGerm = this.germGroup.create(randomX,randomY,"enemy").setPushable().setBounce(0.5);
+            }
+        }
+
+    }
+   
+
     hurtOrganelle(organelle, germ)
     {
         var moveY = 0;
@@ -439,34 +509,28 @@ export default class MicroShip extends Phaser.Scene
         this.organelleArray[orgNum].setFrame(0);
         this.healthBars[orgNum].setFrame(0);
     }
-    spawnGermHorde() //make lots of them... rounds
-    {
-        var hordeSize = Phaser.Math.Between(3,8);
-
-    }
-    enemyFollows () {
-        
-        this.physics.moveToObject(this.germ, this.golgi, 100);
-        
-    }
+    
     
     update(time: number, delta: number): void 
     {
         this.germAI();
         this.shipMovement();
     }
-    germAI()
+    germAI() //edit so ship collides world bounds. limit world bounds to cover up the sides of cell
     {
-        if (Phaser.Math.Distance.BetweenPoints(this.germ, this.ship) < 400) {
+        this.germGroup.children.iterate( (germ) => {
+            if (Phaser.Math.Distance.BetweenPoints(germ, this.ship) < 600) {
 
-            // rotate enemy to face towards player
-            this.germ.rotation = Phaser.Math.Angle.Between(this.ship.x, this.ship.y, this.germ.x, this.germ.y)            
-            // move enemy towards player at 150px per second
-            var vector2 = this.physics.velocityFromRotation(this.germ.rotation, 50, this.germ.velocity);
-            this.germ.setVelocityX(-vector2.x)
-            this.germ.setVelocityY(-vector2.y)
-            // could add other code - make enemy fire weapon, etc.
-        }
+                // rotate enemy to face towards player
+                germ.rotation = Phaser.Math.Angle.Between(this.ship.x, this.ship.y, germ.x, germ.y)            
+                // move enemy towards player at 150px per second
+                var vector2 = this.physics.velocityFromRotation(germ.rotation, 50, germ.velocity);
+                germ.setVelocityX(-vector2.x)
+                germ.setVelocityY(-vector2.y)
+                // could add other code - make enemy fire weapon, etc.
+            }
+        });
+        
     }
     shipMovement()
     {
@@ -618,6 +682,8 @@ export default class MicroShip extends Phaser.Scene
 
     thisOver()
     {
+        var gameover = this.add.bitmapText(100,20, "pixelFont","GAME OVER",50).setDepth(15);
+        gameover.setScrollFactor(0,0)
         var camera = this.cameras.main;
         camera.fadeOut(1000)
         this.time.addEvent({  

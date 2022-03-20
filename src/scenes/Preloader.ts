@@ -273,8 +273,8 @@ export default class Preloader extends Phaser.Scene
         }); 
 
         //Start Title scene
-        //this.scene.start("title");
-        this.scene.start('microship');
+        this.scene.start("title");
+        //this.scene.start('microship');
     }
 
     update(time: number, delta: number): void 
