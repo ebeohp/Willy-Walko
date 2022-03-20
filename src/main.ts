@@ -21,7 +21,7 @@ const config: Phaser.Types.Core.GameConfig = {
 		default: 'arcade',
 		arcade: {
 			gravity: { y: 0 },
-			debug: true
+			debug: false
 		}
 	},
 	scene: [Preloader, Title, Home, StartingGame, Trivia, Atomic, MicroShip, Parkour, PhilHelios, PhilHeliosB, QuittingGame, AwardGame],

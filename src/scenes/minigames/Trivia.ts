@@ -286,7 +286,7 @@ export default class Trivia extends Phaser.Scene
 
     resetTimer()
     {
-        this.initialTime = 40; //60
+        this.initialTime = 60; //60
         if (this.timeLabel != null)
         {
             this.timeLabel.destroy(true);
