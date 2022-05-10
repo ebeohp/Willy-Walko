@@ -42,6 +42,8 @@ export default class MicroShip extends Phaser.Scene
     containerC: any;
     containerB: any;
     hordeSize = 3; //inital
+    numWaves = 0;
+    waveCounter!: Phaser.GameObjects.BitmapText;
     
     
 	constructor()
@@ -89,7 +91,9 @@ export default class MicroShip extends Phaser.Scene
         this.ship = this.physics.add.sprite(0,-250,'ship',0); //0,-220
         this.ship.setDepth(10).setOrigin(0.5);
         //Graphics for lives system and groups hearts 
-        
+
+        this.waveCounter = this.add.bitmapText(180, 5, "pixelFont", "WAVE " + this.numWaves, 20);
+        this.waveCounter.setScrollFactor(0,0).setDepth(20);
         this.heartGroup = this.physics.add.group();
         this.heart1 = this.heartGroup.create(170, 30, "lives",3);
         this.heart1.setScrollFactor(0,0).setDepth(20);
@@ -97,6 +101,9 @@ export default class MicroShip extends Phaser.Scene
         this.heart2.setScrollFactor(0,0).setDepth(20);
         this.heart3 = this.heartGroup.create(230, 30, "lives",3);
         this.heart3.setScrollFactor(0,0).setDepth(20);
+        var hud = this.add.image(-155,-20,'hud');
+        hud.setOrigin(0,0).setScrollFactor(0,0).setDepth(9).setAlpha(0.2).setScale(2);
+
 
         var cam = this.myCam = this.cameras.main.startFollow(this.ship, false, 0.1, 0.1, 0, 0);
         this.myCam.setBounds(-500,-500, 1000, 1000);
@@ -298,6 +305,7 @@ export default class MicroShip extends Phaser.Scene
         this.germGroup = this.physics.add.group();
         this.physics.add.collider(this.projectiles, this.germGroup, (bullet, germ)=>{
             console.log("ded germ") //issue fix later
+            bullet.disableBody(false,true)
             germ.disableBody(true,true);
             this.earnedEvos+=1;
         })
@@ -331,6 +339,8 @@ export default class MicroShip extends Phaser.Scene
     spawnGermHorde(size) //make lots of them... rounds add parameter for horde size
     {
         console.log('more')
+        this.numWaves +=1;
+        this.waveCounter.text = "WAVE " + this.numWaves;
         var warningColor = this.add.rectangle(-200,-150,1500,1500, 0xff0d00);
         warningColor.setAlpha(0).setDepth(20)
         this.tweens.add({

@@ -42,7 +42,7 @@ export default class Home extends Phaser.Scene
         //Map setup
         var g1 = this.add.grid(150, 200, 480, 320, 32, 25, 0x00b9f2).setAltFillStyle(0x016fce).setOutlineStyle();
 
-        this.shipcarn = this.physics.add.sprite(100,200, 'shipcarn', 0);
+        this.shipcarn = this.physics.add.sprite(100,300, 'shipcarn', 0);
         this.shipcarn.anims.play('shipcarn_anim');
         this.philcarn = this.physics.add.sprite(200, 150, 'philcarn', 0);
         this.philcarn.anims.play('philcarn_anim');
@@ -67,10 +67,10 @@ export default class Home extends Phaser.Scene
         //Local storage. May need to restart game instance to update evos after each minigame
         this.numEvos= Number( localStorage.getItem("savedEvos") == null ? 0 : localStorage.getItem("savedEvos"));
         
-        var name= this.add.bitmapText(15,14, "pixelFont", "Willy", 20);
+        var name= this.add.bitmapText(15,10, "pixelFont", "Willy Walko", 20);
         name.setScrollFactor(0,0)
-        var evoCounter = this.add.bitmapText(35,34, "pixelFont", "X " + this.numEvos, 20);
-        var evoimg = this.add.image(20,40,'evoimg');
+        var evoCounter = this.add.bitmapText(190, 10, "pixelFont", "X " + this.numEvos, 20);
+        var evoimg = this.add.image(180,15,'evoimg');
         evoimg.setScrollFactor(0,0);
         evoCounter.setScrollFactor(0,0);
         
@@ -87,7 +87,7 @@ export default class Home extends Phaser.Scene
         this.shipcarn.body.setSize(75,45)
         this.shipcarn.on('pointerup',  (pointer) => {
             this.scene.pause();
-            this.scene.launch('startingGame',{gameTitle: "Micro-Ship", evos: this.numEvos, gameKey: 'microship'});
+            this.scene.launch('startingGame',{gameTitle: "Microship", evos: this.numEvos, gameKey: 'microship'});
         }, this);
 
         this.philcarn.setInteractive();
@@ -130,27 +130,33 @@ export default class Home extends Phaser.Scene
         if (keys.A.isDown) 
         {
             this.willy.anims.play('willy_walk',true);
-            this.willy.setVelocity(-speed, 0);
+            this.willy.setVelocityX(-speed); //Setting velocity X without makeing Y=0 allows for diagonal movement
             this.willy.scaleX = this.s
             this.willy.body.offset.x = 0
         } 
         else if (keys.D.isDown) 
         {
             this.willy.anims.play('willy_walk',true);
-            this.willy.setVelocity(speed, 0);
+            this.willy.setVelocityX(speed);
             this.willy.scaleX = -this.s
             this.willy.body.offset.x = 32
         }
         
+        
         if (keys.W.isDown) 
         {
             this.willy.anims.play('willy_walk',true);
-            this.willy.setVelocity(0,-speed);
+            this.willy.setVelocityY(-speed);
         } 
         else if (keys.S.isDown) 
         {
             this.willy.anims.play('willy_walk',true);
-            this.willy.setVelocity(0,speed);
+            this.willy.setVelocityY(speed);
+        }
+        
+        if(!keys.W.isDown && !keys.A.isDown && !keys.S.isDown && !keys.D.isDown)
+        {
+            this.willy.anims.play('willy_idle',true);
         }
         
         

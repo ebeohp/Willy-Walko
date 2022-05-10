@@ -209,7 +209,7 @@ export default class Atomic extends Phaser.Scene
             loop: true
         });
         this.time.addEvent({ //second row
-            delay: 1600, 
+            delay: 2000, 
             callback: this.bohrChoices, 
             args: [120,50],
             callbackScope: this, 
@@ -338,7 +338,7 @@ export default class Atomic extends Phaser.Scene
     }
     bohrChoices(row, speed) //higher chance of current element
     {   
-        var randomBohr = Phaser.Math.Between(0, 20);
+        var randomBohr = Phaser.Math.Between(0, 25);
         
         if(randomBohr == this.currentElement || randomBohr > 17)
         {
