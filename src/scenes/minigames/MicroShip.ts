@@ -63,10 +63,17 @@ export default class MicroShip extends Phaser.Scene
 
     create() //block out bg with graphics. do as little art as possible
     {
-        var xButton = this.add.sprite(380,20, "uiButtons", 2)
-        xButton.setDepth(100);
+        var xButton = this.add.image(380,20, "xButton")
+        xButton.setDepth(100).setAlpha(0.3);
         xButton.setInteractive();
         xButton.setScrollFactor(0,0);
+        
+        xButton.on('pointerover',  (pointer) => {
+            xButton.setAlpha(1);
+        }, this);
+        xButton.on('pointerout',  (pointer) => {
+            xButton.setAlpha(0.5);
+        }, this);
         xButton.on('pointerup',  (pointer) => {
             var totalEvos = this.earnedEvos;
             this.scene.launch('quittingGame', {currentGameKey: 'microship', earnedEvos: totalEvos, numEvos: this.numEvos, gameTitle: "Microship"});
@@ -82,12 +89,13 @@ export default class MicroShip extends Phaser.Scene
         this.ship = this.physics.add.sprite(0,-250,'ship',0); //0,-220
         this.ship.setDepth(10).setOrigin(0.5);
         //Graphics for lives system and groups hearts 
+        
         this.heartGroup = this.physics.add.group();
-        this.heart1 = this.heartGroup.create(30, 30, "lives",3);
+        this.heart1 = this.heartGroup.create(170, 30, "lives",3);
         this.heart1.setScrollFactor(0,0).setDepth(20);
-        this.heart2 = this.heartGroup.create(60, 30, "lives",3);
+        this.heart2 = this.heartGroup.create(200, 30, "lives",3);
         this.heart2.setScrollFactor(0,0).setDepth(20);
-        this.heart3 = this.heartGroup.create(90, 30, "lives",3);
+        this.heart3 = this.heartGroup.create(230, 30, "lives",3);
         this.heart3.setScrollFactor(0,0).setDepth(20);
 
         var cam = this.myCam = this.cameras.main.startFollow(this.ship, false, 0.1, 0.1, 0, 0);
@@ -692,7 +700,7 @@ export default class MicroShip extends Phaser.Scene
         this.time.addEvent({  
             delay: 2000, 
             callback: ()=>{
-                this.scene.start("awardGame", {thisTitle: "MicroShip", earnedEvos: this.earnedEvos, numEvos: this.numEvos});
+                this.scene.start("awardGame", {gameTitle: "MicroShip", earnedEvos: this.earnedEvos, numEvos: this.numEvos});
             }, 
             callbackScope: this, 
             loop: false

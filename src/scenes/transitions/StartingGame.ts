@@ -41,18 +41,31 @@ export default class StartingGame extends Phaser.Scene
         
         const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
         var title = this.add.bitmapText(screenCenterX, 150, "pixelFont", this.gameTitle, 25);
-        title.setOrigin(0.5)
-        var flaps = this.add.sprite(202,80, 'flaps', Phaser.Math.Between(0,2))
-        flaps.setScale(1.8)
+        title.setOrigin(0.5);
+        var flaps = this.add.sprite(202,80, 'flaps', Phaser.Math.Between(0,2));
+        flaps.setScale(1.8);
 
         var play = this.add.sprite(200,180,'playButton', 0)
-        play.setInteractive()
+        play.setInteractive();
         play.on('pointerup',  (pointer) => {
-            this.scene.stop("home");
+            this.scene.stop('home');
             this.scene.start(this.gameKey, {evos: this.numEvos});
         }, this);
-       
         
+        var backHome = this.add.sprite(380,20,'uiButtons', 2)
+        backHome.setInteractive().setAlpha(0.3);
+
+        backHome.on('pointerover',  (pointer) => {
+            backHome.setAlpha(1);
+        }, this);
+        backHome.on('pointerout',  (pointer) => {
+            backHome.setAlpha(0.5);
+        }, this);
+        backHome.on('pointerup',  (pointer) => {
+            
+            this.scene.resume('home');
+            this.scene.stop('startingGame');
+        }, this);
 
     }
 

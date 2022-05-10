@@ -48,12 +48,20 @@ export default class PhilHelios extends Phaser.Scene
     }
     create()
     {
-        var xButton = this.add.sprite(380,20, "uiButtons", 2)
-        xButton.setDepth(100);
+        var xButton = this.add.image(380,20, "xButton")
+        xButton.setDepth(100).setAlpha(0.3);
         xButton.setInteractive();
+        xButton.setScrollFactor(0,0);
+        
+        xButton.on('pointerover',  (pointer) => {
+            xButton.setAlpha(1);
+        }, this);
+        xButton.on('pointerout',  (pointer) => {
+            xButton.setAlpha(0.5);
+        }, this);
         xButton.on('pointerup',  (pointer) => {
-            var totalEvos = this.earnedEvos+this.scene.get('philHeliosB').getStarchEvos();
-            this.scene.launch('quittingGame', {currentGameKey: 'philHelios', earnedEvos: totalEvos, numEvos: this.numEvos, gameTitle: "Legend of Phil Helios"});
+            var totalEvos = this.earnedEvos;
+            this.scene.launch('quittingGame', {currentGameKey: 'philHelios', earnedEvos: totalEvos, numEvos: this.numEvos, gameTitle: "Microship"});
             this.scene.pause();
         }, this);
         

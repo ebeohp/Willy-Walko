@@ -60,13 +60,23 @@ export default class Trivia extends Phaser.Scene
     create()
     {
     
-        var xButton = this.add.sprite(20,20, "uiButtons", 2)
-        xButton.setDepth(100);
+        var xButton = this.add.image(380,20, "xButton")
+        xButton.setDepth(100).setAlpha(0.3);
         xButton.setInteractive();
+        xButton.setScrollFactor(0,0);
+        
+        xButton.on('pointerover',  (pointer) => {
+            xButton.setAlpha(1);
+        }, this);
+        xButton.on('pointerout',  (pointer) => {
+            xButton.setAlpha(0.5);
+        }, this);
         xButton.on('pointerup',  (pointer) => {
-            this.scene.launch('quittingGame', {currentGameKey: 'trivia', earnedEvos: this.earnedEvos, numEvos: this.numEvos, gameTitle: "Chem Trivia"});
+            var totalEvos = this.earnedEvos;
+            this.scene.launch('quittingGame', {currentGameKey: 'trivia', earnedEvos: totalEvos, numEvos: this.numEvos, gameTitle: "Microship"});
             this.scene.pause();
         }, this);
+
         var graphics = this.add.graphics();
         var outside = graphics.fillGradientStyle(0x2a0078, 0x2a0078,0x871fa1, 0x871fa1,  1);
         graphics.fillRect(0, 0, 400, 300);
