@@ -80,7 +80,7 @@ export default class MicroShip extends Phaser.Scene
         r2.setStrokeStyle(4, 0xff0400);
 
         this.ship = this.physics.add.sprite(0,-250,'ship',0); //0,-220
-        this.ship.setDepth(10).setPushable().setBounce(0.5);
+        this.ship.setDepth(10).setOrigin(0.5);
         //Graphics for lives system and groups hearts 
         this.heartGroup = this.physics.add.group();
         this.heart1 = this.heartGroup.create(30, 30, "lives",3);
@@ -97,16 +97,15 @@ export default class MicroShip extends Phaser.Scene
        
         this.input.on('pointermove',  (pointer) => 
         {
-            let mouse = pointer
-            var angle = Phaser.Math.Angle.Between(this.ship.x, this.ship.y, mouse.x + this.cameras.main.scrollX, mouse.y + this.cameras.main.scrollY)            
-            this.ship.rotation=angle+90; //fix later
+            //Angle calculations had to take into account of camera position if the sprite is moving...
+            var angle = Phaser.Math.RAD_TO_DEG * Phaser.Math.Angle.Between(this.ship.x, this.ship.y, pointer.x+ this.cameras.main.scrollX, pointer.y+ this.cameras.main.scrollY); 
+            this.ship.setAngle(angle);
         }, this);
         
         this.projectiles = this.physics.add.group()
 
         this.input.on('pointerup',  (pointer) => 
         {
-            //this.shootBeam()
             if(this.popUpOn == false)
             {
                 console.log('shoot!');
@@ -362,7 +361,7 @@ export default class MicroShip extends Phaser.Scene
         if(spawnZone ==3)
         {
             for(let i = 0; i<hordeSize; i++) //number of enemies spawning
-            {
+            {  
                 var randomX = Phaser.Math.Between(-600,-400);
                 var randomY = Phaser.Math.Between(-200,200);
                 var aGerm = this.germGroup.create(randomX,randomY,"enemy").setPushable().setBounce(0.5);
