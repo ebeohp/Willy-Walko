@@ -118,7 +118,8 @@ export default class MicroShip extends Phaser.Scene
                 this.tweens.add({
                     targets: beam,
                     alpha: 0,
-                    duration: 400, //edit duration for speed
+                    delay: 150,
+                    duration: 500, //edit duration for speed
                     ease: 'Sine.easeIn',
                     onComplete: () =>
                     {
@@ -293,7 +294,7 @@ export default class MicroShip extends Phaser.Scene
             germ.disableBody(true,true);
             this.earnedEvos+=1;
         })
-        this.physics.add.collider(this.ship, this.germGroup, (ship,germ) => {this.hurtShip(ship,germ)}));
+        this.physics.add.collider(this.ship, this.germGroup, (ship,germ) => {this.hurtShip(ship,germ)});
         this.physics.add.collider(this.germGroup);
         
         for(let i = 0; i<this.organelleArray.length; i++)
@@ -522,11 +523,14 @@ export default class MicroShip extends Phaser.Scene
             if (Phaser.Math.Distance.BetweenPoints(germ, this.ship) < 600) {
 
                 // rotate enemy to face towards player
-                germ.rotation = Phaser.Math.Angle.Between(this.ship.x, this.ship.y, germ.x, germ.y)            
+                //germ.rotation = Phaser.Math.Angle.Between(germ.x, germ.y,this.ship.x, this.ship.y);
+                const vec = new Phaser.Math.Vector2(this.ship.x - germ.x, this.ship.y - germ.y)
+                const rotation = vec.angle();            
+                germ.rotation = rotation;
                 // move enemy towards player at 150px per second
                 var vector2 = this.physics.velocityFromRotation(germ.rotation, 50, germ.velocity);
-                germ.setVelocityX(-vector2.x)
-                germ.setVelocityY(-vector2.y)
+                germ.setVelocityX(vector2.x)
+                germ.setVelocityY(vector2.y)
                 // could add other code - make enemy fire weapon, etc.
             }
         });
@@ -689,7 +693,7 @@ export default class MicroShip extends Phaser.Scene
         this.time.addEvent({  
             delay: 2000, 
             callback: ()=>{
-                this.scene.start("awardthis", {thisTitle: "MicroShip", earnedEvos: this.earnedEvos, numEvos: this.numEvos});
+                this.scene.start("awardGame", {thisTitle: "MicroShip", earnedEvos: this.earnedEvos, numEvos: this.numEvos});
             }, 
             callbackScope: this, 
             loop: false

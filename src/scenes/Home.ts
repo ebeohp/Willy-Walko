@@ -122,36 +122,37 @@ export default class Home extends Phaser.Scene
             return;
         }
         const speed = 150;
-        if(this.cursors.left?.isDown)
+        
+        //for animations of evolution sprites, have if else inside based on number evos
+        var keys = this.input.keyboard.addKeys("W,A,S,D");
+        this.willy.setVelocity(0);
+
+        if (keys.A.isDown) 
         {
             this.willy.anims.play('willy_walk',true);
             this.willy.setVelocity(-speed, 0);
             this.willy.scaleX = this.s
             this.willy.body.offset.x = 0
-        }
-        else if(this.cursors.right?.isDown)
+        } 
+        else if (keys.D.isDown) 
         {
             this.willy.anims.play('willy_walk',true);
             this.willy.setVelocity(speed, 0);
             this.willy.scaleX = -this.s
             this.willy.body.offset.x = 32
         }
-        else if (this.cursors.up?.isDown)
+        
+        if (keys.W.isDown) 
         {
             this.willy.anims.play('willy_walk',true);
             this.willy.setVelocity(0,-speed);
-        }
-        else if(this.cursors.down?.isDown)
+        } 
+        else if (keys.S.isDown) 
         {
             this.willy.anims.play('willy_walk',true);
             this.willy.setVelocity(0,speed);
         }
-        else
-        {   
-            this.willy.anims.play('willy_idle',true);
-            this.willy.setVelocity(0,0);
-        }
-        //for animations of evolution sprites, have if else inside based on number evos
-             
+        
+        
     }
 }

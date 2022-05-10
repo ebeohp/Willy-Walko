@@ -195,14 +195,14 @@ export default class Atomic extends Phaser.Scene
         this.time.addEvent({ //every call, new element in row appears
             delay: 1000, 
             callback: this.bohrChoices, 
-            args: [60],
+            args: [60,90],
             callbackScope: this, 
             loop: true
         });
         this.time.addEvent({ //second row
             delay: 1600, 
             callback: this.bohrChoices, 
-            args: [120],
+            args: [120,50],
             callbackScope: this, 
             loop: true
         });
@@ -327,7 +327,7 @@ export default class Atomic extends Phaser.Scene
         this.dart.x=x;
         this.dart.y = 260;
     }
-    bohrChoices(row) //higher chance of current element
+    bohrChoices(row, speed) //higher chance of current element
     {   
         var randomBohr = Phaser.Math.Between(0, 20);
         
@@ -335,8 +335,8 @@ export default class Atomic extends Phaser.Scene
         {
             var correctBohr = this.bohrGroup.create(350,row,"bohrtargets",this.currentElement)
             var trigger = this.triggerGroup.create(350,row,"trigger")
-            trigger.setScale(.3).setVelocityX(-90)
-            correctBohr.setVelocityX(-90);
+            trigger.setScale(.3).setVelocityX(-speed)
+            correctBohr.setVelocityX(-speed);
             correctBohr.body.setSize(20,20);
             correctBohr.setScale(1.75)
             correctBohr.setDepth(1)
@@ -345,7 +345,7 @@ export default class Atomic extends Phaser.Scene
         else
         {
             var bohr = this.bohrGroup.create(350,row, "bohrtargets", randomBohr)
-            bohr.setVelocityX(-90);
+            bohr.setVelocityX(-speed);
             bohr.body.setSize(20,20)
             bohr.setScale(1.75)
             bohr.setDepth(1)
