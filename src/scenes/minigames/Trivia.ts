@@ -225,7 +225,7 @@ export default class Trivia extends Phaser.Scene
         });
         this.goEasy.setInteractive();
         this.goEasy.on('pointerup',  (pointer) => {
-            this.newEasyQ(0);
+            this.newEasyQ(0, 35); //arbitrary starting currentQ because this is first Q 
 
             for(let i = 0; i<deleteArray.length; i++)
             {
@@ -250,7 +250,7 @@ export default class Trivia extends Phaser.Scene
         });
         this.goMedium.setInteractive();
         this.goMedium.on('pointerup',  (pointer) => {
-            this.newMediumQ(0);
+            this.newMediumQ(0, 35);
             for(let i = 0; i<deleteArray.length; i++)
             {
                 deleteArray[i].destroy(true);
@@ -362,11 +362,10 @@ export default class Trivia extends Phaser.Scene
     {
     
     }
-    newEasyQ(numCorrectE)
+    newEasyQ(numCorrectE, currentQ)
     {
         //Resets UI, timer to 1 min, puts new question up 
         this.resetTimer();
-        console.log(this.numCorrectE)
         this.bottle = this.add.sprite(100,160,'bigBottle', numCorrectE)
         this.bottle.setScale(2)
         this.mangoEmote = this.add.sprite(100,400,'mangoEmote',Phaser.Math.Between(0,2))
@@ -377,7 +376,12 @@ export default class Trivia extends Phaser.Scene
         this.dancingMango.setScale(2);
 
 
-        var questionNum = Phaser.Math.Between(0, 7);
+        var questionNum = Phaser.Math.Between(0, 10);
+        while (questionNum == currentQ)
+        {
+            questionNum = Phaser.Math.Between(0, 10);
+        }
+
         this.question= this.add.text(230,30, this.easyBank[questionNum][0], { font: '12px Arial', color: '#ffffff', align: 'center', wordWrap: { width: 150 } });
         this.answerButtons = this.physics.add.group();
 
@@ -411,7 +415,6 @@ export default class Trivia extends Phaser.Scene
                     numCorrectE = 0;
                 }
                 
-                console.log("correct");
                 this.A.setFrame(1);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -422,15 +425,15 @@ export default class Trivia extends Phaser.Scene
                 ({
                     delay: 3000,
                     callback: this.newEasyQ,
-                    args: [numCorrectE],
+                    args: [numCorrectE, questionNum],
                     callbackScope: this,
-                    loop: false,
+                    loop: false
                     
                 });
             }
             else
             {
-                console.log("wrong! RED"); 
+                
                 this.A.setFrame(2);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -439,7 +442,7 @@ export default class Trivia extends Phaser.Scene
                 ({
                     delay: 3000,
                     callback: this.newEasyQ,
-                    args: [numCorrectE],
+                    args: [numCorrectE,questionNum],
                     callbackScope: this,
                     loop: false
                 });
@@ -475,7 +478,6 @@ export default class Trivia extends Phaser.Scene
                     });
                     numCorrectE = 0;
                 }
-                console.log("correct");
                 this.B.setFrame(1);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -485,15 +487,15 @@ export default class Trivia extends Phaser.Scene
                 ({
                     delay: 2000,
                     callback: this.newEasyQ,
-                    args: [numCorrectE],
+                    args: [numCorrectE, questionNum],
                     callbackScope: this,
-                    loop: false,
+                    loop: false
                     
                 });
             }
             else
             {
-                console.log("wrong! RED"); 
+                
                 this.B.setFrame(2);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -502,7 +504,7 @@ export default class Trivia extends Phaser.Scene
                 ({
                     delay: 2000,
                     callback: this.newEasyQ,
-                    args: [numCorrectE],
+                    args: [numCorrectE,questionNum],
                     callbackScope: this,
                     loop: false
                 });
@@ -538,7 +540,6 @@ export default class Trivia extends Phaser.Scene
                     });
                     numCorrectE = 0;
                 }
-                console.log("correct");
                 this.C.setFrame(1);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -548,15 +549,15 @@ export default class Trivia extends Phaser.Scene
                 ({
                     delay: 2000,
                     callback: this.newEasyQ,
-                    args: [numCorrectE],
+                    args: [numCorrectE,questionNum],
                     callbackScope: this,
-                    loop: false,
+                    loop: false
                     
                 });
             }
             else
             {
-                console.log("wrong! RED"); 
+                
                 this.C.setFrame(2);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -565,7 +566,7 @@ export default class Trivia extends Phaser.Scene
                 ({
                     delay: 2000,
                     callback: this.newEasyQ,
-                    args: [numCorrectE],
+                    args: [numCorrectE, questionNum],
                     callbackScope: this,
                     loop: false
                 });
@@ -574,7 +575,7 @@ export default class Trivia extends Phaser.Scene
         }, this);
         
     }
-    newMediumQ(numCorrectE)
+    newMediumQ(numCorrectE, currentQ)
     {
         this.resetTimer();
         console.log(numCorrectE)
@@ -588,7 +589,12 @@ export default class Trivia extends Phaser.Scene
         this.dancingMango.setScale(2);
 
 
-        var questionNum = Phaser.Math.Between(0, 3);
+        var questionNum = Phaser.Math.Between(0, 7);
+        while (questionNum == currentQ)
+        {
+            questionNum = Phaser.Math.Between(0, 7);
+        }
+
         this.question= this.add.text(230,30, this.mediumBank[questionNum][0], { font: '12px Arial', color: '#ffffff', align: 'center', wordWrap: { width: 150 } });
         this.answerButtons = this.physics.add.group();
 
@@ -627,7 +633,6 @@ export default class Trivia extends Phaser.Scene
                     numCorrectE = 0;
                     
                 }
-                console.log("correct");
                 this.A.setFrame(1);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -638,15 +643,14 @@ export default class Trivia extends Phaser.Scene
                 ({
                     delay: 3000,
                     callback: this.newMediumQ,
-                    args: [numCorrectE],
+                    args: [numCorrectE, questionNum],
                     callbackScope: this,
-                    loop: false,
+                    loop: false
                     
                 });
             }
             else
             {
-                console.log("wrong! RED"); 
                 this.A.setFrame(2);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -655,7 +659,7 @@ export default class Trivia extends Phaser.Scene
                 ({
                     delay: 3000,
                     callback: this.newMediumQ,
-                    args: [numCorrectE],
+                    args: [numCorrectE, questionNum],
                     callbackScope: this,
                     loop: false
                 });
@@ -696,7 +700,6 @@ export default class Trivia extends Phaser.Scene
                     numCorrectE = 0;
                     
                 }
-                console.log("correct");
                 this.B.setFrame(1);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -706,7 +709,7 @@ export default class Trivia extends Phaser.Scene
                 ({
                     delay: 2000,
                     callback: this.newMediumQ,
-                    args: [numCorrectE],
+                    args: [numCorrectE, questionNum],
                     callbackScope: this,
                     loop: false
                     
@@ -714,7 +717,6 @@ export default class Trivia extends Phaser.Scene
             }
             else
             {
-                console.log("wrong! RED"); 
                 this.B.setFrame(2);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -723,7 +725,7 @@ export default class Trivia extends Phaser.Scene
                 ({
                     delay: 2000,
                     callback: this.newMediumQ,
-                    args: [numCorrectE],
+                    args: [numCorrectE,questionNum],
                     callbackScope: this,
                     loop: false
                 });
@@ -765,7 +767,6 @@ export default class Trivia extends Phaser.Scene
                     numCorrectE = 0;
                     
                 }
-                console.log("correct");
                 this.C.setFrame(1);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -775,7 +776,7 @@ export default class Trivia extends Phaser.Scene
                 ({
                     delay: 2000,
                     callback: this.newMediumQ,
-                    args: [numCorrectE],
+                    args: [numCorrectE, questionNum],
                     callbackScope: this,
                     loop: false
                     
@@ -783,7 +784,6 @@ export default class Trivia extends Phaser.Scene
             }
             else
             {
-                console.log("wrong! RED"); 
                 this.C.setFrame(2);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -792,7 +792,7 @@ export default class Trivia extends Phaser.Scene
                 ({
                     delay: 2000,
                     callback: this.newMediumQ,
-                    args: [numCorrectE],
+                    args: [numCorrectE,questionNum],
                     callbackScope: this,
                     loop: false
                 });
@@ -800,7 +800,7 @@ export default class Trivia extends Phaser.Scene
 
         }, this);
     }
-    newHardQ(numCorrectE)
+    newHardQ(numCorrectE,currentQ)
     {
         
         this.resetTimer();
@@ -816,7 +816,12 @@ export default class Trivia extends Phaser.Scene
         
 
 
-        var questionNum = Phaser.Math.Between(0, 3);
+        var questionNum = Phaser.Math.Between(0, 7);
+        while (questionNum == currentQ)
+        {
+            questionNum = Phaser.Math.Between(0, 7);
+        }
+        
         this.question= this.add.text(230,30, this.hardBank[questionNum][0], { font: '12px Arial', color: '#ffffff', align: 'center', wordWrap: { width: 150 } });
         this.answerButtons = this.physics.add.group();
 
@@ -855,7 +860,6 @@ export default class Trivia extends Phaser.Scene
                     numCorrectE = 0;
                     
                 }
-                console.log("correct");
                 this.A.setFrame(1);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -866,7 +870,7 @@ export default class Trivia extends Phaser.Scene
                 ({
                     delay: 3000,
                     callback: this.newHardQ,
-                    args: [numCorrectE],
+                    args: [numCorrectE,questionNum],
                     callbackScope: this,
                     loop: false
                     
@@ -874,7 +878,6 @@ export default class Trivia extends Phaser.Scene
             }
             else
             {
-                console.log("wrong! RED"); 
                 this.A.setFrame(2);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -883,7 +886,7 @@ export default class Trivia extends Phaser.Scene
                 ({
                     delay: 3000,
                     callback: this.newHardQ,
-                    args: [numCorrectE],
+                    args: [numCorrectE,questionNum],
                     callbackScope: this,
                     loop: false
                 });
@@ -925,7 +928,6 @@ export default class Trivia extends Phaser.Scene
                     numCorrectE = 0;
                     
                 }
-                console.log("correct");
                 this.B.setFrame(1);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -935,7 +937,7 @@ export default class Trivia extends Phaser.Scene
                 ({
                     delay: 2000,
                     callback: this.newHardQ,
-                    args: [numCorrectE],
+                    args: [numCorrectE,questionNum],
                     callbackScope: this,
                     loop: false
                     
@@ -943,7 +945,6 @@ export default class Trivia extends Phaser.Scene
             }
             else
             {
-                console.log("wrong! RED"); 
                 this.B.setFrame(2);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -952,7 +953,7 @@ export default class Trivia extends Phaser.Scene
                 ({
                     delay: 2000,
                     callback: this.newHardQ,
-                    args: [numCorrectE],
+                    args: [numCorrectE,questionNum],
                     callbackScope: this,
                     loop: false
                 });
@@ -994,7 +995,6 @@ export default class Trivia extends Phaser.Scene
                     numCorrectE = 0;
                     
                 }
-                console.log("correct");
                 this.C.setFrame(1);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -1004,7 +1004,7 @@ export default class Trivia extends Phaser.Scene
                 ({
                     delay: 2000,
                     callback: this.newHardQ,
-                    args: [numCorrectE],
+                    args: [numCorrectE,questionNum],
                     callbackScope: this,
                     loop: false
                     
@@ -1012,7 +1012,6 @@ export default class Trivia extends Phaser.Scene
             }
             else
             {
-                console.log("wrong! RED"); 
                 this.C.setFrame(2);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -1021,7 +1020,7 @@ export default class Trivia extends Phaser.Scene
                 ({
                     delay: 2000,
                     callback: this.newHardQ,
-                    args: [numCorrectE],
+                    args: [numCorrectE,questionNum],
                     callbackScope: this,
                     loop: false
                 });
