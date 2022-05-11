@@ -24,6 +24,10 @@ export default class Home extends Phaser.Scene
     private philcarn?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     private bountycarn?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     private triviacarn?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    electric: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    teslacoil: Phaser.GameObjects.Image;
+    electric2: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    archi: Phaser.GameObjects.Image;
 
     
 
@@ -40,20 +44,45 @@ export default class Home extends Phaser.Scene
     create()
     {   
         //Map setup
-        var g1 = this.add.grid(150, 200, 480, 320, 32, 25, 0x00b9f2).setAltFillStyle(0x016fce).setOutlineStyle();
-
-        this.shipcarn = this.physics.add.sprite(100,300, 'shipcarn', 0);
+        var g1 = this.add.grid(0, 0, 600, 400, 32, 25, 0x00b9f2).setAltFillStyle(0x016fce).setOutlineStyle();
+        g1.setOrigin(0,0)
+        this.shipcarn = this.physics.add.sprite(200,350, 'shipcarn', 0);
         this.shipcarn.anims.play('shipcarn_anim');
-        this.philcarn = this.physics.add.sprite(200, 150, 'philcarn', 0);
+        this.philcarn = this.physics.add.sprite(300, 150, 'philcarn', 0);
         this.philcarn.anims.play('philcarn_anim');
-        this.triviacarn = this.physics.add.sprite(300,250, 'triviacarn', 0);
+        this.triviacarn = this.physics.add.sprite(400,250, 'triviacarn', 0);
         this.triviacarn.anims.play('triviacarn_anim');
-        this.bountycarn = this.physics.add.sprite(0,150, 'bountycarn', 0);
+        this.bountycarn = this.physics.add.sprite(100,150, 'bountycarn', 0);
+
+        this.archi = this.add.image(400,100, 'archi', 0);
+        this.teslacoil = this.add.image(60,300, 'teslacoil', 0);
+        this.electric = this.physics.add.sprite(60,240, 'electric', 0);
+        this.electric.setScale(2).setDepth(2).anims.play('tesla_anim');
+        this.electric2 = this.physics.add.sprite(60,250, 'electric2', 0);
+        this.electric2.setScale(2).anims.play('tesla2_anim');
+        this.bohrmodel = this.physics.add.sprite(200,250, 'bohrmodel', 0);
+        this.bohrmodel.anims.play('bohrmodel_anim');
+        this.tweens.add({
+            targets: this.bohrmodel,
+            y: 240,
+            duration: 800,
+            ease: 'Linear',
+            repeat: -1,
+            yoyo: true
+            
+        });
+        this.add.image(200,290, 'bohrstand', 0);
+        
+        this.bouncywall1 = this.add.image(500,100, 'bouncywall', 0);
+        this.bouncywall1.setScale(1.25);
+        this.bouncyfloor = this.add.rectangle(200, 200, 148, 148, 0x6666ff);
+        this.bouncywall2 = this.add.image(500,170, 'bouncywall', 0);
+        this.bouncywall2.setScale(1.25);
 
         var attractionsArray = [this.shipcarn, this.philcarn, this.triviacarn, this.bountycarn]
 
         //Player setup
-        this.willy = this.physics.add.sprite(50,300,'willy',0);
+        this.willy = this.physics.add.sprite(0,0,'willy',0);
         this.willy.setScale(this.s);
         this.myCam = this.cameras.main.startFollow(this.willy, true);
         //this.willy.setCollideWorldBounds(true);

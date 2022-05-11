@@ -46,6 +46,10 @@ export default class Preloader extends Phaser.Scene
         
         this.load.image('evoimg', 'images/evoimg.png');
         this.load.image('coinimg', 'images/coinimg.png');
+        this.load.image('teslacoil', 'images/teslacoil.png');
+        this.load.image('archi', 'images/archi.png');
+        this.load.image('bohrstand', 'images/bohrstand.png');
+        this.load.image('bouncywall', 'images/bouncywall.png');
         this.load.spritesheet('willy','sprites/willy.png',{
             frameHeight: 32,
             frameWidth: 32
@@ -65,6 +69,18 @@ export default class Preloader extends Phaser.Scene
         this.load.spritesheet('triviacarn', 'sprites/triviacarn.png', {
             frameWidth: 96,
             frameHeight: 128
+        });
+        this.load.spritesheet('electric', 'sprites/electric.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
+        this.load.spritesheet('electric2', 'sprites/electric2.png', {
+            frameWidth: 64,
+            frameHeight: 128
+        });
+        this.load.spritesheet('bohrmodel','sprites/bohrmodel.png',{
+            frameHeight: 96,
+            frameWidth: 96
         });
 
         //Phil Helios Assets
@@ -242,7 +258,7 @@ export default class Preloader extends Phaser.Scene
         this.anims.create({
             key: "shipcarn_anim",
             frames: this.anims.generateFrameNames('shipcarn', {start:0, end:1}),
-            frameRate: 8,
+            frameRate: 5,
             repeat: -1
         }); 
         this.anims.create({
@@ -257,6 +273,26 @@ export default class Preloader extends Phaser.Scene
             frameRate: 8,
             repeat: -1
         }); 
+        this.anims.create({
+            key: "tesla_anim",
+            frames: this.anims.generateFrameNames('electric', {start:0, end:6}),
+            frameRate: 10,
+            repeat: -1
+        }); 
+        this.anims.create({
+            key: "tesla2_anim",
+            frames: this.anims.generateFrameNames('electric2', {start:6, end:9}),
+            frameRate: 8,
+            repeat: -1
+        }); 
+        this.anims.create({
+            key: "bohrmodel_anim",
+            frames: this.anims.generateFrameNames('bohrmodel', {start:0, end:9}),
+            frameRate: 7,
+            repeat: -1
+        }); 
+
+
 
         //Phil Helios Anims
         this.anims.create({
