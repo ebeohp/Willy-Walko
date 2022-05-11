@@ -226,6 +226,18 @@ export default class Preloader extends Phaser.Scene
             frameRate: 10,
             repeat: -1
         }); 
+        this.anims.create({
+            key: "willy3_idle",
+            frames: this.anims.generateFrameNames('willy', {start:10, end:10}),
+            frameRate: 0,
+            repeat: 0
+        }); 
+        this.anims.create({
+            key: "willy3_walk",
+            frames: this.anims.generateFrameNames('willy', {start:11, end:14}),
+            frameRate: 10,
+            repeat: -1
+        }); 
         
         this.anims.create({
             key: "shipcarn_anim",

@@ -43,7 +43,9 @@ export default class MicroShip extends Phaser.Scene
     containerB: any;
     hordeSize = 3; //inital
     numWaves = 0;
+    numKills = 0;
     waveCounter!: Phaser.GameObjects.BitmapText;
+    killsCounter!: Phaser.GameObjects.BitmapText;
     
     
 	constructor()
@@ -92,8 +94,11 @@ export default class MicroShip extends Phaser.Scene
         this.ship.setDepth(10).setOrigin(0.5);
         //Graphics for lives system and groups hearts 
 
-        this.waveCounter = this.add.bitmapText(180, 5, "pixelFont", "WAVE " + this.numWaves, 20);
+        this.waveCounter = this.add.bitmapText(90, 5, "pixelFont", "WAVE " + this.numWaves, 20);
         this.waveCounter.setScrollFactor(0,0).setDepth(20);
+        this.killsCounter = this.add.bitmapText(260, 5, "pixelFont", "KILLS " + this.numKills, 20);
+        this.killsCounter.setScrollFactor(0,0).setDepth(20);
+        
         this.heartGroup = this.physics.add.group();
         this.heart1 = this.heartGroup.create(170, 30, "lives",3);
         this.heart1.setScrollFactor(0,0).setDepth(20);
@@ -308,6 +313,8 @@ export default class MicroShip extends Phaser.Scene
             bullet.disableBody(false,true)
             germ.disableBody(true,true);
             this.earnedEvos+=1;
+            this.numKills +=1;
+            this.killsCounter.text = "KILLS " + this.numKills;
         })
         this.physics.add.collider(this.ship, this.germGroup, (ship,germ) => {this.hurtShip(ship,germ)});
         this.physics.add.collider(this.germGroup);
@@ -338,7 +345,6 @@ export default class MicroShip extends Phaser.Scene
     }
     spawnGermHorde(size) //make lots of them... rounds add parameter for horde size
     {
-        console.log('more')
         this.numWaves +=1;
         this.waveCounter.text = "WAVE " + this.numWaves;
         var warningColor = this.add.rectangle(-200,-150,1500,1500, 0xff0d00);
@@ -703,10 +709,10 @@ export default class MicroShip extends Phaser.Scene
 
     thisOver()
     {
-        var gameover = this.add.bitmapText(100,20, "pixelFont","GAME OVER",50).setDepth(15);
+        var gameover = this.add.bitmapText(100,100, "pixelFont","GAME OVER",50).setDepth(15);
         gameover.setScrollFactor(0,0)
         var camera = this.cameras.main;
-        camera.fadeOut(1000)
+        camera.fadeOut(5000)
         this.time.addEvent({  
             delay: 2000, 
             callback: ()=>{
