@@ -30,6 +30,10 @@ export default class PhilHelios extends Phaser.Scene
     activeAquaIcon!: Phaser.GameObjects.Sprite;
     activeChloroIcon!: Phaser.GameObjects.Sprite;
     activeStarchIcon!: Phaser.GameObjects.Sprite;
+    hiScore!: number;
+    hiScoreCounter!: Phaser.GameObjects.BitmapText;
+    score!: number;
+    scoreCounter!: Phaser.GameObjects.BitmapText;
 
 
 	constructor()
@@ -69,6 +73,16 @@ export default class PhilHelios extends Phaser.Scene
         var graphics = this.add.graphics();
         graphics.fillGradientStyle(0x79ced9, 0x79ced9,0x65a2ba, 0x3287a8,  1);
         graphics.fillRect(0, 0, 400, 300);
+
+        this.hiScore = Number( localStorage.getItem("savedPhilScore") == null ? 0 : localStorage.getItem("savedPhilScore"));
+        var hiScoreFormatted = this.zeroPad(this.hiScore, 6)
+        this.hiScoreCounter = this.add.bitmapText(10, 10, "pixelFont", "BEST " +  hiScoreFormatted, 20);
+        this.hiScoreCounter.setDepth(10)
+
+        this.score = 0;
+        this.scoreCounter = this.add.bitmapText(365, 60, "pixelFont", this.score + " \n FT", 20);
+        this.scoreCounter.setDepth(10)
+
         this.plant = this.physics.add.sprite(150,185,"phil"); //spawn on top of a cloud. so have one cloud at beginning fs
         this.plant.body.gravity.y = 7000;
         this.plant.setDepth(10);
@@ -153,8 +167,15 @@ export default class PhilHelios extends Phaser.Scene
 
         
         this.time.addEvent({
-            delay: 15000, // maybe 15 seconds
+            delay: 15000, // 15 seconds
             callback: this.newStarchPower,
+            callbackScope: this,
+            loop: false
+        });
+
+        this.time.addEvent({
+            delay: 15000, // maybe 15 seconds
+            callback: this.speedUpGame,
             callbackScope: this,
             loop: true
         });
@@ -162,6 +183,15 @@ export default class PhilHelios extends Phaser.Scene
 
     }
 
+    zeroPad(number,size)
+    {
+        var stringNumber = String(number);
+        while(stringNumber.length < (size || 2))
+        {
+            stringNumber = "0" + stringNumber;
+        }
+        return stringNumber;
+    }
     speedUpGame() //slightly buggy. instead of increasing, try interval night and day
     {
         if(this.gameSpeed != 500)
@@ -185,6 +215,7 @@ export default class PhilHelios extends Phaser.Scene
         if(this.plant.y>300)
         {
             console.log("game over");
+            this.hiScoreCounter.setAlpha(0);
             var gameOver = this.add.bitmapText(10,10, "pixelFont", "GAME OVER",40);
             this.gameOver();
         }
@@ -212,7 +243,7 @@ export default class PhilHelios extends Phaser.Scene
         {
             return;
         }
-        const speed = 150;
+        const speed = 200;
         if(this.cursors.left?.isDown)
         {
             this.plant.setVelocity(-speed, 0);
@@ -248,6 +279,24 @@ export default class PhilHelios extends Phaser.Scene
         this.plant.setFrame(0);
         this.plantJumping = true;
         this.plant.body.gravity.y = 0;
+        this.score += 15;
+        this.scoreCounter.text = this.score + " \n FT";
+        if(this.score>this.hiScore)
+        {
+            this.hiScore = this.score;
+            localStorage.setItem('savedPhilScore', String(this.hiScore));
+            this.hiScoreCounter.text = "BEST " + this.zeroPad(this.hiScore, 6);
+            this.tweens.add({
+                targets: this.hiScoreCounter,
+                scale: 1.25,
+                ease: 'Elastic',
+                duration: 300,
+                onComplete: () => {
+                    this.hiScoreCounter.setScale(1);
+                    //plays a ding! sound
+                }
+              });
+        }
         this.tweens.add({
             targets: this.plant,
             y: 150, //just space clouds out more
@@ -426,7 +475,7 @@ export default class PhilHelios extends Phaser.Scene
     newStarchPower() //
     {
         var starch = this.physics.add.sprite(50,0,"plantpowers", 2);
-        starch.setVelocityY(200).setVelocityX(200).setAlpha(0).setBounce(1);
+        starch.setVelocityY(20).setVelocityX(200).setAlpha(0.2).setBounce(1);
         starch.setCollideWorldBounds(true);
         this.tweens.add({ // bounces around for a limited amount of time
             targets: starch,
@@ -439,7 +488,7 @@ export default class PhilHelios extends Phaser.Scene
                 this.tweens.add({
                     targets: starch,
                     alpha: 0,
-                    delay: 4000,
+                    delay: 8000,
                     duration: 1000,
                     ease: 'Linear',
                     repeat: 0,
@@ -456,6 +505,7 @@ export default class PhilHelios extends Phaser.Scene
         this.physics.add.collider(this.plant, starch, (plant, power) => { 
             starch.destroy();
             //fade out of scene
+
             this.time.addEvent({
                 delay: 1000, // let the sun show up on the cloud first...
                 callback: ()=>{     
