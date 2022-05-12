@@ -64,6 +64,7 @@ export default class Preloader extends Phaser.Scene
         this.load.image('bouncyfloor', 'images/bouncyfloor.png');
         this.load.image('bouncywall2', 'images/bouncywall2.png');
         this.load.image('bouncyramp', 'images/bouncyramp.png');
+        this.load.image('infoButton', 'images/infoButton.png');
         
         this.load.image('background', 'images/background.png');
         this.load.spritesheet('willy','sprites/willy.png',{
@@ -181,6 +182,7 @@ export default class Preloader extends Phaser.Scene
         this.load.image('hardLvl', 'images/hardbutton.png');
         this.load.image('ball', 'images/ball.png');
         this.load.image('goggles', 'images/goggles.png');
+        this.load.image('helpButton', 'images/helpButton.png');
         this.load.spritesheet('talkingMango', 'sprites/talkingmango.png', {
             frameWidth: 32,
             frameHeight: 32
@@ -339,7 +341,7 @@ export default class Preloader extends Phaser.Scene
         }); 
 
         //Start Title scene
-        this.scene.start('home');
+        this.scene.start('trivia');
     }
 
     update(time: number, delta: number): void 

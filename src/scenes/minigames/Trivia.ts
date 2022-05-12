@@ -107,17 +107,17 @@ export default class Trivia extends Phaser.Scene
         //Q&A Banks
         this.easyBank = 
         [
-            ["What is the chemical name for water?","Dihydrogen Monoxide","Liquid","Carbon Dioxide"],
-            ["Where are the protons located in the atom?","Nucleus","Electron Cloud","Lala Land"],
-            ["How are atoms in a molecule held together?","Bonds", "Glue","Magnets"],
+            ["What is the chemical name \nfor water?","Dihydrogen Monoxide","Liquid","Carbon Dioxide"],
+            ["Where are the protons \nlocated in the atom?","Nucleus","Electron Cloud","Lala Land"],
+            ["How are atoms in a \nmolecule held together?","Bonds", "Glue","Magnets"],
             ["What is room temperature?","22 Degrees Celcius","70 Degrees Fahrenheit","Air Conditioning"],
-            ["What is the atomic number of nitrogen?","Seven","Two Thousand","One"],
-            ["What is the name of the first noble gas?","Hydrogen","Prince H","Oyxgen"],
-            ["What is the only metal liquid at room temperature?","Mercury","Water","Gold"],
-            ["When you drink milk, you are drinking plenty of…?","Calcium","Gold","Strong bones"],
-            ["The amount of space a liquid takes up is called what?","Volume","Chicken Nuggets","Mass"],
-            ["Which commonly used liquid has a pH of 7?","Water","Orange Juice","Milk"],
-            ["What are electrically charged atoms called?","Ions","Electrons","Quarks"]
+            ["What is the atomic number \nof nitrogen?","Seven","Two Thousand","One"],
+            ["What is the name of the \nfirst noble gas?","Hydrogen","Prince H","Oyxgen"],
+            ["What is the only metal \nliquid at room temperature?","Mercury","Water","Gold"],
+            ["When you drink milk, you \nare drinking plenty of…?","Calcium","Gold","Strong bones"],
+            ["The amount of space a \nliquid takes up is called what?","Volume","Chicken Nuggets","Mass"],
+            ["Which commonly used liquid \nhas a pH of 7?","Water","Orange Juice","Milk"],
+            ["What are electrically \ncharged atoms called?","Ions","Electrons","Quarks"]
         ];
         this.easyKey = 
         [
@@ -136,14 +136,14 @@ export default class Trivia extends Phaser.Scene
 
         this.mediumBank = 
         [
-            ["The component that does the dissolving is…","Solvent", "Solute", "Water"],
-            ["How are compounds that contain Carbon, Hydrogen, and Oxygen classified?","Organic Compounds","Natural Compounds","Prison Compounds"],
-            ["In a closed system...?","Only energy can move about","Nothing can leave or enter","Only matter can move about"],
-            ["To neutralize an acid, you add…?", "Water to Acid", "Acid to Water", "Acid to the trashcan"],
-            ["What is the formula of Dihydrogen Dioxide?", "H2O","H2O2","H3O5"],
+            ["The component that does \nthe dissolving is…","Solvent", "Solute", "Water"],
+            ["How are compounds that \ncontain Carbon, Hydrogen, \nand Oxygen classified?","Organic Compounds","Natural Compounds","Prison Compounds"],
+            ["In a closed system...?","Only energy can \nmove about","Nothing can leave \nor enter","Only matter can \nmove about"],
+            ["To neutralize an acid, \nyou add…?", "Water to Acid", "Acid to Water", "Acid to trashcan"],
+            ["What is the formula of \nDihydrogen Dioxide?", "H2O","H2O2","H3O5"],
             ["Gas goes to liquid is?", "Condensation", "Sublimation", "Depreciation"],
-            ["__CO2 + __H2O → ___C6H12O6 + __O2", "6,6,1,6", "6,6,0,6", "6,1,6,6"],
-            ["What is Avogadro's number?", "6.022x10^23", "Avocado123", "Number of moles in a unit"]
+            ["?CO2 and ?H2O makes \n?C6H12O6 and ?O2", "6,6,1,6", "6,6,0,6", "6,1,6,6"],
+            ["What is Avogadro's \nnumber?", "6.022x10^23", "Avocado123", "Number of moles \nin a unit"]
         
         ];
         this.mediumKey = 
@@ -160,14 +160,14 @@ export default class Trivia extends Phaser.Scene
 
         this.hardBank = 
         [
-            ["What is the symbol of the strongest acid, containing H?","HCl","Helium Acid","HF"],
-            ["In a triple bond, how many pi and sigma bonds are there?","Two Pi, One Sigma","Three Pi, Three Sigma","One Pi, Two Sigma"],
-            ["What causes boiling?","Fire and water interactions","Vapor pressure = atmospheric pressure","Build up of atmospheric pressure"],
-            ["How many sig figs are in 0.0024?","2","5","8"],
-            ["How many sig figs are in 320,000?", "2","320,000","6"],
-            ["If 2 Reds = 1 Blue, 4 Reds is…", "2 Blue", "4 Blue", "8 Blue"],
-            ["What doesn’t increase proper collisions?", "Bigger particle", "Enough KE", "Correct orientation"],
-            ["The pH of an acid is 6. What is the pOH?", "8", "-6", "10"]
+            ["What is the symbol of the \nstrongest acid, containing H?","HCl","Helium Acid","HF"],
+            ["In a triple bond, how \nmany pi and sigma \nbonds are there?","Two Pi, One Sigma","Three Pi, Three Sigma","One Pi, Two Sigma"],
+            ["What causes boiling?","Fire and water \ninteractions","Vapor pressure \n= atmospheric pressure","Build up of \natmospheric pressure"],
+            ["How many sig figs are in \n0.0024?","2","5","8"],
+            ["How many sig figs are in \n320,000?", "2","320,000","6"],
+            ["If 2 Reds = 1 Blue, 4 Reds \nis…", "2 Blue", "4 Blue", "8 Blue"],
+            ["What doesn’t increase \nproper collisions?", "Bigger particle", "Enough KE", "Correct orientation"],
+            ["The pH of an acid is 6. \nWhat is the pOH?", "8", "-6", "10"]
         ];
         this.hardKey = 
         [
@@ -366,6 +366,9 @@ export default class Trivia extends Phaser.Scene
             this.A.destroy();
             this.B.destroy();
             this.C.destroy();
+
+            this.helpButton.destroy();
+            this.modeLabel.destroy();
             //Also destroy the texts for A B and C after you add them!
         }
         
@@ -389,7 +392,7 @@ export default class Trivia extends Phaser.Scene
     }
     onCount() //Decrements by 1 every second. If hits 30, offer learning button.
     {
-        if(this.initialTime==30)
+        if(this.initialTime==60) //30sec
         {
             this.tweens.add({
                 targets: this.goggles,
@@ -401,7 +404,15 @@ export default class Trivia extends Phaser.Scene
                 
             });
             this.timeLabel.text = ""
-            this.add.bitmapText(260,90, "pixelFont","Learning Time!")
+            this.add.bitmapText(260,90, "pixelFont","Learning Time!");
+            this.helpButton.setAlpha(1).setInteractive();
+            this.helpButton.on('pointerup',  (pointer) => {
+                var url = 'https://www.khanacademy.org/science/chemistry';
+
+                var s = window.open(url, '_blank');
+
+            });
+
         }
         else
         {
@@ -429,7 +440,9 @@ export default class Trivia extends Phaser.Scene
         this.dancingMango = this.add.sprite(200, 100, "dancingMango", 0)
         this.dancingMango.anims.play("dancingMango_anim");
         this.dancingMango.setScale(2);
-
+        this.helpButton = this.add.image(200,170,'helpButton',0);
+        this.helpButton.setScale(2).setAlpha(0.5);
+        this.modeLabel = this.add.bitmapText(45,25, "pixelFont", 'Mode: Beginner', 20);
 
         var questionNum = Phaser.Math.Between(0, 10);
         while (questionNum == currentQ)
@@ -437,12 +450,17 @@ export default class Trivia extends Phaser.Scene
             questionNum = Phaser.Math.Between(0, 10);
         }
 
-        this.question= this.add.text(230,30, this.easyBank[questionNum][0], { font: '12px Arial', color: '#ffffff', align: 'center', wordWrap: { width: 150 } });
+        this.question= this.add.bitmapText(300, 40, "pixelFont", this.easyBank[questionNum][0],16, 1);
+        this.question.setOrigin(0.5,0.5)
         this.answerButtons = this.physics.add.group();
 
         this.A = this.answerButtons.create(300,150, "answerButton",0);
-        this.answerA = this.add.text(250,140, this.easyBank[questionNum][1], { fontSize: '12px', font: 'Arial', color: '#ffffff', align: 'center', wordWrap: { width: 150 } });
-        this.A.setInteractive().setScale(1.5);
+        this.answerA = this.add.bitmapText(300, 145, "pixelFont", this.easyBank[questionNum][1],14, 1);
+        this.answerA.setOrigin(0.5,0.5)
+        this.A.setScale(1.5).setInteractive();
+        this.containerA = this.add.container(0, 0, [this.A, this.answerA]);
+    
+        
         this.A.on('pointerup',  (pointer) => {
             if(Number(this.easyKey[questionNum]) == 1)
             {   
@@ -504,9 +522,13 @@ export default class Trivia extends Phaser.Scene
             }
 
         }, this);
+        
         this.B = this.answerButtons.create(300,200, "answerButton",0);
-        this.answerB = this.add.text(250,190, this.easyBank[questionNum][2], { font: 'Arial', color: '#ffffff', align: 'center', wordWrap: { width: 200 } });
-        this.B.setInteractive().setScale(1.5);
+        this.answerB = this.add.bitmapText(300, 195, "pixelFont", this.easyBank[questionNum][2],14, 1);
+        this.answerB.setOrigin(0.5,0.5)
+        this.B.setScale(1.5).setInteractive();
+        this.containerB = this.add.container(0, 0, [this.B, this.answerB]);
+
         this.B.on('pointerup',  (pointer) => {
             if(Number(this.easyKey[questionNum]) == 2)
             {
@@ -566,9 +588,13 @@ export default class Trivia extends Phaser.Scene
             }
 
         }, this);
+        
         this.C = this.answerButtons.create(300,250, "answerButton",0);
-        this.answerC = this.add.text(250,240, this.easyBank[questionNum][3], { font: 'Arial', color: '#ffffff', align: 'center', wordWrap: { width: 200 } });
-        this.C.setInteractive().setScale(1.5);
+        this.answerC = this.add.bitmapText(300, 245, "pixelFont", this.easyBank[questionNum][3],14, 1);
+        this.answerC.setOrigin(0.5,0.5);
+        this.C.setScale(1.5).setInteractive();
+        this.containerC = this.add.container(0, 0, [this.C, this.answerC]);
+        
         this.C.on('pointerup',  (pointer) => {
             if(Number(this.easyKey[questionNum]) == 3)
             {
@@ -642,7 +668,9 @@ export default class Trivia extends Phaser.Scene
         this.dancingMango = this.add.sprite(200, 100, "dancingMango", 0)
         this.dancingMango.anims.play("dancingMango_anim");
         this.dancingMango.setScale(2);
-
+        this.helpButton = this.add.image(200,170,'helpButton',0);
+        this.helpButton.setScale(2).setAlpha(0.5);
+        this.modeLabel = this.add.bitmapText(52,25, "pixelFont", 'Mode: Expert', 20)
 
         var questionNum = Phaser.Math.Between(0, 7);
         while (questionNum == currentQ)
@@ -650,12 +678,17 @@ export default class Trivia extends Phaser.Scene
             questionNum = Phaser.Math.Between(0, 7);
         }
 
-        this.question= this.add.text(230,30, this.mediumBank[questionNum][0], { font: '12px Arial', color: '#ffffff', align: 'center', wordWrap: { width: 150 } });
+        this.question= this.add.bitmapText(300, 40, "pixelFont", this.mediumBank[questionNum][0],16, 1);
+        this.question.setOrigin(0.5,0.5)
         this.answerButtons = this.physics.add.group();
 
         this.A = this.answerButtons.create(300,150, "answerButton",0);
-        this.answerA = this.add.text(250,140, this.mediumBank[questionNum][1], { font: 'Arial', color: '#ffffff', align: 'center', wordWrap: { width: 150 } });
-        this.A.setInteractive().setScale(1.5);
+        this.answerA = this.add.bitmapText(300, 145, "pixelFont", this.mediumBank[questionNum][1],14, 1);
+        this.answerA.setOrigin(0.5,0.5)
+        this.A.setScale(1.5).setInteractive();
+        this.containerA = this.add.container(0, 0, [this.A, this.answerA]);
+    
+
         this.A.on('pointerup',  (pointer) => {
             if(Number(this.mediumKey[questionNum]) == 1)
             {   
@@ -721,9 +754,13 @@ export default class Trivia extends Phaser.Scene
             }
 
         }, this);
+        
         this.B = this.answerButtons.create(300,200, "answerButton",0);
-        this.answerB = this.add.text(250,190, this.mediumBank[questionNum][2], { font: 'Arial', color: '#ffffff', align: 'center', wordWrap: { width: 200 } });
-        this.B.setInteractive().setScale(1.5);
+        this.answerB = this.add.bitmapText(300, 195, "pixelFont", this.mediumBank[questionNum][2],14, 1);
+        this.answerB.setOrigin(0.5,0.5)
+        this.B.setScale(1.5).setInteractive();
+        this.containerB = this.add.container(0, 0, [this.B, this.answerB]);
+
         this.B.on('pointerup',  (pointer) => {
             if(Number(this.mediumKey[questionNum]) == 2)
             {if(numCorrectE==0)
@@ -787,9 +824,14 @@ export default class Trivia extends Phaser.Scene
             }
 
         }, this);
+
         this.C = this.answerButtons.create(300,250, "answerButton",0);
-        this.answerC = this.add.text(250,240, this.mediumBank[questionNum][3], { font: 'Arial', color: '#ffffff', align: 'center', wordWrap: { width: 200 } });
-        this.C.setInteractive().setScale(1.5);
+        this.answerC = this.add.bitmapText(300, 245, "pixelFont", this.mediumBank[questionNum][3],14, 1);
+        //this.add.text(300,245, this.mediumBank[questionNum][3], { fontSize: '12px', font: 'Arial', color: '#ffffff', align: 'center', wordWrap: { width: 150 } });
+        this.answerC.setOrigin(0.5,0.5);
+        this.C.setScale(1.5).setInteractive();
+        this.containerC = this.add.container(0, 0, [this.C, this.answerC]);
+
         this.C.on('pointerup',  (pointer) => {
             if(Number(this.mediumKey[questionNum]) == 3)
             {
@@ -868,7 +910,9 @@ export default class Trivia extends Phaser.Scene
         this.dancingMango = this.add.sprite(200, 100, "dancingMango", 0)
         this.dancingMango.anims.play("dancingMango_anim");
         this.dancingMango.setScale(2);
-        
+        this.helpButton = this.add.image(200,170,'helpButton',0);
+        this.helpButton.setScale(2).setAlpha(0.5);
+        this.modeLabel = this.add.bitmapText(30,25, "pixelFont", 'Mad Scientist Mode', 20)
 
 
         var questionNum = Phaser.Math.Between(0, 7);
@@ -877,12 +921,18 @@ export default class Trivia extends Phaser.Scene
             questionNum = Phaser.Math.Between(0, 7);
         }
         
-        this.question= this.add.text(230,30, this.hardBank[questionNum][0], { font: '12px Arial', color: '#ffffff', align: 'center', wordWrap: { width: 150 } });
+        this.question= this.add.bitmapText(300, 40, "pixelFont", this.hardBank[questionNum][0],16, 1);
+        this.question.setOrigin(0.5,0.5)
+        //this.add.text(235,30, this.hardBank[questionNum][0], { font: '12px Arial', color: '#ffffff', align: 'center', wordWrap: { width: 150 } });
         this.answerButtons = this.physics.add.group();
 
         this.A = this.answerButtons.create(300,150, "answerButton",0);
-        this.answerA = this.add.text(250,140, this.hardBank[questionNum][1], { font: 'Arial', color: '#ffffff', align: 'center', wordWrap: { width: 150 } });
-        this.A.setInteractive().setScale(1.5);
+        this.answerA = this.add.bitmapText(300, 145, "pixelFont", this.hardBank[questionNum][1],14, 1);
+        //this.add.text(300,145, this.hardBank[questionNum][1], { fontSize: '12px', font: 'Arial', color: '#ffffff', align: 'center', wordWrap: { width: 150 } });
+        this.answerA.setOrigin(0.5,0.5)
+        this.A.setScale(1.5).setInteractive();
+        this.containerA = this.add.container(0, 0, [this.A, this.answerA]);
+
         this.A.on('pointerup',  (pointer) => {
             if(Number(this.hardKey[questionNum]) == 1)
             {   
@@ -949,8 +999,11 @@ export default class Trivia extends Phaser.Scene
 
         }, this);
         this.B = this.answerButtons.create(300,200, "answerButton",0);
-        this.answerB = this.add.text(250,190, this.hardBank[questionNum][2], { font: 'Arial', color: '#ffffff', align: 'center', wordWrap: { width: 200 } });
-        this.B.setInteractive().setScale(1.5);
+        this.answerB = this.add.bitmapText(300, 195, "pixelFont", this.hardBank[questionNum][2],14, 1);
+        //this.add.text(300,195, this.hardBank[questionNum][2], { fontSize: '12px', font: 'Arial', color: '#ffffff', align: 'center', wordWrap: { width: 150 } });
+        this.answerB.setOrigin(0.5,0.5)
+        this.B.setScale(1.5).setInteractive();
+        this.containerB = this.add.container(0, 0, [this.B, this.answerB]);
         this.B.on('pointerup',  (pointer) => {
             if(Number(this.hardKey[questionNum]) == 2)
             {
@@ -1016,8 +1069,11 @@ export default class Trivia extends Phaser.Scene
 
         }, this);
         this.C = this.answerButtons.create(300,250, "answerButton",0);
-        this.answerC = this.add.text(250,240, this.hardBank[questionNum][3], { font: 'Arial', color: '#ffffff', align: 'center', wordWrap: { width: 200 } });
-        this.C.setInteractive().setScale(1.5);
+        this.answerC = this.add.bitmapText(300, 245, "pixelFont", this.hardBank[questionNum][3],14, 1);
+        //this.add.text(300,245, this.hardBank[questionNum][3], { fontSize: '12px', font: 'Arial', color: '#ffffff', align: 'center', wordWrap: { width: 150 } });
+        this.answerC.setOrigin(0.5,0.5);
+        this.C.setScale(1.5).setInteractive();
+        this.containerC = this.add.container(0, 0, [this.C, this.answerC]);
         this.C.on('pointerup',  (pointer) => {
             if(Number(this.hardKey[questionNum]) == 3)
             {
