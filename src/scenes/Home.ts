@@ -31,14 +31,20 @@ export default class Home extends Phaser.Scene
     private background!: Phaser.GameObjects.TileSprite;
 
     private isBouncing = false;
-    bohrmodel: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-    bouncywall1: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
-    bouncywall2: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
-    bouncywall3: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
-    bouncyramp: any;
-    jumpTween: Phaser.Tweens.Tween;
-    inviswall: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
-    
+    bohrmodel!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    bouncywall1!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
+    bouncywall2!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
+    bouncywall3!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
+    bouncyramp!: any;
+    jumpTween!: Phaser.Tweens.Tween;
+    inviswall!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
+    reachedNewLevel!: number;
+    brainLabel!: Phaser.GameObjects.BitmapText;
+    levelBar!: Phaser.GameObjects.Sprite;
+    brainSize!: Phaser.GameObjects.Sprite;
+    music!: Phaser.Sound.BaseSound;
+    brainFrame!: number;
+
 
 	constructor()
 	{
@@ -84,6 +90,31 @@ export default class Home extends Phaser.Scene
             graphics.lineTo(0,0);
             graphics.closePath();
             graphics.fillPath();
+
+        //Local storage. May need to restart game instance to update evos after each minigame
+        this.numEvos= Number( localStorage.getItem("savedEvos") == null ? 0 : localStorage.getItem("savedEvos"));
+        
+        var name= this.add.bitmapText(15,10, "pixelFont", "Willy Walko", 20);
+        name.setScrollFactor(0,0).setDepth(151);
+        var evoCounter = this.add.bitmapText(190, 10, "pixelFont", "X " + this.numEvos, 20);
+        var evoimg = this.add.image(180,15,'evoimg');
+        evoimg.setScrollFactor(0,0).setDepth(151);
+        evoCounter.setScrollFactor(0,0).setDepth(151);
+
+        this.brainLabel = this.add.bitmapText(290, 5, "pixelFont", "Brain Size", 13);
+        this.brainLabel.setScrollFactor(0,0).setDepth(151);
+        this.levelBar = this.add.sprite(330,18, 'levelBar',0);
+        this.levelBar.setScrollFactor(0,0).setDepth(151);
+        this.brainSize = this.add.sprite(270,15, 'brainSize');
+        this.brainSize.setScrollFactor(0,0).setDepth(151);
+       
+        if(this.numEvos > 100 || this.numEvos > 3000 || this.numEvos > 7000) //1000, 3000, 7000 when you come back from a game
+        {
+            this.levelBar.setFrame(1);
+        }
+        this.reachedNewLevel = Number( localStorage.getItem("savedReachedLevel") == null ? 0 : localStorage.getItem("savedReachedLevel"))
+        var brainFrame =  this.reachedNewLevel;
+        this.brainSize.setFrame(brainFrame);
 
 
 
@@ -131,10 +162,9 @@ export default class Home extends Phaser.Scene
         var attractionsArray = [this.shipcarn, this.philcarn, this.triviacarn, this.bountycarn, this.inviswall, this.bouncywall1, this.bouncywall2,this.bouncywall3, this.bouncyramp, this.bouncyfloor]
 
         //Player setup
-        this.willy = this.physics.add.sprite(200,0,'willy',0);
+        this.willy = this.physics.add.sprite(200,200,'willy',0);
         this.willy.setScale(this.s).setCollideWorldBounds(true);
         this.myCam = this.cameras.main.startFollow(this.willy, true);
-        //this.willy.setCollideWorldBounds(true);
 
         for(let i = 0; i<attractionsArray.length; i++)
         {
@@ -150,15 +180,7 @@ export default class Home extends Phaser.Scene
             }
         }
 
-        //Local storage. May need to restart game instance to update evos after each minigame
-        this.numEvos= Number( localStorage.getItem("savedEvos") == null ? 0 : localStorage.getItem("savedEvos"));
         
-        var name= this.add.bitmapText(15,10, "pixelFont", "Willy Walko", 20);
-        name.setScrollFactor(0,0).setDepth(151);
-        var evoCounter = this.add.bitmapText(190, 10, "pixelFont", "X " + this.numEvos, 20);
-        var evoimg = this.add.image(180,15,'evoimg');
-        evoimg.setScrollFactor(0,0).setDepth(151);;
-        evoCounter.setScrollFactor(0,0).setDepth(151);;
         
         //Buttons to each minigame ------------------------------------------------------------------------
 
@@ -190,12 +212,6 @@ export default class Home extends Phaser.Scene
             this.scene.launch('startingGame',{gameTitle: "Chem Trivia", evos: this.numEvos, gameKey: 'trivia'});
         }, this);
         
-        /*this.goParkour = this.buttons.create(200,50, "level_buttons");
-        this.goParkour.setInteractive().setScale(this.s);;
-        this.goParkour.on('pointerup',  (pointer) => {
-            this.scene.start('parkour', {evos: this.numEvos});
-        }, this);
-        */
     
     }
     
@@ -223,11 +239,52 @@ export default class Home extends Phaser.Scene
             this.isBouncing = false;
 
         }
+
+        
             
         
     }
     playerMoverManager ()
     {
+        var willyLevel_walk = 'willy_walk';
+        var willyLevel_idle = 'willy_idle';
+        if (this.numEvos >= 500) //10000
+        {
+            if(this.reachedNewLevel == 2) //still has old frames of level 2
+            {
+                this.levelUpTime(10,2);
+                this.reachedNewLevel +=1;
+                localStorage.setItem('savedReachedLevel', String(this.reachedNewLevel+1));
+            }
+            willyLevel_walk = 'willy3_walk';
+            willyLevel_idle = 'willy3_idle';
+        }
+        else if (this.numEvos >= 300) //5000
+        {
+            if(this.reachedNewLevel == 1) //still has old frames of level 1
+            {
+                this.levelUpTime(5,1);
+                this.reachedNewLevel +=1;
+                localStorage.setItem('savedReachedLevel', String(this.reachedNewLevel+1));
+            }
+            willyLevel_walk = 'willy2_walk';
+            willyLevel_idle = 'willy2_idle';
+        }
+        else if(this.numEvos >=100) //2000
+        {
+            //if this is first time, pause all controls, play level up bar anim, sparkles transform willy
+            if(this.reachedNewLevel == 0) //still has old frames of level 0
+            {
+                this.levelUpTime(0,0);
+                this.reachedNewLevel +=1;
+                localStorage.setItem('savedReachedLevel', String(this.reachedNewLevel+1));
+            }
+            willyLevel_walk = 'willy1_walk';
+            willyLevel_idle = 'willy1_idle';
+        }
+        
+
+
         if(!this.cursors || !this.willy)
         {
             return;
@@ -240,14 +297,15 @@ export default class Home extends Phaser.Scene
 
         if (keys.A.isDown) 
         {
-            this.willy.anims.play('willy_walk',true);
+            
+            this.willy.anims.play( willyLevel_walk,true);
             this.willy.setVelocityX(-speed); //Setting velocity X without makeing Y=0 allows for diagonal movement
             this.willy.scaleX = this.s
             this.willy.body.offset.x = 0
         } 
         else if (keys.D.isDown) 
         {
-            this.willy.anims.play('willy_walk',true);
+            this.willy.anims.play( willyLevel_walk,true);
             this.willy.setVelocityX(speed);
             this.willy.scaleX = -this.s
             this.willy.body.offset.x = 32
@@ -256,18 +314,43 @@ export default class Home extends Phaser.Scene
         
         if (keys.W.isDown) 
         {
-            this.willy.anims.play('willy_walk',true);
+            this.willy.anims.play( willyLevel_walk,true);
             this.willy.setVelocityY(-speed);
         } 
         else if (keys.S.isDown) 
         {
-            this.willy.anims.play('willy_walk',true);
+            this.willy.anims.play( willyLevel_walk,true);
             this.willy.setVelocityY(speed);
         }
         
         if(!keys.W.isDown && !keys.A.isDown && !keys.S.isDown && !keys.D.isDown)
         {
-            this.willy.anims.play('willy_idle',true);
+            this.willy.anims.play(willyLevel_idle,true);
         }
+    }
+    levelUpTime(oldFrame,oldBrainSize)
+    {
+        this.music.pause();
+        this.willy.setFrame(oldFrame);
+        this.willy.disableBody(true,false); //Dont allow movement while popup is on
+
+        var poof = this.add.sprite(this.willy.x, this.willy.y, 'poof',0);
+        poof.anims.play('poof_anim');
+        this.levelBar.anims.play('levelUp_anim');
+        
+        poof.on('animationcomplete',(anim, frame)=> {
+            poof.destroy();
+            this.willy.enableBody(false,0, 0, true, true); 
+            console.log("poofed)")
+        });
+
+        var newBrainSize = oldBrainSize+1;
+        this.levelBar.on('animationcomplete', (anim, frame) => {
+            this.brainSize.setFrame(newBrainSize);   
+            this.levelBar.setFrame(0); 
+        });
+
+
+        
     }
 }

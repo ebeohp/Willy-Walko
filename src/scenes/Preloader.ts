@@ -47,6 +47,7 @@ export default class Preloader extends Phaser.Scene
         this.load.audio("trivia1_theme", "music/trivia1_theme.mp3");
         this.load.audio("trivia2_theme", "music/trivia2_theme.ogg");
         this.load.audio("trivia3_theme", "music/trivia3_theme.ogg");
+        this.load.audio("sfx_levelup", "music/sfx_levelup.wav");
 
         //title assets
         this.load.spritesheet('title','sprites/title.png',{
@@ -98,6 +99,18 @@ export default class Preloader extends Phaser.Scene
         this.load.spritesheet('bohrmodel','sprites/bohrmodel.png',{
             frameHeight: 96,
             frameWidth: 96
+        });
+        this.load.spritesheet('brainSize','sprites/brainSize.png',{
+            frameHeight: 20,
+            frameWidth: 20
+        });
+        this.load.spritesheet('levelBar','sprites/levelBar.png',{
+            frameHeight: 18,
+            frameWidth: 128
+        });
+        this.load.spritesheet('poof','sprites/poof.png',{
+            frameHeight: 32,
+            frameWidth: 32
         });
 
         //Phil Helios Assets
@@ -310,6 +323,19 @@ export default class Preloader extends Phaser.Scene
             repeat: -1
         }); 
 
+        this.anims.create({
+            key: "levelUp_anim",
+            frames: this.anims.generateFrameNames('levelBar', {start:2, end:7}),
+            frameRate: 8,
+            repeat: 0
+        }); 
+
+        this.anims.create({
+            key: "poof_anim",
+            frames: this.anims.generateFrameNames('poof', {start:0, end:4}),
+            frameRate: 5,
+            repeat: 0
+        }); 
 
 
         //Phil Helios Anims
@@ -341,7 +367,7 @@ export default class Preloader extends Phaser.Scene
         }); 
 
         //Start Title scene
-        this.scene.start('trivia');
+        this.scene.start('home');
     }
 
     update(time: number, delta: number): void 
