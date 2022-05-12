@@ -36,6 +36,10 @@ export default class Atomic extends Phaser.Scene
     triggerGroup!: Phaser.Physics.Arcade.Group;
     bohrGroup!: any;
     notif!: any;
+    sfxdart: Phaser.Sound.BaseSound;
+    sfxtarget: Phaser.Sound.BaseSound;
+    sfxbullseye: Phaser.Sound.BaseSound;
+    music: Phaser.Sound.BaseSound;
 
     
 	constructor()
@@ -56,6 +60,9 @@ export default class Atomic extends Phaser.Scene
     create() 
     { 
         
+        this.sfxdart = this.sound.add("sfx_dart");  
+        this.sfxtarget = this.sound.add("sfx_target");  
+        this.sfxbullseye = this.sound.add("sfx_bullseye");  
         this.music = this.sound.add("bounty_theme");  
         var musicConfig = 
         { //optional
@@ -214,7 +221,12 @@ export default class Atomic extends Phaser.Scene
 
 
         this.bohrGroup= this.physics.add.group();
-        this.physics.add.overlap(this.dart, this.bohrGroup, this.hitBohr)
+        this.physics.add.overlap(this.dart, this.bohrGroup, (dart,bohr)=>{
+            this.sfxtarget.play();
+            console.log("hit")
+            bohr.destroy();
+        })
+
         this.time.addEvent({ //every call, new element in row appears
             delay: 1000, 
             callback: this.bohrChoices, 
@@ -290,6 +302,7 @@ export default class Atomic extends Phaser.Scene
     }
     shootDart() //limited amount of darts per round?
     {
+        //this.sfxdart.play();
         this.dartFly = true;
         this.tweens.add({
             targets: this.dart,
@@ -300,13 +313,10 @@ export default class Atomic extends Phaser.Scene
         })
         
     }
-    hitBohr(dart, bohrModel) // hit any bohr, deletes it
-    {
-        console.log("hit")
-        bohrModel.destroy();
-    }
+    
     plusEvoSfx(x,y)
     {
+        this.sfxbullseye.play();
         var notif = this.add.bitmapText(x,y, "pixelFont", "+10",20);
         notif.setAlpha(0);
         this.tweens.add
@@ -320,7 +330,7 @@ export default class Atomic extends Phaser.Scene
                 this.time.addEvent
                 ({
                     delay: 10,
-                    callback: this.removeSfx,
+                    callback: this.removeVfx,
                     args: [notif],
                     callbackScope: this
                 });
@@ -328,7 +338,7 @@ export default class Atomic extends Phaser.Scene
             callbackScope: this
         });  
     }
-    removeSfx(notif)
+    removeVfx(notif)
     {
         this.tweens.add
         ({

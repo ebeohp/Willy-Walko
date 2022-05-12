@@ -5,6 +5,7 @@ export default class AwardGame extends Phaser.Scene
     gameTitle: any;
     earnedEvos: any;
     numEvos: any;
+    sfxearnevos: Phaser.Sound.BaseSound;
     
 	constructor()
 	{
@@ -29,8 +30,10 @@ export default class AwardGame extends Phaser.Scene
         //creates a popup overlay on home screen, asks if want to play. if play, start game with data
         //uses data to select visuals/text for popup
 
-        var graphics = this.add.graphics();
+        this.sfxearnevos = this.sound.add("sfx_earnevos");  
+        
 
+        var graphics = this.add.graphics();
         graphics.fillStyle(0x000000, 0.85);
         graphics.fillRect(0, 0, 600, 400);
         graphics.fillStyle(0xcc6900, 1);
@@ -46,21 +49,21 @@ export default class AwardGame extends Phaser.Scene
         flaps.setScale(1.8)
 
         this.add.bitmapText(200,140, "pixelFont", "+ " + this.earnedEvos, 30);
-        var evoimg = this.add.image(180, 148, 'evoimg')
+        this.evoimg = this.add.image(180, 148, 'evoimg')
         
         var tween = this.tweens.add({
-            targets: evoimg,
+            targets: this.evoimg,
             scale: 1.5,
             ease: "Power1",
             duration: 200,
             repeat: this.earnedEvos,
-            onComplete: function(){
-                evoimg.setScale(1);
-                //plays a ding! sound
+            onComplete: () =>{
+                this.evoimg.setScale(1);
             },
             callbackScope: this
         });
 
+        
         this.updateStorageEvos();
 
         var gotit = this.add.sprite(200,180,'checkButton', 0)
@@ -82,6 +85,10 @@ export default class AwardGame extends Phaser.Scene
 
     update(time: number, delta: number): void 
     {
+        if(this.evoimg.scale ==1.5)
+        {
+            this.sfxearnevos.play();
+        }
        
     }
 }

@@ -46,6 +46,12 @@ export default class MicroShip extends Phaser.Scene
     numKills = 0;
     waveCounter!: Phaser.GameObjects.BitmapText;
     killsCounter!: Phaser.GameObjects.BitmapText;
+    music: Phaser.Sound.BaseSound;
+    sfxpew: Phaser.Sound.BaseSound;
+    sfxdedgerm: Phaser.Sound.BaseSound;
+    sfxclick: Phaser.Sound.BaseSound;
+    sfxhurt: Phaser.Sound.BaseSound;
+    sfxheal: Phaser.Sound.BaseSound;
     
     
 	constructor()
@@ -68,6 +74,12 @@ export default class MicroShip extends Phaser.Scene
     create() //block out bg with graphics. do as little art as possible
     {
         this.music = this.sound.add("microship_theme");  
+        this.sfxpew = this.sound.add("sfx_pew");  
+        this.sfxdedgerm = this.sound.add("sfx_dedgerm"); 
+        this.sfxhurt = this.sound.add("sfx_hurt");   
+        this.sfxclick = this.sound.add("sfx_click");   
+        this.sfxheal = this.sound.add("sfx_heal");
+        
         var musicConfig = 
         { //optional
             mute: false,
@@ -141,7 +153,7 @@ export default class MicroShip extends Phaser.Scene
         {
             if(this.popUpOn == false)
             {
-                console.log('shoot!');
+                this.sfxpew.play();
             
                 var beam = this.projectiles.create(this.ship.x, this.ship.y, "bullet");
                 var angle = Phaser.Math.Angle.Between(this.ship.x, this.ship.y, pointer.x + this.cameras.main.scrollX, pointer.y + this.cameras.main.scrollY)            
@@ -322,7 +334,7 @@ export default class MicroShip extends Phaser.Scene
 
         this.germGroup = this.physics.add.group();
         this.physics.add.collider(this.projectiles, this.germGroup, (bullet, germ)=>{
-            console.log("ded germ") //issue fix later
+            this.sfxdedgerm.play();
             bullet.disableBody(false,true)
             germ.disableBody(true,true);
             this.earnedEvos+=1;
@@ -360,6 +372,7 @@ export default class MicroShip extends Phaser.Scene
     {
         this.numWaves +=1;
         this.waveCounter.text = "WAVE " + this.numWaves;
+   
         var warningColor = this.add.rectangle(-200,-150,1500,1500, 0xff0d00);
         warningColor.setAlpha(0).setDepth(20)
         this.tweens.add({
@@ -451,6 +464,7 @@ export default class MicroShip extends Phaser.Scene
     }
     hurtShip(ship, germ)
     {
+        this.sfxhurt.play();
         ship.disableBody(true,false);
         this.tweens.add({
             targets: ship,
@@ -542,6 +556,7 @@ export default class MicroShip extends Phaser.Scene
     }
     organelleHeal(orgNum)
     {   
+        this.sfxheal.play();
         this.organelleHealth[orgNum] = 3;
         this.organelleArray[orgNum].setFrame(0);
         this.healthBars[orgNum].setFrame(0);
@@ -598,6 +613,7 @@ export default class MicroShip extends Phaser.Scene
     
     popUp(correctAnswer, incor1, incor2, orgNum)
     {
+        this.sfxclick.play();
         this.popUpOn = true; 
         this.ui = this.add.sprite(200,150,"shipUI",0)
         this.ui.setScrollFactor(0,0).setDepth(10).setScale(2);
@@ -723,11 +739,14 @@ export default class MicroShip extends Phaser.Scene
     gameOver()
     {
         var gameover = this.add.bitmapText(100,100, "pixelFont","GAME OVER",50).setDepth(15);
-        gameover.setScrollFactor(0,0)
+        gameover.setScrollFactor(0,0);
+        this.music.stop();
+        var over = this.sound.add('sfx_shipdown');
+        over.play();
         var camera = this.cameras.main;
-        camera.fadeOut(5000)
+        camera.fadeOut(8000);
         this.time.addEvent({  
-            delay: 2000, 
+            delay: 8000, 
             callback: ()=>{
                 this.scene.start("awardGame", {gameTitle: "MicroShip", earnedEvos: this.earnedEvos, numEvos: this.numEvos});
                 this.music.stop();

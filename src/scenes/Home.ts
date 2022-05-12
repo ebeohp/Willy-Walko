@@ -59,7 +59,6 @@ export default class Home extends Phaser.Scene
 
     create()
     {   
-
         this.music = this.sound.add("arcade_carnival");  
         var musicConfig = 
         { //optional
@@ -115,10 +114,14 @@ export default class Home extends Phaser.Scene
             this.levelBar.setFrame(1);
         }
         this.reachedNewLevel = Number( localStorage.getItem("savedReachedLevel") == null ? 0 : localStorage.getItem("savedReachedLevel"))
+        if(this.reachedNewLevel>3)
+        {
+            this.reachedNewLevel = 3;
+        }
+        
         var brainFrame =  this.reachedNewLevel;
         this.brainSize.setFrame(brainFrame);
-
-
+        
 
         this.shipcarn = this.physics.add.sprite(200,350, 'shipcarn', 0);
         this.shipcarn.anims.play('shipcarn_anim');
@@ -257,6 +260,7 @@ export default class Home extends Phaser.Scene
                 this.levelUpTime(10,2);
                 this.reachedNewLevel +=1;
                 localStorage.setItem('savedReachedLevel', String(this.reachedNewLevel+1));
+                console.log(this.reachedNewLevel)
             }
             willyLevel_walk = 'willy3_walk';
             willyLevel_idle = 'willy3_idle';

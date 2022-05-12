@@ -45,6 +45,8 @@ export default class Trivia extends Phaser.Scene
     goggles!: Phaser.GameObjects.Sprite;
     balls: Phaser.Physics.Arcade.Group;
     activeMusic = 'tent_theme'
+    sfxcorrect: Phaser.Sound.BaseSound;
+    sfxincorrect: Phaser.Sound.BaseSound;
 
 
 	constructor()
@@ -61,7 +63,6 @@ export default class Trivia extends Phaser.Scene
     create()
     {
         this.earnedEvos = 0;
-        console.log(this.earnedEvos)
         var xButton = this.add.image(380,20, "xButton")
         xButton.setDepth(100).setAlpha(0.3);
         xButton.setInteractive();
@@ -187,10 +188,8 @@ export default class Trivia extends Phaser.Scene
 
         this.initialTime = 60;
         
-
-
-        //If kid selects the end codon button
-        //this.endPopUp();   
+        this.sfxcorrect = this.sound.add('sfx_correct');
+        this.sfxincorrect = this.sound.add('sfx_incorrect');
     }
     challengePopUp() //Popup, destroyed after selection
     {
@@ -393,7 +392,7 @@ export default class Trivia extends Phaser.Scene
     }
     onCount() //Decrements by 1 every second. If hits 30, offer learning button.
     {
-        if(this.initialTime==60) //30sec
+        if(this.initialTime==30) //30sec
         {
             this.tweens.add({
                 targets: this.goggles,
@@ -507,7 +506,7 @@ export default class Trivia extends Phaser.Scene
             }
             else
             {
-                
+                this.sfxincorrect.play();
                 this.A.setFrame(2);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -573,7 +572,7 @@ export default class Trivia extends Phaser.Scene
             }
             else
             {
-                
+                this.sfxincorrect.play();
                 this.B.setFrame(2);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -639,7 +638,7 @@ export default class Trivia extends Phaser.Scene
             }
             else
             {
-                
+                this.sfxincorrect.play();
                 this.C.setFrame(2);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -740,6 +739,7 @@ export default class Trivia extends Phaser.Scene
             }
             else
             {
+                this.sfxincorrect.play();
                 this.A.setFrame(2);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -810,6 +810,8 @@ export default class Trivia extends Phaser.Scene
             }
             else
             {
+
+                this.sfxincorrect.play();
                 this.B.setFrame(2);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -882,6 +884,7 @@ export default class Trivia extends Phaser.Scene
             }
             else
             {
+                this.sfxincorrect.play();
                 this.C.setFrame(2);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -984,6 +987,7 @@ export default class Trivia extends Phaser.Scene
             }
             else
             {
+                this.sfxincorrect.play();
                 this.A.setFrame(2);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -1054,6 +1058,7 @@ export default class Trivia extends Phaser.Scene
             }
             else
             {
+                this.sfxincorrect.play();
                 this.B.setFrame(2);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -1124,6 +1129,7 @@ export default class Trivia extends Phaser.Scene
             }
             else
             {
+                this.sfxincorrect.play();
                 this.C.setFrame(2);
                 this.input.disable(this.A);
                 this.input.disable(this.B);
@@ -1152,7 +1158,7 @@ export default class Trivia extends Phaser.Scene
 
     calculateEvos() //If correct 
     {
-        
+        this.sfxcorrect.play();
         this.tweens.add({
             targets: this.evoText,
             y: 220,

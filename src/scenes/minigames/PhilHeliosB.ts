@@ -38,13 +38,17 @@ export default class PhilHeliosB extends Phaser.Scene
     }
     create()
     {
-        /*var xButton = this.add.sprite(380,20, "uiButtons", 2)
-        xButton.setDepth(100);
-        xButton.setInteractive();
-        xButton.on('pointerup',  (pointer) => {
-            this.scene.launch('quittingGame', {currentGameKey: 'philHelios', earnedEvos: this.earnedEvos, numEvos: this.numEvos, gameTitle: "Legend of Phil Helios"});
-            this.scene.pause();
-        }, this);*/ //Complicated
+        this.sfxsun = this.sound.add('sfx_sun'); 
+        this.sfxsunConfig = 
+        { //optional
+            mute: false,
+            volume: 0.5,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: false,
+            delay: 0
+        }
 
 
         var graphics = this.add.graphics();
@@ -161,6 +165,7 @@ export default class PhilHeliosB extends Phaser.Scene
         var sun = this.physics.add.sprite(x,y,"sunCandy");
         sun.anims.play("sun_anim");
         this.physics.add.collider(this.plant, sun, (plant,sunItem)=>{
+            this.sfxsun.play();
             sunItem.destroy();
             this.starchEvos+=10;
         })

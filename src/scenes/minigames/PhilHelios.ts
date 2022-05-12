@@ -34,6 +34,18 @@ export default class PhilHelios extends Phaser.Scene
     hiScoreCounter!: Phaser.GameObjects.BitmapText;
     score!: number;
     scoreCounter!: Phaser.GameObjects.BitmapText;
+    sfxdrip: Phaser.Sound.BaseSound;
+    sfxsun: Phaser.Sound.BaseSound;
+    sfxaquap: Phaser.Sound.BaseSound;
+    sfxstarch: Phaser.Sound.BaseSound;
+    sfxchloro: Phaser.Sound.BaseSound;
+    music: Phaser.Sound.BaseSound;
+    sfxConfig: { //optional
+        mute: boolean; volume: number; rate: number; detune: number; seek: number; loop: boolean; delay: number;
+    };
+    sfxsunConfig: { //optional
+        mute: boolean; volume: number; rate: number; detune: number; seek: number; loop: boolean; delay: number;
+    };
 
 
 	constructor()
@@ -52,7 +64,32 @@ export default class PhilHelios extends Phaser.Scene
     }
     create()
     {
+        this.sfxdrip = this.sound.add('sfx_drip'); 
+        this.sfxsun = this.sound.add('sfx_sun'); 
+        this.sfxaquap = this.sound.add('sfx_aquap'); 
+        this.sfxstarch = this.sound.add('sfx_starch'); 
+        this.sfxchloro = this.sound.add('sfx_chloro'); 
         this.music = this.sound.add("phil_theme");  
+        this.sfxConfig = 
+        { //optional
+            mute: false,
+            volume: 4,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: false,
+            delay: 0
+        }
+        this.sfxsunConfig = 
+        { //optional
+            mute: false,
+            volume: 0.5,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: false,
+            delay: 0
+        }
         var musicConfig = 
         { //optional
             mute: false,
@@ -149,6 +186,7 @@ export default class PhilHelios extends Phaser.Scene
             loop: true
         });
         this.physics.add.collider(this.plant, this.rainGroup, (plant, drop) =>{
+            this.sfxdrip.play();
             var animPlayer = this.add.sprite(drop.x,drop.y,"water");
             drop.destroy();
             animPlayer.anims.play("water_anim");
@@ -187,12 +225,6 @@ export default class PhilHelios extends Phaser.Scene
             loop: false
         });
 
-        this.time.addEvent({
-            delay: 15000, // maybe 15 seconds
-            callback: this.speedUpGame,
-            callbackScope: this,
-            loop: true
-        });
         
 
     }
@@ -210,7 +242,7 @@ export default class PhilHelios extends Phaser.Scene
     {
         if(this.gameSpeed != 500)
         {        
-            this.gameSpeed -= 10;
+            this.gameSpeed -= 30;
         }
     }
     update(time: number, delta: number): void {
@@ -244,6 +276,7 @@ export default class PhilHelios extends Phaser.Scene
         this.time.addEvent({  
             delay: 2000, 
             callback: ()=>{
+                this.music.stop();
                 this.scene.start("awardGame", {gameTitle: "Legend of Phil Helios", earnedEvos: totalEvos, numEvos: this.numEvos, currentMusicKey: 'phil_theme'});
             }, 
             callbackScope: this, 
@@ -372,6 +405,7 @@ export default class PhilHelios extends Phaser.Scene
             this.physics.add.collider(chlorophyll, cloud);
             this.physics.add.collider(this.plant, chlorophyll,(plant, power) => {
                 this.hasChlorophyll = true;
+                this.sfxchloro.play(this.sfxConfig);
                 chlorophyll.destroy();
             });
         }
@@ -383,6 +417,7 @@ export default class PhilHelios extends Phaser.Scene
             var cloudCollider = this.physics.add.collider(sun, cloud);
                 
             this.physics.add.collider(this.plant, sun, ()=>{
+                this.sfxsun.play(this.sfxsunConfig);
                 sun.destroy();
                 this.earnedEvos +=10; 
             })
@@ -482,6 +517,7 @@ export default class PhilHelios extends Phaser.Scene
             
         });
         this.physics.add.collider(this.plant,aquaporin, (plant, power) => {
+            this.sfxaquap.play(this.sfxConfig);
             this.hasAquaporin = true;
             aquaporin.destroy();
         });
@@ -517,6 +553,7 @@ export default class PhilHelios extends Phaser.Scene
             
         });
         this.physics.add.collider(this.plant, starch, (plant, power) => { 
+            this.sfxstarch.play(this.sfxConfig);
             starch.destroy();
             //fade out of scene
 

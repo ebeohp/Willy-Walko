@@ -47,7 +47,33 @@ export default class Preloader extends Phaser.Scene
         this.load.audio("trivia1_theme", "music/trivia1_theme.mp3");
         this.load.audio("trivia2_theme", "music/trivia2_theme.ogg");
         this.load.audio("trivia3_theme", "music/trivia3_theme.ogg");
+
         this.load.audio("sfx_levelup", "music/sfx_levelup.wav");
+        this.load.audio("sfx_pew", "music/sfx_pew.wav");
+        this.load.audio("sfx_dedgerm", "music/sfx_dedgerm.wav");
+        this.load.audio("sfx_hurt", "music/sfx_hurt.mp3");
+        this.load.audio("sfx_click", "music/sfx_click.wav");
+        this.load.audio("sfx_heal", "music/sfx_heal.wav");
+        this.load.audio("sfx_shipdown", "music/sfx_shipdown.mp3");
+        
+        this.load.audio("sfx_aquap", "music/sfx_aquap.mp3");
+        this.load.audio("sfx_chloro", "music/sfx_chloro.mp3");
+        this.load.audio("sfx_starch", "music/sfx_starch.mp3");
+        this.load.audio("sfx_sun", "music/sfx_sun.mp3");
+        this.load.audio("sfx_drip", "music/sfx_drip.mp3");
+        
+        this.load.audio("sfx_dart", "music/sfx_dart.wav");
+        this.load.audio("sfx_target", "music/sfx_target.wav");
+        this.load.audio("sfx_bullseye", "music/sfx_bullseye.wav");
+
+        
+        this.load.audio("sfx_correct", "music/sfx_correct.wav");
+        this.load.audio("sfx_incorrect", "music/sfx_incorrect.wav");
+        
+        this.load.audio("sfx_earnevos", "music/sfx_earnevos.mp3");
+
+
+
 
         //title assets
         this.load.spritesheet('title','sprites/title.png',{
@@ -275,13 +301,13 @@ export default class Preloader extends Phaser.Scene
         }); 
         this.anims.create({
             key: "willy3_idle",
-            frames: this.anims.generateFrameNames('willy', {start:10, end:10}),
+            frames: this.anims.generateFrameNames('willy', {start:15, end:15}),
             frameRate: 0,
             repeat: 0
         }); 
         this.anims.create({
             key: "willy3_walk",
-            frames: this.anims.generateFrameNames('willy', {start:11, end:14}),
+            frames: this.anims.generateFrameNames('willy', {start:15, end:19}),
             frameRate: 10,
             repeat: -1
         }); 
