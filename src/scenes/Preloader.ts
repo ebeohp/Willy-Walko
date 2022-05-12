@@ -37,6 +37,17 @@ export default class Preloader extends Phaser.Scene
             loadingText.destroy();
         });
 
+
+        //Music Assets
+        this.load.audio("arcade_carnival", "music/arcade_carnival.mp3");
+        this.load.audio("bounty_theme", "music/bounty_theme.ogg");
+        this.load.audio("microship_theme", "music/microship_theme.ogg");
+        this.load.audio("phil_theme", "music/phil_theme.mp3");
+        this.load.audio("tent_theme", "music/tent_theme.mp3");
+        this.load.audio("trivia1_theme", "music/trivia1_theme.mp3");
+        this.load.audio("trivia2_theme", "music/trivia2_theme.ogg");
+        this.load.audio("trivia3_theme", "music/trivia3_theme.ogg");
+
         //title assets
         this.load.spritesheet('title','sprites/title.png',{
             frameHeight: 96,
@@ -50,6 +61,11 @@ export default class Preloader extends Phaser.Scene
         this.load.image('archi', 'images/archi.png');
         this.load.image('bohrstand', 'images/bohrstand.png');
         this.load.image('bouncywall', 'images/bouncywall.png');
+        this.load.image('bouncyfloor', 'images/bouncyfloor.png');
+        this.load.image('bouncywall2', 'images/bouncywall2.png');
+        this.load.image('bouncyramp', 'images/bouncyramp.png');
+        
+        this.load.image('background', 'images/background.png');
         this.load.spritesheet('willy','sprites/willy.png',{
             frameHeight: 32,
             frameWidth: 32

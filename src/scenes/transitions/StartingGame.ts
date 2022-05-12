@@ -48,8 +48,10 @@ export default class StartingGame extends Phaser.Scene
         var play = this.add.sprite(200,180,'playButton', 0)
         play.setInteractive();
         play.on('pointerup',  (pointer) => {
+            this.sound.removeByKey('arcade_carnival');
             this.scene.stop('home');
             this.scene.start(this.gameKey, {evos: this.numEvos});
+            
         }, this);
         
         var backHome = this.add.sprite(380,20,'uiButtons', 2)

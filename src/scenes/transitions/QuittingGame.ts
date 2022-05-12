@@ -6,6 +6,7 @@ export default class QuittingGame extends Phaser.Scene
     currentGameKey: any;
     numEvos: any;
     gameTitle: any;
+    currentMusicKey: any;
     
 	constructor()
 	{
@@ -19,6 +20,7 @@ export default class QuittingGame extends Phaser.Scene
         this.earnedEvos = data.earnedEvos;
         this.numEvos = data.numEvos;
         this.gameTitle = data.gameTitle;
+        this.currentMusicKey = data.currentMusicKey;
     }
 
 	preload()
@@ -48,6 +50,7 @@ export default class QuittingGame extends Phaser.Scene
         yes.setInteractive().setScale(1.5);
         yes.on('pointerup',  (pointer) => {
             this.scene.stop(this.currentGameKey);
+            this.sound.removeByKey(this.currentMusicKey);
             this.scene.start("awardGame", {gameTitle: this.gameTitle, earnedEvos: this.earnedEvos, numEvos: this.numEvos})
         }, this);
         var no = this.add.sprite(250,180,'uiButtons', 1)

@@ -67,6 +67,19 @@ export default class MicroShip extends Phaser.Scene
 
     create() //block out bg with graphics. do as little art as possible
     {
+        this.music = this.sound.add("microship_theme");  
+        var musicConfig = 
+        { //optional
+            mute: false,
+            volume: 0.5,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: true,
+            delay: 0
+        }
+        this.music.play(musicConfig); 
+
         var xButton = this.add.image(380,20, "xButton")
         xButton.setDepth(100).setAlpha(0.3);
         xButton.setInteractive();
@@ -80,7 +93,7 @@ export default class MicroShip extends Phaser.Scene
         }, this);
         xButton.on('pointerup',  (pointer) => {
             var totalEvos = this.earnedEvos;
-            this.scene.launch('quittingGame', {currentGameKey: 'microship', earnedEvos: totalEvos, numEvos: this.numEvos, gameTitle: "Microship"});
+            this.scene.launch('quittingGame', {currentGameKey: 'microship', earnedEvos: totalEvos, numEvos: this.numEvos, gameTitle: "Microship", currentMusicKey: 'microship_theme'});
             this.scene.pause();
         }, this);
 
@@ -502,7 +515,7 @@ export default class MicroShip extends Phaser.Scene
             this.time.addEvent
             ({
                 delay: 2000,
-                callback: this.thisOver,
+                callback: this.gameOver,
                 callbackScope: this,
                 loop: false
             });
@@ -707,7 +720,7 @@ export default class MicroShip extends Phaser.Scene
 
     }
 
-    thisOver()
+    gameOver()
     {
         var gameover = this.add.bitmapText(100,100, "pixelFont","GAME OVER",50).setDepth(15);
         gameover.setScrollFactor(0,0)
@@ -717,6 +730,7 @@ export default class MicroShip extends Phaser.Scene
             delay: 2000, 
             callback: ()=>{
                 this.scene.start("awardGame", {gameTitle: "MicroShip", earnedEvos: this.earnedEvos, numEvos: this.numEvos});
+                this.music.stop();
             }, 
             callbackScope: this, 
             loop: false

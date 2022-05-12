@@ -44,6 +44,7 @@ export default class Trivia extends Phaser.Scene
     dancingMango: any;
     goggles!: Phaser.GameObjects.Sprite;
     balls: Phaser.Physics.Arcade.Group;
+    activeMusic = 'tent_theme'
 
 
 	constructor()
@@ -73,7 +74,7 @@ export default class Trivia extends Phaser.Scene
         }, this);
         xButton.on('pointerup',  (pointer) => {
             var totalEvos = this.earnedEvos;
-            this.scene.launch('quittingGame', {currentGameKey: 'trivia', earnedEvos: totalEvos, numEvos: this.numEvos, gameTitle: "Microship"});
+            this.scene.launch('quittingGame', {currentGameKey: 'trivia', earnedEvos: totalEvos, numEvos: this.numEvos, gameTitle: "Microship", currentMusicKey: this.activeMusic});
             this.scene.pause();
         }, this);
 
@@ -193,6 +194,19 @@ export default class Trivia extends Phaser.Scene
     challengePopUp() //Popup, destroyed after selection
     {
       
+        this.music0 = this.sound.add("tent_theme");  
+        var musicConfig = 
+        { //optional
+            mute: false,
+            volume: 0.5,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: true,
+            delay: 0
+        }
+        this.music0.play(musicConfig); 
+
         //UI note have some curtains for select your challenge
         var r6 = this.add.rectangle(200, 150, 400, 300, 0x2a0078); //BG Color
         var text = this.add.bitmapText(110,50, "pixelFont","Select your challenge!", 25);
@@ -225,8 +239,21 @@ export default class Trivia extends Phaser.Scene
         });
         this.goEasy.setInteractive();
         this.goEasy.on('pointerup',  (pointer) => {
+            this.music0.stop();
+            this.music1 = this.sound.add("trivia1_theme");  
+            var musicConfig = 
+            { //optional
+                mute: false,
+                volume: 0.5,
+                rate: 1,
+                detune: 0,
+                seek: 0,
+                loop: true,
+                delay: 0
+            }
+            this.music1.play(musicConfig); 
+            this.activeMusic = 'trivia1_theme';
             this.newEasyQ(0, 35); //arbitrary starting currentQ because this is first Q 
-
             for(let i = 0; i<deleteArray.length; i++)
             {
                 deleteArray[i].destroy(true);
@@ -250,6 +277,20 @@ export default class Trivia extends Phaser.Scene
         });
         this.goMedium.setInteractive();
         this.goMedium.on('pointerup',  (pointer) => {
+            this.music0.stop();
+            this.music2 = this.sound.add("trivia2_theme");  
+            var musicConfig = 
+            { //optional
+                mute: false,
+                volume: 0.5,
+                rate: 1,
+                detune: 0,
+                seek: 0,
+                loop: true,
+                delay: 0
+            }
+            this.music2.play(musicConfig); 
+            this.activeMusic = 'trivia2_theme';
             this.newMediumQ(0, 35);
             for(let i = 0; i<deleteArray.length; i++)
             {
@@ -276,7 +317,21 @@ export default class Trivia extends Phaser.Scene
         });
         this.goHard.setInteractive();
         this.goHard.on('pointerup',  (pointer) => {
-            this.newHardQ(0);
+            this.music0.stop();
+            this.music3 = this.sound.add("trivia3_theme");  
+            var musicConfig = 
+            { //optional
+                mute: false,
+                volume: 0.6,
+                rate: 1,
+                detune: 0,
+                seek: 0,
+                loop: true,
+                delay: 0
+            }
+            this.music3.play(musicConfig); 
+            this.activeMusic = 'trivia3_theme'
+            this.newHardQ(0,35);
             for(let i = 0; i<deleteArray.length; i++)
             {
                 deleteArray[i].destroy(true);

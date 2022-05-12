@@ -16,7 +16,7 @@ export default class Home extends Phaser.Scene
   
     
     private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
-    private willy?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    private willy!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     private myCam!: Phaser.Cameras.Scene2D.Camera;
     //Scale of all images
     private s = 1;
@@ -24,11 +24,20 @@ export default class Home extends Phaser.Scene
     private philcarn?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     private bountycarn?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     private triviacarn?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-    electric: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-    teslacoil: Phaser.GameObjects.Image;
-    electric2: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-    archi: Phaser.GameObjects.Image;
+    private electric!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    private teslacoil!: Phaser.GameObjects.Image;
+    private electric2!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    private archi!: Phaser.GameObjects.Image;
+    private background!: Phaser.GameObjects.TileSprite;
 
+    private isBouncing = false;
+    bohrmodel: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    bouncywall1: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
+    bouncywall2: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
+    bouncywall3: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
+    bouncyramp: any;
+    jumpTween: Phaser.Tweens.Tween;
+    inviswall: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
     
 
 	constructor()
@@ -43,18 +52,50 @@ export default class Home extends Phaser.Scene
 
     create()
     {   
+
+        this.music = this.sound.add("arcade_carnival");  
+        var musicConfig = 
+        { //optional
+            mute: false,
+            volume: 0.5,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: true,
+            delay: 0
+        }
+        this.music.play(musicConfig); 
+
         //Map setup
-        var g1 = this.add.grid(0, 0, 600, 400, 32, 25, 0x00b9f2).setAltFillStyle(0x016fce).setOutlineStyle();
-        g1.setOrigin(0,0)
+        this.background=this.add.tileSprite(-200,-200,1000, 800, "background"); //TileSprite is different from images!
+        this.background.setOrigin(0,0); //So its easier to move the background relating to it's top left corner.
+        var gridW = 600;
+        var gridH = 400;
+        var g1 = this.add.grid(0, 0, 600, 400, 32, 32, 0x00b9f2).setAltFillStyle(0x016fce).setOutlineStyle();
+        g1.setOrigin(0,0);
+        this.physics.world.setBounds( 0, 0, gridW, gridH);
+        var graphics = this.add.graphics();
+            graphics.fillStyle(0x000000, 1).setDepth(150).setScrollFactor(0,0);
+            graphics.beginPath();
+            graphics.moveTo(0,0);
+            graphics.lineTo(400, 0);
+            graphics.lineTo(400, 28);
+            graphics.lineTo(0,28);
+            graphics.lineTo(0,0);
+            graphics.closePath();
+            graphics.fillPath();
+
+
+
         this.shipcarn = this.physics.add.sprite(200,350, 'shipcarn', 0);
         this.shipcarn.anims.play('shipcarn_anim');
         this.philcarn = this.physics.add.sprite(300, 150, 'philcarn', 0);
         this.philcarn.anims.play('philcarn_anim');
-        this.triviacarn = this.physics.add.sprite(400,250, 'triviacarn', 0);
+        this.triviacarn = this.physics.add.sprite(400,280, 'triviacarn', 0);
         this.triviacarn.anims.play('triviacarn_anim');
         this.bountycarn = this.physics.add.sprite(100,150, 'bountycarn', 0);
 
-        this.archi = this.add.image(400,100, 'archi', 0);
+        this.archi = this.add.image(400,80, 'archi', 0);
         this.teslacoil = this.add.image(60,300, 'teslacoil', 0);
         this.electric = this.physics.add.sprite(60,240, 'electric', 0);
         this.electric.setScale(2).setDepth(2).anims.play('tesla_anim');
@@ -73,35 +114,51 @@ export default class Home extends Phaser.Scene
         });
         this.add.image(200,290, 'bohrstand', 0);
         
-        this.bouncywall1 = this.add.image(500,100, 'bouncywall', 0);
-        this.bouncywall1.setScale(1.25);
-        this.bouncyfloor = this.add.rectangle(200, 200, 148, 148, 0x6666ff);
-        this.bouncywall2 = this.add.image(500,170, 'bouncywall', 0);
-        this.bouncywall2.setScale(1.25);
+        this.bouncywall1 = this.physics.add.image(500,100, 'bouncywall', 0);
+        this.bouncywall1.setScale(1.25).body.setSize(96,15).offset.y = -0.5;
+        this.bouncyfloor = this.add.image(500,160, 'bouncyfloor', 0)
+        this.bouncywall2 = this.physics.add.image(500,170, 'bouncywall', 0);
+        this.bouncywall2.setScale(1.25).setDepth(3).body.setSize(96,15).offset.y = 50;
+        this.bouncywall2.body.offset.x = -5
+        this.bouncywall3 = this.physics.add.image(550,135, 'bouncywall2',0)
+        this.bouncyramp = this.physics.add.image(432,160, 'bouncyramp',0)
+        this.bouncyramp.setScale(1.25).body.setSize(10, 45).offset.x = 20;
 
-        var attractionsArray = [this.shipcarn, this.philcarn, this.triviacarn, this.bountycarn]
+        this.inviswall = this.physics.add.image(440,115, 'trigger');
+        this.inviswall.body.setSize(15,20);
+        
+
+        var attractionsArray = [this.shipcarn, this.philcarn, this.triviacarn, this.bountycarn, this.inviswall, this.bouncywall1, this.bouncywall2,this.bouncywall3, this.bouncyramp, this.bouncyfloor]
 
         //Player setup
-        this.willy = this.physics.add.sprite(0,0,'willy',0);
-        this.willy.setScale(this.s);
+        this.willy = this.physics.add.sprite(200,0,'willy',0);
+        this.willy.setScale(this.s).setCollideWorldBounds(true);
         this.myCam = this.cameras.main.startFollow(this.willy, true);
         //this.willy.setCollideWorldBounds(true);
 
         for(let i = 0; i<attractionsArray.length; i++)
         {
-            attractionsArray[i].setImmovable();
-            this.physics.add.collider(this.willy, attractionsArray[i]);
+            
+            if(i > 7)
+            {
+                this.physics.add.overlap(this.willy, attractionsArray[i]);
+            }
+            else
+            {
+                attractionsArray[i].setImmovable();
+                this.physics.add.collider(this.willy, attractionsArray[i]);
+            }
         }
 
         //Local storage. May need to restart game instance to update evos after each minigame
         this.numEvos= Number( localStorage.getItem("savedEvos") == null ? 0 : localStorage.getItem("savedEvos"));
         
         var name= this.add.bitmapText(15,10, "pixelFont", "Willy Walko", 20);
-        name.setScrollFactor(0,0)
+        name.setScrollFactor(0,0).setDepth(151);
         var evoCounter = this.add.bitmapText(190, 10, "pixelFont", "X " + this.numEvos, 20);
         var evoimg = this.add.image(180,15,'evoimg');
-        evoimg.setScrollFactor(0,0);
-        evoCounter.setScrollFactor(0,0);
+        evoimg.setScrollFactor(0,0).setDepth(151);;
+        evoCounter.setScrollFactor(0,0).setDepth(151);;
         
         //Buttons to each minigame ------------------------------------------------------------------------
 
@@ -145,7 +202,32 @@ export default class Home extends Phaser.Scene
 
     update(time: number, delta: number): void 
     {
-        //Player movement
+        this.background.tilePositionY-= 0.5;
+        this.playerMoverManager();
+       if(this.willy.body.touching.right && this.bouncyramp.body.touching.left && this.isBouncing == false)
+        {
+            this.isBouncing = true; 
+            this.jumpTween = this.tweens.add({
+                targets: this.willy,
+                y: this.willy.y - 30,
+                duration: 500,
+                ease: 'Sine.easeOut',
+                repeat: -1,
+                yoyo: true
+            });
+            console.log("bounce")
+        }
+        if(this.willy.body.touching.left && this.bouncyramp.body.touching.right && this.isBouncing == true)
+        {
+            this.jumpTween.stop();
+            this.isBouncing = false;
+
+        }
+            
+        
+    }
+    playerMoverManager ()
+    {
         if(!this.cursors || !this.willy)
         {
             return;
@@ -187,7 +269,5 @@ export default class Home extends Phaser.Scene
         {
             this.willy.anims.play('willy_idle',true);
         }
-        
-        
     }
 }
