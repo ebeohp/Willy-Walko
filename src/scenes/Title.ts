@@ -28,7 +28,7 @@ export default class Title extends Phaser.Scene
           });
         
          
-        var text = this.add.bitmapText(180,170, "pixelFont", "v1.0.0 PRESS [SPACE] TO PLAY", 20);
+        var text = this.add.bitmapText(180,170, "pixelFont", "v2.5.0 PRESS [SPACE] TO PLAY", 20);
         text.alpha = 0.5;
           var tween = this.tweens.add({
               targets: text,
