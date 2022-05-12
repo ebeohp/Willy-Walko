@@ -60,7 +60,8 @@ export default class Trivia extends Phaser.Scene
 
     create()
     {
-    
+        this.earnedEvos = 0;
+        console.log(this.earnedEvos)
         var xButton = this.add.image(380,20, "xButton")
         xButton.setDepth(100).setAlpha(0.3);
         xButton.setInteractive();
@@ -74,7 +75,7 @@ export default class Trivia extends Phaser.Scene
         }, this);
         xButton.on('pointerup',  (pointer) => {
             var totalEvos = this.earnedEvos;
-            this.scene.launch('quittingGame', {currentGameKey: 'trivia', earnedEvos: totalEvos, numEvos: this.numEvos, gameTitle: "Microship", currentMusicKey: this.activeMusic});
+            this.scene.launch('quittingGame', {currentGameKey: 'trivia', earnedEvos: totalEvos, numEvos: this.numEvos, gameTitle: "Chem Trivia", currentMusicKey: this.activeMusic});
             this.scene.pause();
         }, this);
 

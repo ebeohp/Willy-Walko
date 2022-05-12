@@ -44,6 +44,7 @@ export default class Home extends Phaser.Scene
     brainSize!: Phaser.GameObjects.Sprite;
     music!: Phaser.Sound.BaseSound;
     brainFrame!: number;
+    sfxlevelup: Phaser.Sound.BaseSound;
 
 
 	constructor()
@@ -71,6 +72,7 @@ export default class Home extends Phaser.Scene
             delay: 0
         }
         this.music.play(musicConfig); 
+        this.sfxlevelup = this.sound.add("sfx_levelup");  
 
         //Map setup
         this.background=this.add.tileSprite(-200,-200,1000, 800, "background"); //TileSprite is different from images!
@@ -331,6 +333,7 @@ export default class Home extends Phaser.Scene
     levelUpTime(oldFrame,oldBrainSize)
     {
         this.music.pause();
+        this.sfxlevelup.play();        
         this.willy.setFrame(oldFrame);
         this.willy.disableBody(true,false); //Dont allow movement while popup is on
 
@@ -341,6 +344,7 @@ export default class Home extends Phaser.Scene
         poof.on('animationcomplete',(anim, frame)=> {
             poof.destroy();
             this.willy.enableBody(false,0, 0, true, true); 
+            this.music.resume();
             console.log("poofed)")
         });
 

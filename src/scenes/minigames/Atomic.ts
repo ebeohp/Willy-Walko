@@ -55,7 +55,7 @@ export default class Atomic extends Phaser.Scene
 
     create() 
     { 
-
+        
         this.music = this.sound.add("bounty_theme");  
         var musicConfig = 
         { //optional
@@ -68,7 +68,7 @@ export default class Atomic extends Phaser.Scene
             delay: 0
         }
         this.music.play(musicConfig); 
-
+        this.earnedEvos = 0;
         var xButton = this.add.image(380,20, "xButton")
         xButton.setDepth(100).setAlpha(0.3);
         xButton.setInteractive();
@@ -82,7 +82,7 @@ export default class Atomic extends Phaser.Scene
         }, this);
         xButton.on('pointerup',  (pointer) => {
             var totalEvos = this.earnedEvos;
-            this.scene.launch('quittingGame', {currentGameKey: 'atomic', earnedEvos: totalEvos, numEvos: this.numEvos, gameTitle: "Microship", currentMusicKey: 'bounty_theme'});
+            this.scene.launch('quittingGame', {currentGameKey: 'atomic', earnedEvos: totalEvos, numEvos: this.numEvos, gameTitle: "Bohr's Bounty", currentMusicKey: 'bounty_theme'});
             this.scene.pause();
         }, this);
 

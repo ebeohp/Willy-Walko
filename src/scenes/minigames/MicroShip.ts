@@ -79,7 +79,7 @@ export default class MicroShip extends Phaser.Scene
             delay: 0
         }
         this.music.play(musicConfig); 
-
+        this.earnedEvos = 0;
         var xButton = this.add.image(380,20, "xButton")
         xButton.setDepth(100).setAlpha(0.3);
         xButton.setInteractive();

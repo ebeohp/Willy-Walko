@@ -65,7 +65,7 @@ export default class PhilHelios extends Phaser.Scene
         }
         this.music.play(musicConfig); 
 
-
+        this.earnedEvos = 0;
         var xButton = this.add.image(380,20, "xButton")
         xButton.setDepth(100).setAlpha(0.3);
         xButton.setInteractive();
@@ -79,7 +79,7 @@ export default class PhilHelios extends Phaser.Scene
         }, this);
         xButton.on('pointerup',  (pointer) => {
             var totalEvos = this.earnedEvos;
-            this.scene.launch('quittingGame', {currentGameKey: 'philHelios', earnedEvos: totalEvos, numEvos: this.numEvos, gameTitle: "Microship", currentMusicKey: "phil_theme"});
+            this.scene.launch('quittingGame', {currentGameKey: 'philHelios', earnedEvos: totalEvos, numEvos: this.numEvos, gameTitle: "Legend of Phil Helios", currentMusicKey: "phil_theme"});
             this.scene.pause();
         }, this);
         
