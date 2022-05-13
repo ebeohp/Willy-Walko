@@ -39,6 +39,8 @@ export default class Preloader extends Phaser.Scene
 
 
         //Music Assets
+        
+        this.load.audio("arcade_carnival_sr", "music/arcade_carnival_sr.mp3");
         this.load.audio("arcade_carnival", "music/arcade_carnival.mp3");
         this.load.audio("bounty_theme", "music/bounty_theme.ogg");
         this.load.audio("microship_theme", "music/microship_theme.ogg");
@@ -408,7 +410,7 @@ export default class Preloader extends Phaser.Scene
         }); 
 
         //Start Title scene
-        this.scene.start('home');
+        this.scene.start('title');
     }
 
     update(time: number, delta: number): void 

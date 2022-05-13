@@ -172,18 +172,18 @@ export default class Home extends Phaser.Scene
         var bohrstand = this.physics.add.image(350,390, 'bohrstand', 0);
         bohrstand.body.setSize(20,15);
         
-        this.bouncywall1 = this.physics.add.image(600,300, 'bouncywall', 0);
-        this.bouncywall1.setScale(1.25).body.setSize(96,15).offset.y = -0.5;
-        this.bouncyfloor = this.add.image(600,360, 'bouncyfloor', 0)
-        this.bouncywall2 = this.physics.add.image(600,370, 'bouncywall', 0);
+        this.bouncywall1 = this.physics.add.image(650,325, 'bouncywall', 0);
+        this.bouncywall1.setScale(1.25).body.setSize(96,40).offset.y = -0.5;
+        this.bouncyfloor = this.add.image(650,385, 'bouncyfloor', 0)
+        this.bouncywall2 = this.physics.add.image(650,395, 'bouncywall', 0);
         this.bouncywall2.setScale(1.25).setDepth(3).body.setSize(96,15).offset.y = 50;
         this.bouncywall2.body.offset.x = -5
-        this.bouncywall3 = this.physics.add.image(650,335, 'bouncywall2',0)
-        this.bouncyramp = this.physics.add.image(532, 360, 'bouncyramp',0)
+        this.bouncywall3 = this.physics.add.image(700,385, 'bouncywall2',0)
+        this.bouncyramp = this.physics.add.image(582, 385, 'bouncyramp',0)
         this.bouncyramp.setScale(1.25).body.setSize(10, 45).offset.x = 20;
-        this.inviswall = this.physics.add.image(540,310, 'trigger');
+        this.inviswall = this.physics.add.image(590,335, 'trigger');
         this.inviswall.body.setSize(15,20);
-        this.containerHouse = this.add.container(50, 25, [ this.bouncywall1, this.bouncyfloor, this.bouncywall3, this.bouncyramp, this.inviswall,  this.bouncywall2 ]);
+        //this.containerHouse = this.add.container(50, 25, [ this.bouncywall1, this.bouncyfloor, this.bouncywall3, this.bouncyramp, this.inviswall,  this.bouncywall2 ]);
         
         this.add.image(380,500, 'bumpersign',0)
         var carW = 256;
