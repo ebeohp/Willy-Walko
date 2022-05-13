@@ -77,10 +77,10 @@ export default class Home extends Phaser.Scene
         this.sfxlevelup = this.sound.add("sfx_levelup");  
 
         //Map setup
-        this.background=this.add.tileSprite(-200,-200,1200, 1000, "background"); //TileSprite is different from images!
+        this.background=this.add.tileSprite(-200,-200,1400, 1200, "background"); //TileSprite is different from images!
         this.background.setOrigin(0,0); //So its easier to move the background relating to it's top left corner.
-        var gridW = 800;
-        var gridH = 600;
+        var gridW = 928;
+        var gridH = 800;
         
         var gridDeep = this.add.rectangle(-10, 0, gridW+10, gridH+10, 0x002757);
         gridDeep.setOrigin(0,0)
@@ -131,61 +131,67 @@ export default class Home extends Phaser.Scene
         this.brainSize.setFrame(brainFrame);
         
 
-        this.shipcarn = this.physics.add.sprite(200,350, 'shipcarn', 0);
+        this.shipcarn = this.physics.add.sprite(300,550, 'shipcarn', 0);
         this.shipcarn.anims.play('shipcarn_anim');
-        this.philcarn = this.physics.add.sprite(300, 150, 'philcarn', 0);
+        this.philcarn = this.physics.add.sprite(300, 180, 'philcarn', 0);
         this.philcarn.anims.play('philcarn_anim');
-        this.triviacarn = this.physics.add.sprite(400,280, 'triviacarn', 0);
+        this.triviacarn = this.physics.add.sprite(600,150, 'triviacarn', 0);
         this.triviacarn.anims.play('triviacarn_anim');
-        this.bountycarn = this.physics.add.sprite(100,150, 'bountycarn', 0);
+        this.bountycarn = this.physics.add.sprite(170,200, 'bountycarn', 0);
 
-        this.archi = this.add.image(400,80, 'archi', 0);
-        this.teslacoil = this.add.image(60,300, 'teslacoil', 0);
-        this.electric = this.physics.add.sprite(60,240, 'electric', 0);
+        this.archi = this.physics.add.image(480,200, 'archi', 0);
+
+        this.teslacoil = this.physics.add.image(120,430, 'teslacoil', 0);
+        this.electric = this.add.sprite(120,370, 'electric', 0);
         this.electric.setScale(2).setDepth(2).anims.play('tesla_anim');
-        this.electric2 = this.physics.add.sprite(60,250, 'electric2', 0);
+        this.electric2 = this.add.sprite(120,380, 'electric2', 0);
         this.electric2.setScale(2).anims.play('tesla2_anim');
-        this.bohrmodel = this.physics.add.sprite(200,250, 'bohrmodel', 0);
+        
+        this.bohrmodel = this.physics.add.sprite(350,350, 'bohrmodel', 0).setDepth(1);
         this.bohrmodel.anims.play('bohrmodel_anim');
         this.tweens.add({
             targets: this.bohrmodel,
-            y: 240,
+            y: 340,
             duration: 800,
             ease: 'Linear',
             repeat: -1,
             yoyo: true
             
         });
-        this.add.image(200,290, 'bohrstand', 0);
+        var bohrstand = this.physics.add.image(350,390, 'bohrstand', 0);
+        bohrstand.body.setSize(20,15);
         
-        this.bouncywall1 = this.physics.add.image(500,100, 'bouncywall', 0);
+        this.bouncywall1 = this.physics.add.image(600,300, 'bouncywall', 0);
         this.bouncywall1.setScale(1.25).body.setSize(96,15).offset.y = -0.5;
-        this.bouncyfloor = this.add.image(500,160, 'bouncyfloor', 0)
-        this.bouncywall2 = this.physics.add.image(500,170, 'bouncywall', 0);
+        this.bouncyfloor = this.add.image(600,360, 'bouncyfloor', 0)
+        this.bouncywall2 = this.physics.add.image(600,370, 'bouncywall', 0);
         this.bouncywall2.setScale(1.25).setDepth(3).body.setSize(96,15).offset.y = 50;
         this.bouncywall2.body.offset.x = -5
-        this.bouncywall3 = this.physics.add.image(550,135, 'bouncywall2',0)
-        this.bouncyramp = this.physics.add.image(432,160, 'bouncyramp',0)
+        this.bouncywall3 = this.physics.add.image(650,335, 'bouncywall2',0)
+        this.bouncyramp = this.physics.add.image(532, 360, 'bouncyramp',0)
         this.bouncyramp.setScale(1.25).body.setSize(10, 45).offset.x = 20;
-        this.inviswall = this.physics.add.image(440,110, 'trigger');
+        this.inviswall = this.physics.add.image(540,310, 'trigger');
         this.inviswall.body.setSize(15,20);
+        this.containerHouse = this.add.container(50, 25, [ this.bouncywall1, this.bouncyfloor, this.bouncywall3, this.bouncyramp, this.inviswall,  this.bouncywall2 ]);
         
         var carW = 256;
         var carH = 192;
-        var r1 = this.add.rectangle(543, 455, carW+10, carH+15, 0x002757);
-        var r2 = this.add.rectangle(540, 460, carW, carH, 0x45baff);
-        this.froggycar = this.physics.add.sprite(500,500, 'bumpercars', 0);
+        var r1 = this.add.rectangle(563, 605, carW+10, carH+15, 0x002757);
+        var r2 = this.add.rectangle(560, 610, carW, carH, 0x45baff);
+        this.containerZone = this.add.container(0, -25, [r1, r2]);
+
+        this.froggycar = this.physics.add.sprite(560,650, 'bumpercars', 0);
         this.froggycar.flipX = true;
         this.froggycar.setBounce(1, 1).setMass(20);
         this.froggycar.setCollideWorldBounds(true).setImmovable(false);
         this.froggycar.body.setBoundsRectangle(new Phaser.Geom.Rectangle(410, 350, carW+10, carH+15));
         
-        this.taddycar = this.physics.add.sprite(600,500, 'bumpercars', 1);
+        this.taddycar = this.physics.add.sprite(660,650, 'bumpercars', 1);
         this.taddycar.setBounce(1, 1);
         this.taddycar.setCollideWorldBounds(true).setImmovable(false);
-        this.taddycar.body.setBoundsRectangle(new Phaser.Geom.Rectangle(410, 350, carW+10, carH+15));
+        this.taddycar.body.setBoundsRectangle(new Phaser.Geom.Rectangle(430, 475, carW+10, carH+15));
         
-        this.add.graphics()
+        var fence = this.add.graphics()
         .lineStyle(5, 0x00ffff, 0.5)
         .strokeRectShape(this.taddycar.body.customBoundsRectangle);
 
@@ -194,17 +200,17 @@ export default class Home extends Phaser.Scene
             console.log('frog n tad');
         });
 
-        var attractionsArray = [this.froggycar, this.taddycar, this.shipcarn, this.philcarn, this.triviacarn, this.bountycarn, this.inviswall, this.bouncywall1, this.bouncywall2,this.bouncywall3, this.bouncyramp, this.bouncyfloor]
+        var attractionsArray = [this.froggycar, this.taddycar, this.teslacoil, bohrstand, this.archi, this.shipcarn, this.philcarn, this.triviacarn, this.bountycarn, this.inviswall, this.bouncywall1, this.bouncywall2,this.bouncywall3, this.bouncyramp, this.bouncyfloor]
 
         //Player setup
-        this.willy = this.physics.add.sprite(400,600,'willy',0);
+        this.willy = this.physics.add.sprite(64,288,'willy',0);
         this.willy.setScale(this.s).setCollideWorldBounds(true);
         this.myCam = this.cameras.main.startFollow(this.willy, true);
 
         for(let i = 0; i<attractionsArray.length; i++)
         {
             
-            if(i > 9)
+            if(i > 12)
             {
                 this.physics.add.overlap(this.willy, attractionsArray[i]);
             }
@@ -290,7 +296,7 @@ export default class Home extends Phaser.Scene
     {
         var willyLevel_walk = 'willy_walk';
         var willyLevel_idle = 'willy_idle';
-        if (this.numEvos >= 500) //10000
+        if (this.numEvos >= 10000) //10000
         {
             if(this.reachedNewLevel == 2) //still has old frames of level 2
             {
@@ -302,7 +308,7 @@ export default class Home extends Phaser.Scene
             willyLevel_walk = 'willy3_walk';
             willyLevel_idle = 'willy3_idle';
         }
-        else if (this.numEvos >= 300) //5000
+        else if (this.numEvos >= 5000) //5000
         {
             if(this.reachedNewLevel == 1) //still has old frames of level 1
             {
@@ -313,7 +319,7 @@ export default class Home extends Phaser.Scene
             willyLevel_walk = 'willy2_walk';
             willyLevel_idle = 'willy2_idle';
         }
-        else if(this.numEvos >=100) //2000
+        else if(this.numEvos >=2000) //2000
         {
             //if this is first time, pause all controls, play level up bar anim, sparkles transform willy
             if(this.reachedNewLevel == 0) //still has old frames of level 0

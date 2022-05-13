@@ -222,7 +222,7 @@ export default class PhilHelios extends Phaser.Scene
             delay: 15000, // 15 seconds
             callback: this.newStarchPower,
             callbackScope: this,
-            loop: false
+            loop: true
         });
 
         
@@ -495,6 +495,7 @@ export default class PhilHelios extends Phaser.Scene
         if(this.waterAmt>=10)
         {
             this.waterBar.setFrame(0);
+            this.waterAmt = 10;
         }else if(this.waterFrame+1 !=11)
         {
             this.waterBar.setFrame(this.waterFrame+=1);

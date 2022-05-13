@@ -343,7 +343,7 @@ export default class Preloader extends Phaser.Scene
         this.anims.create({
             key: "tesla2_anim",
             frames: this.anims.generateFrameNames('electric2', {start:6, end:9}),
-            frameRate: 8,
+            frameRate: 7,
             repeat: -1
         }); 
         this.anims.create({
