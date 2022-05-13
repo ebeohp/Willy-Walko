@@ -92,6 +92,7 @@ export default class Preloader extends Phaser.Scene
         this.load.image('bouncywall2', 'images/bouncywall2.png');
         this.load.image('bouncyramp', 'images/bouncyramp.png');
         this.load.image('infoButton', 'images/infoButton.png');
+        this.load.image('bumpersign', 'images/bumpersign.png');
         
         this.load.image('background', 'images/background.png');
         this.load.spritesheet('willy','sprites/willy.png',{
@@ -141,6 +142,10 @@ export default class Preloader extends Phaser.Scene
         this.load.spritesheet('bumpercars','sprites/bumpercars.png',{
             frameHeight: 32,
             frameWidth: 64
+        });
+        this.load.spritesheet('hmmm','sprites/infoButton.png',{
+            frameHeight: 16,
+            frameWidth: 16
         });
 
         //Phil Helios Assets
@@ -365,6 +370,12 @@ export default class Preloader extends Phaser.Scene
             frames: this.anims.generateFrameNames('poof', {start:0, end:4}),
             frameRate: 5,
             repeat: 0
+        }); 
+        this.anims.create({
+            key: "hmmm_anim",
+            frames: this.anims.generateFrameNames('hmmm', {start:0, end:9}),
+            frameRate: 10,
+            repeat: -1
         }); 
 
 

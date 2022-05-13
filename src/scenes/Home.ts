@@ -48,6 +48,17 @@ export default class Home extends Phaser.Scene
     taddycar!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     froggycar!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     bouncyfloor!: Phaser.GameObjects.Image;
+    infoB: any;
+    infoB1: Phaser.GameObjects.Sprite;
+    infoB2: Phaser.GameObjects.Sprite;
+    infoB3: Phaser.GameObjects.Sprite;
+    infoB4: Phaser.GameObjects.Sprite;
+    bohrFacts: string[];
+    archiFacts: string[];
+    bounceFacts: string[];
+    bumperFacts: string[];
+    teslaFacts: string[];
+    ferrisFacts: never[];
 
 
 	constructor()
@@ -131,7 +142,7 @@ export default class Home extends Phaser.Scene
         this.brainSize.setFrame(brainFrame);
         
 
-        this.shipcarn = this.physics.add.sprite(300,550, 'shipcarn', 0);
+        this.shipcarn = this.physics.add.sprite(290,550, 'shipcarn', 0);
         this.shipcarn.anims.play('shipcarn_anim');
         this.philcarn = this.physics.add.sprite(300, 180, 'philcarn', 0);
         this.philcarn.anims.play('philcarn_anim');
@@ -174,6 +185,7 @@ export default class Home extends Phaser.Scene
         this.inviswall.body.setSize(15,20);
         this.containerHouse = this.add.container(50, 25, [ this.bouncywall1, this.bouncyfloor, this.bouncywall3, this.bouncyramp, this.inviswall,  this.bouncywall2 ]);
         
+        this.add.image(380,500, 'bumpersign',0)
         var carW = 256;
         var carH = 192;
         var r1 = this.add.rectangle(563, 605, carW+10, carH+15, 0x002757);
@@ -184,7 +196,7 @@ export default class Home extends Phaser.Scene
         this.froggycar.flipX = true;
         this.froggycar.setBounce(1, 1).setMass(20);
         this.froggycar.setCollideWorldBounds(true).setImmovable(false);
-        this.froggycar.body.setBoundsRectangle(new Phaser.Geom.Rectangle(410, 350, carW+10, carH+15));
+        this.froggycar.body.setBoundsRectangle(new Phaser.Geom.Rectangle(430, 475, carW+10, carH+15));
         
         this.taddycar = this.physics.add.sprite(660,650, 'bumpercars', 1);
         this.taddycar.setBounce(1, 1);
@@ -260,9 +272,146 @@ export default class Home extends Phaser.Scene
             this.scene.launch('startingGame',{gameTitle: "Chem Trivia", evos: this.numEvos, gameKey: 'trivia'});
         }, this);
         
-    
+        //Pop ups
+        this.infoB = this.add.sprite(350,290,'hmmm',0);
+        this.infoB.anims.play('hmmm_anim', true);
+        this.infoB1 = this.add.sprite(480,150,'hmmm',0);
+        this.infoB1.anims.play('hmmm_anim', true);
+        this.infoB2 = this.add.sprite(575,330,'hmmm',0);
+        this.infoB2.anims.play('hmmm_anim', true);
+        this.infoB3 = this.add.sprite(375,472,'hmmm',0);
+        this.infoB3.anims.play('hmmm_anim', true);
+        this.infoB4 = this.add.sprite(120,320,'hmmm',0);
+        this.infoB4.anims.play('hmmm_anim', true);
+
+        this.infoB.setInteractive();
+        this.infoB.on('pointerup',  (pointer) => {
+            this.popUp('bohr');
+        }, this);
+        this.infoB1.setInteractive();
+        this.infoB1.on('pointerup',  (pointer) => {
+            this.popUp('archi');
+        }, this);
+        this.infoB2.setInteractive();
+        this.infoB2.on('pointerup',  (pointer) => {
+            this.popUp('bounce');
+        }, this);
+        this.infoB3.setInteractive();
+        this.infoB3.on('pointerup',  (pointer) => {
+            this.popUp('bumper');
+        }, this);
+        this.infoB4.setInteractive();
+        this.infoB4.on('pointerup',  (pointer) => {
+            this.popUp('tesla');
+        }, this);
+
+
+        this.bohrFacts = ['Niels Bohr was a Danish physicist who \ncreated the Bohr Model',
+                         'Bohr claims that electrons occupy \nspecific orbits around the nucleus',
+                         'The atomic number is the number of \nelectrons or the number of protons',
+                         'Tiny electrons fill the orbitals from \nin to out in a 2-8-8... pattern',
+                         'The center of the atom has protons and \nneutrons',
+                         'The Bohr Model works best with the \nhydrogen atom, which has 1 proton \nand 1 electron']; 
+        this.archiFacts = ['Archimedes was the first recognised \nscientist to apply physics to \nsolve math problems',
+                          'He is credited with discovering a very \naccurate estimate for the \nvalue of pi',
+                          'Cranes and complex pulleys used today \nare a result of his work',
+                          'Eureka! Archimedes\'s Principle is a \nscientific law that explains \nwhy some objects float or sink'];
+        this.bounceFacts = ['Gravity is an invisible force that \npulls Willy back down after \njumping',
+                           'Elastic potential energy is created \nwhen the springs in a bounce \nhouse are compressed',
+                           'Hooke\'s Law says if a spring is not \nstretched or compressed, it \nhas no elastic potential energy'];
+        this.bumperFacts = ['Bumper cars show great examples of \nIsaac Newton\'s 3 Laws of Motion',
+                           'Newton\'s First Law (Inertia): Every \nobject in motion continues in \nmotion and every object at rest continues to be at rest unless an outside force acts on it',
+                           'Newton\'s Second Law: The greater the \nmass of an object, the harder \nit is to change its speed',
+                           'Newton\'s Third Law: For every action, \nthere is an equal and opposite \nreaction'];
+        this.teslaFacts = ['The Tesla Coil is the most important \ninvention of Nikola Tesla',
+                          'Variations of the coil are still used \ntoday in radios and television',
+                          'Fluorescent bulbs that are several feet \naway can be lit up wirelessly'];
+        this.ferrisFacts = [];
+
     }
-    
+    popUp(what)
+    {
+        console.log('popup');
+        
+
+        var graphics = this.add.graphics();
+        graphics.setScrollFactor(0,0).setDepth(100);
+        graphics.fillStyle(0xe79740);
+        graphics.fillRoundedRect(40, 50, 320, 220, { tl: 10, tr: 10, bl: 10, br: 10 });
+        graphics.fillStyle(0xcc6900);
+        graphics.fillRoundedRect(50, 60, 300, 200, { tl: 10, tr: 10, bl: 10, br: 10 });
+
+        var title = this.add.bitmapText(100, 75, "pixelFont", "Cool Science Fact!",35, 1);
+        title.setScrollFactor(0,0).setDepth(100);
+        //display fact[0], remove it and stick it at back of array
+        //contrainer popup
+        var display = 'what';
+        if(what == 'bohr')
+        {
+            display = this.bohrFacts.shift();
+        }
+        else if(what == 'archi')
+        {
+            display = this.archiFacts.shift();
+        }
+        else if(what == 'bounce')
+        {
+            display = this.bounceFacts.shift();
+        }
+        else if(what == 'bumper')
+        {
+            display = this.bumperFacts.shift();
+        }
+        else if(what == 'ferris')
+        {
+            display = this.ferrisFacts.shift();
+        }
+        else if(what == 'tesla')
+        {
+            display =  this.teslaFacts.shift();
+        }
+        var fact = this.add.bitmapText(90, 140, "pixelFont", display,18, 1);
+        fact.setScrollFactor(0,0).setDepth(100);
+        if(what == 'bohr')
+        {
+            this.bohrFacts.push(display);
+        }
+        else if(what == 'archi')
+        {
+            this.archiFacts.push(display);
+        }
+        else if(what == 'bounce')
+        {
+            this.bounceFacts.push(display);
+        }
+        else if(what == 'bumper')
+        {
+            this.bumperFacts.push(display);
+        }
+        else if(what == 'ferris')
+        {
+            this.ferrisFacts.push(display);
+        }
+        else if(what == 'tesla')
+        {
+            this.teslaFacts.push(display);
+        }
+        
+
+
+
+        var exitButton = this.add.sprite(330,230, "uiButtons", 2)
+        exitButton.setScrollFactor(0,0).setInteractive().setDepth(101);
+        exitButton.on('pointerup',  (pointer) => {
+            graphics.destroy();
+            title.destroy();
+            fact.destroy();
+            exitButton.destroy();
+
+        }, this);
+
+
+    }
 
     update(time: number, delta: number): void 
     {

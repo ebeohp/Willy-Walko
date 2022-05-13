@@ -55,7 +55,7 @@ export default class StartingGame extends Phaser.Scene
         }, this);
         
         var backHome = this.add.sprite(380,20,'uiButtons', 2)
-        backHome.setInteractive().setAlpha(0.3);
+        backHome.setInteractive().setAlpha(0.5);
 
         backHome.on('pointerover',  (pointer) => {
             backHome.setAlpha(1);
