@@ -138,6 +138,10 @@ export default class Preloader extends Phaser.Scene
             frameHeight: 32,
             frameWidth: 32
         });
+        this.load.spritesheet('bumpercars','sprites/bumpercars.png',{
+            frameHeight: 32,
+            frameWidth: 64
+        });
 
         //Phil Helios Assets
         this.load.image('cloud', 'images/cloud.png');

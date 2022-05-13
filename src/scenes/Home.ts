@@ -12,7 +12,7 @@ export default class Home extends Phaser.Scene
     private goPhil?: any;
     private goTrivia?: any;
 
-    numEvos?: string | number | null;
+    numEvos!: number;
   
     
     private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
@@ -44,7 +44,10 @@ export default class Home extends Phaser.Scene
     brainSize!: Phaser.GameObjects.Sprite;
     music!: Phaser.Sound.BaseSound;
     brainFrame!: number;
-    sfxlevelup: Phaser.Sound.BaseSound;
+    sfxlevelup!: Phaser.Sound.BaseSound;
+    taddycar!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    froggycar!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    bouncyfloor!: Phaser.GameObjects.Image;
 
 
 	constructor()
@@ -74,13 +77,18 @@ export default class Home extends Phaser.Scene
         this.sfxlevelup = this.sound.add("sfx_levelup");  
 
         //Map setup
-        this.background=this.add.tileSprite(-200,-200,1000, 800, "background"); //TileSprite is different from images!
+        this.background=this.add.tileSprite(-200,-200,1200, 1000, "background"); //TileSprite is different from images!
         this.background.setOrigin(0,0); //So its easier to move the background relating to it's top left corner.
-        var gridW = 600;
-        var gridH = 400;
-        var g1 = this.add.grid(0, 0, 600, 400, 32, 32, 0x00b9f2).setAltFillStyle(0x016fce).setOutlineStyle();
+        var gridW = 800;
+        var gridH = 600;
+        
+        var gridDeep = this.add.rectangle(-10, 0, gridW+10, gridH+10, 0x002757);
+        gridDeep.setOrigin(0,0)
+        var g1 = this.add.grid(0, 0, gridW, gridH, 32, 32, 0x00b9f2).setAltFillStyle(0x016fce).setOutlineStyle();
         g1.setOrigin(0,0);
         this.physics.world.setBounds( 0, 0, gridW, gridH);
+        
+
         var graphics = this.add.graphics();
             graphics.fillStyle(0x000000, 1).setDepth(150).setScrollFactor(0,0);
             graphics.beginPath();
@@ -159,30 +167,59 @@ export default class Home extends Phaser.Scene
         this.bouncywall3 = this.physics.add.image(550,135, 'bouncywall2',0)
         this.bouncyramp = this.physics.add.image(432,160, 'bouncyramp',0)
         this.bouncyramp.setScale(1.25).body.setSize(10, 45).offset.x = 20;
-
-        this.inviswall = this.physics.add.image(440,115, 'trigger');
+        this.inviswall = this.physics.add.image(440,110, 'trigger');
         this.inviswall.body.setSize(15,20);
         
+        var carW = 256;
+        var carH = 192;
+        var r1 = this.add.rectangle(543, 455, carW+10, carH+15, 0x002757);
+        var r2 = this.add.rectangle(540, 460, carW, carH, 0x45baff);
+        this.froggycar = this.physics.add.sprite(500,500, 'bumpercars', 0);
+        this.froggycar.flipX = true;
+        this.froggycar.setBounce(1, 1).setMass(20);
+        this.froggycar.setCollideWorldBounds(true).setImmovable(false);
+        this.froggycar.body.setBoundsRectangle(new Phaser.Geom.Rectangle(410, 350, carW+10, carH+15));
+        
+        this.taddycar = this.physics.add.sprite(600,500, 'bumpercars', 1);
+        this.taddycar.setBounce(1, 1);
+        this.taddycar.setCollideWorldBounds(true).setImmovable(false);
+        this.taddycar.body.setBoundsRectangle(new Phaser.Geom.Rectangle(410, 350, carW+10, carH+15));
+        
+        this.add.graphics()
+        .lineStyle(5, 0x00ffff, 0.5)
+        .strokeRectShape(this.taddycar.body.customBoundsRectangle);
 
-        var attractionsArray = [this.shipcarn, this.philcarn, this.triviacarn, this.bountycarn, this.inviswall, this.bouncywall1, this.bouncywall2,this.bouncywall3, this.bouncyramp, this.bouncyfloor]
+        this.physics.add.collider(this.froggycar, this.taddycar, (ball, block) =>
+        {
+            console.log('frog n tad');
+        });
+
+        var attractionsArray = [this.froggycar, this.taddycar, this.shipcarn, this.philcarn, this.triviacarn, this.bountycarn, this.inviswall, this.bouncywall1, this.bouncywall2,this.bouncywall3, this.bouncyramp, this.bouncyfloor]
 
         //Player setup
-        this.willy = this.physics.add.sprite(200,200,'willy',0);
+        this.willy = this.physics.add.sprite(400,600,'willy',0);
         this.willy.setScale(this.s).setCollideWorldBounds(true);
         this.myCam = this.cameras.main.startFollow(this.willy, true);
 
         for(let i = 0; i<attractionsArray.length; i++)
         {
             
-            if(i > 7)
+            if(i > 9)
             {
                 this.physics.add.overlap(this.willy, attractionsArray[i]);
             }
-            else
+            else if (i>1)
             {
                 attractionsArray[i].setImmovable();
                 this.physics.add.collider(this.willy, attractionsArray[i]);
             }
+            else
+            {
+                this.physics.add.collider(this.willy, attractionsArray[i]);
+                
+            }
+
+        
         }
 
         
