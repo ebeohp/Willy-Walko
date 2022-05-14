@@ -219,7 +219,7 @@ export default class PhilHelios extends Phaser.Scene
 
         
         this.time.addEvent({
-            delay: 15000, // 15 seconds
+            delay: 30000, // 30 seconds
             callback: this.newStarchPower,
             callbackScope: this,
             loop: true

@@ -110,77 +110,77 @@ export default class Trivia extends Phaser.Scene
         this.easyBank = 
         [
             ["What is the chemical name \nfor water?","Dihydrogen Monoxide","Liquid","Carbon Dioxide"],
-            ["Where are the protons \nlocated in the atom?","Nucleus","Electron Cloud","Lala Land"],
-            ["How are atoms in a \nmolecule held together?","Bonds", "Glue","Magnets"],
+            ["Where are the protons \nlocated in the atom?","Electron Cloud","Nucleus","Lala Land"],
+            ["How are atoms in a \nmolecule held together?", "Glue","Magnets","Bonds"],
             ["What is room temperature?","22 Degrees Celcius","70 Degrees Fahrenheit","Air Conditioning"],
-            ["What is the atomic number \nof nitrogen?","Seven","Two Thousand","One"],
-            ["What is the name of the \nfirst noble gas?","Hydrogen","Prince H","Oyxgen"],
+            ["What is the atomic number \nof nitrogen?","Two Thousand", "Seven","One"],
+            ["What is the name of the \nfirst noble gas?","Prince H","Oyxgen","Hydrogen"],
             ["What is the only metal \nliquid at room temperature?","Mercury","Water","Gold"],
-            ["When you drink milk, you \nare drinking plenty of…?","Calcium","Gold","Strong bones"],
-            ["The amount of space a \nliquid takes up is called what?","Volume","Chicken Nuggets","Mass"],
+            ["When you drink milk, you \nare drinking plenty of…?","Gold", "Calcium","Strong bones"],
+            ["The amount of space a \nliquid takes up is called what?","Chicken Nuggets","Mass", "Volume"],
             ["Which commonly used liquid \nhas a pH of 7?","Water","Orange Juice","Milk"],
-            ["What are electrically \ncharged atoms called?","Ions","Electrons","Quarks"]
+            ["What are electrically \ncharged atoms called?","Electrons", "Ions", "Quarks"]
         ];
         this.easyKey = 
         [
             [1],
+            [2],
+            [3],
             [1],
+            [2],
+            [3],
             [1],
+            [2],
+            [3],
             [1],
-            [1],
-            [1],
-            [1],
-            [1],
-            [1],
-            [1],
-            [1]
+            [2]
         ]
 
         this.mediumBank = 
         [
             ["The component that does \nthe dissolving is…","Solvent", "Solute", "Water"],
-            ["How are compounds that \ncontain Carbon, Hydrogen, \nand Oxygen classified?","Organic Compounds","Natural Compounds","Prison Compounds"],
-            ["In a closed system...?","Only energy can \nmove about","Nothing can leave \nor enter","Only matter can \nmove about"],
+            ["How are compounds that \ncontain Carbon, Hydrogen, \nand Oxygen classified?","Natural Compounds", "Organic Compounds","Prison Compounds"],
+            ["In a closed system...?","Nothing can leave \nor enter","Only matter can \nmove about", "Only energy can \nmove about"],
             ["To neutralize an acid, \nyou add…?", "Water to Acid", "Acid to Water", "Acid to trashcan"],
-            ["What is the formula of \nDihydrogen Dioxide?", "H2O","H2O2","H3O5"],
-            ["Gas goes to liquid is?", "Condensation", "Sublimation", "Depreciation"],
+            ["What is the formula of \nDihydrogen Dioxide?", "H2O2","H2O","H3O5"],
+            ["Gas goes to liquid is?",  "Sublimation", "Depreciation", "Condensation"],
             ["?CO2 and ?H2O makes \n?C6H12O6 and ?O2", "6,6,1,6", "6,6,0,6", "6,1,6,6"],
-            ["What is Avogadro's \nnumber?", "6.022x10^23", "Avocado123", "Number of moles \nin a unit"]
+            ["What is Avogadro's \nnumber?", "Avocado123", "6.022x10^23", "Number of moles \nin a unit"]
         
         ];
         this.mediumKey = 
         [
             [1],
+            [2],
+            [3],
             [1],
+            [2],
+            [3],
             [1],
-            [1],
-            [1],
-            [1],
-            [1],
-            [1]
+            [2]
         ]
 
         this.hardBank = 
         [
             ["What is the symbol of the \nstrongest acid, containing H?","HCl","Helium Acid","HF"],
-            ["In a triple bond, how \nmany pi and sigma \nbonds are there?","Two Pi, One Sigma","Three Pi, Three Sigma","One Pi, Two Sigma"],
-            ["What causes boiling?","Fire and water \ninteractions","Vapor pressure \n= atmospheric pressure","Build up of \natmospheric pressure"],
+            ["In a triple bond, how \nmany pi and sigma \nbonds are there?","Three Pi, Three Sigma","Two Pi, One Sigma","One Pi, Two Sigma"],
+            ["What causes boiling?", "Fire and water \ninteractions", "Build up of \natmospheric pressure", "Vapor pressure \n= atmospheric pressure"],
             ["How many sig figs are in \n0.0024?","2","5","8"],
-            ["How many sig figs are in \n320,000?", "2","320,000","6"],
-            ["If 2 Reds = 1 Blue, 4 Reds \nis…", "2 Blue", "4 Blue", "8 Blue"],
+            ["How many sig figs are in \n320,000?", "320,000", "2","6"],
+            ["If 2 Reds = 1 Blue, 4 Reds \nis…",  "4 Blue", "8 Blue", "2 Blue"],
             ["What doesn’t increase \nproper collisions?", "Bigger particle", "Enough KE", "Correct orientation"],
-            ["The pH of an acid is 6. \nWhat is the pOH?", "8", "-6", "10"]
+            ["The pH of an acid is 6. \nWhat is the pOH?", "-6", "8", "10"]
         ];
         this.hardKey = 
         [
             [1],
+            [2],
+            [3],
             [1],
+            [2],
+            [3],
             [1],
-            [1],
-            [1],
-            [1],
-            [1],
-            [1]
+            [2]
         ]
         //Select bank 
         this.challengePopUp();        

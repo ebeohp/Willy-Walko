@@ -320,7 +320,7 @@ export default class Home extends Phaser.Scene
                            'Elastic potential energy is created \nwhen the springs in a bounce \nhouse are compressed',
                            'Hooke\'s Law says if a spring is not \nstretched or compressed, it \nhas no elastic potential energy'];
         this.bumperFacts = ['Bumper cars show great examples of \nIsaac Newton\'s 3 Laws of Motion',
-                           'Newton\'s First Law (Inertia): Every \nobject in motion continues in \nmotion and every object at rest continues to be at rest unless an outside force acts on it',
+                           'Newton\'s First Law (Inertia): Every \nobject in motion continues in \nmotion unless an outside force \nacts on it',
                            'Newton\'s Second Law: The greater the \nmass of an object, the harder \nit is to change its speed',
                            'Newton\'s Third Law: For every action, \nthere is an equal and opposite \nreaction'];
         this.teslaFacts = ['The Tesla Coil is the most important \ninvention of Nikola Tesla',
