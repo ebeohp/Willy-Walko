@@ -8,9 +8,9 @@
 
 ## Prerequisites 
 
-Computer game only.
+Computer browser game only.
 
-(Direct link) (https://stoic-knuth-8ca0be.netlify.app/)
+(Direct link) (https://sites.google.com/view/willywalkoscarnivalgame/play?authuser=0)
 
 (To play locally)
 
